@@ -157,50 +157,63 @@ namespace MovingWordpress.ViewModels
             }
         }
 
+
+        string _DumpSqlGz = "dump.sql.gz";
+        string _UploadGz = "uploads.tar.gz";
+        string _PluginsGz = "plugins.tar.gz";
+        string _ThemesGz = "themes.tar.gz";
+
+        #region SCPによるダウンロードの実行
         /// <summary>
-        /// 接続処理
+        /// SCPによるダウンロードの実行
         /// </summary>
-        public void Connect()
-        {
-            try
-            {
-                this.SSHConnection.Connect();
-                string result = this.SSHConnection.sshCommand("cd /opt/bitnami/apps/wordpress/htdocs/wp-content/;ls -lah;");
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-
-        public void Execute()
-        {
-            try
-            {
-                this.SSHConnection.Connect();
-                foreach (var tmp in this.CommandList.Commands.Items)
-                {
-                    tmp.Result = this.SSHConnection.sshCommand(tmp.Command);
-                }
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-
-        }
-
         public void ExecuteScp()
         {
             try
             {
-                this.SSHConnection.Connect();
-                this.SSHConnection.Download("/opt/bitnami/apps/wordpress/htdocs/wp-content/uploads.tar.gz", @"C:\Work\test\20210911\uploads.tar.gz");
+                // 初期化処理
+                this.SSHConnection.Initialize();
+
+                // SCPによるダウンロード
+                this.SSHConnection.SCPDownload($"/tmp/{_PluginsGz}",
+                    this.SSHConnection.LocalDirectory, ScpClient_Downloading);
             }
             catch (Exception e)
             {
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
+        }
+        #endregion
+
+        #region SSHによるコマンドの実行
+        /// <summary>
+        /// SSHによるコマンドの実行
+        /// </summary>
+        public void ExecuteSsh()
+        {
+            try
+            {
+                // 初期化処理
+                this.SSHConnection.Initialize();
+
+                // SSHによるコマンド実行
+                this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;");
+                this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;");
+                this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;");
+                this.Message += this.SSHConnection.SshCommand($"mysqldump -u {this.SSHConnection.MySQLUserID} -p{this.SSHConnection.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}");
+                this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;");
+
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+
+        private void ScpClient_Downloading(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
+        {
 
         }
     }

@@ -166,18 +166,157 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
+		#region MySQLのユーザーID[MySQLUserID]プロパティ
+		/// <summary>
+		/// MySQLのユーザーID[MySQLUserID]プロパティ用変数
+		/// </summary>
+		string _MySQLUserID = string.Empty;
+		/// <summary>
+		/// MySQLのユーザーID[MySQLUserID]プロパティ
+		/// </summary>
+		public string MySQLUserID
+		{
+			get
+			{
+				return _MySQLUserID;
+			}
+			set
+			{
+				if (_MySQLUserID == null || !_MySQLUserID.Equals(value))
+				{
+					_MySQLUserID = value;
+					NotifyPropertyChanged("MySQLUserID");
+				}
+			}
+		}
+		#endregion
+
+		#region MySQLのパスワード[MySQLPassword]プロパティ
+		/// <summary>
+		/// MySQLのパスワード[MySQLPassword]プロパティ用変数
+		/// </summary>
+		string _MySQLPassword = string.Empty;
+		/// <summary>
+		/// MySQLのパスワード[MySQLPassword]プロパティ
+		/// </summary>
+		public string MySQLPassword
+		{
+			get
+			{
+				return _MySQLPassword;
+			}
+			set
+			{
+				if (_MySQLPassword == null || !_MySQLPassword.Equals(value))
+				{
+					_MySQLPassword = value;
+					NotifyPropertyChanged("MySQLPassword");
+				}
+			}
+		}
+		#endregion
+
+
+		#region リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ
+		/// <summary>
+		/// リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ用変数
+		/// </summary>
+		string _RemoteDirectory = "/opt/bitnami/apps/wordpress/htdocs/wp-content/";
+		/// <summary>
+		/// リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ
+		/// </summary>
+		public string RemoteDirectory
+		{
+			get
+			{
+				return _RemoteDirectory;
+			}
+			set
+			{
+				if (_RemoteDirectory == null || !_RemoteDirectory.Equals(value))
+				{
+					// 最後の一文字を確認した上でセット
+					_RemoteDirectory = CheckLastCharactor(value, "/");
+					NotifyPropertyChanged("RemoteDirectory");
+				}
+			}
+		}
+		#endregion
+
+		#region ローカルPC側のカレントディレクトリ[LocalDirectory]プロパティ
+		/// <summary>
+		/// ローカルPC側のカレントディレクトリ[LocalDirectory]プロパティ用変数
+		/// </summary>
+		string _LocalDirectory = string.Empty;
+		/// <summary>
+		/// ローカルPC側のカレントディレクトリ[LocalDirectory]プロパティ
+		/// </summary>
+		public string LocalDirectory
+		{
+			get
+			{
+				return _LocalDirectory;
+			}
+			set
+			{
+				if (_LocalDirectory == null || !_LocalDirectory.Equals(value))
+				{
+					// 最後の一文字を確認した上でセット
+					_LocalDirectory = CheckLastCharactor(value, @"\");
+					NotifyPropertyChanged("LocalDirectory");
+				}
+			}
+		}
+		#endregion
+
+
+		/// <summary>
+		/// 最後の文字列を確認して
+		/// 指定した文字列でなければ付与して返却する。
+		/// 文字数が0の場合は何もしない
+		/// </summary>
+		/// <param name="text"></param>
+		/// <param name="last_caractor"></param>
+		/// <returns></returns>
+		private static string CheckLastCharactor(string text, string last_caractor)
+		{
+
+			if (text.Length > 0)
+			{
+				var tmp = text.Substring(text.Length - 1).Equals(last_caractor);
+				if (!tmp)
+				{
+					text += last_caractor;
+				}
+			}
+
+			return text;
+
+		}
+
+
+		#region コンストラクタ
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
 		public SSHConnection()
 		{
 		}
+		#endregion
 
-		public void SetParameters(string host_name, int port, string pass_word, string passphrase, string key_file_path)
+		/// <summary>
+		/// パラメータの設定処理
+		/// </summary>
+		/// <param name="host_name">ホスト名</param>
+		/// <param name="port">ポート番号</param>
+		/// <param name="password">パスワード</param>
+		/// <param name="passphrase">パスフレーズ</param>
+		/// <param name="key_file_path">秘密鍵のファイルパス</param>
+		public void SetParameters(string host_name, int port, string password, string passphrase, string key_file_path)
 		{
 			this.HostName = host_name;
 			this.Port = port;
-			this.PassWord = PassWord;
+			this.PassWord = password;
 			this.PassPhrase = passphrase;
 			this.KeyFilePath = key_file_path;
 		}
@@ -185,7 +324,7 @@ namespace MovingWordpress.Models
 		/// <summary>
 		/// 接続処理
 		/// </summary>
-		public void Connect()
+		public void Initialize()
 		{
 			// パスワード認証
 			var pass_auth = new PasswordAuthenticationMethod(this.UserName, this.PassWord);
@@ -205,7 +344,12 @@ namespace MovingWordpress.Models
 
 		}
 
-		public string sshCommand(string command = "ls -lah")
+		/// <summary>
+		/// SSHコマンド
+		/// </summary>
+		/// <param name="command">コマンド</param>
+		/// <returns>結果</returns>
+		public string SshCommand(string command = "ls -lah")
 		{
 			StringBuilder result = new StringBuilder();
 			using (var sshclient = new SshClient(this.ConnNfo))
@@ -224,7 +368,12 @@ namespace MovingWordpress.Models
 			return result.ToString();
 		}
 
-		public void Download(string remote_dir, string local_path)
+		/// <summary>
+		/// SCPによるファイルダウンロード処理を行う
+		/// </summary>
+		/// <param name="remote_file_path">リモートサーバー側のファイルの保管パス</param>
+		/// <param name="local_file_path">ローカルファイルパスの保管場所</param>
+		public void SCPDownload(string remote_file_path, string local_file_path, EventHandler<Renci.SshNet.Common.ScpDownloadEventArgs> scp_handler)
 		{
 			using (var sshclient = new SshClient(this.ConnNfo))
 			{
@@ -233,9 +382,15 @@ namespace MovingWordpress.Models
 				{
 					scpClient.Connect();
 
-                    scpClient.Downloading += ScpClient_Downloading;
-					scpClient.Download("/opt/bitnami/apps/wordpress/htdocs/wp-content/uploads.tar.gz",
-						new System.IO.DirectoryInfo(@"C:\Work\test\20210911"));
+					// イベントのセット
+					scpClient.Downloading += scp_handler;
+
+					// イベントのダウンロード処理
+					scpClient.Download(remote_file_path,
+						new System.IO.DirectoryInfo(local_file_path));
+
+					// イベントの解除
+					scpClient.Downloading -= scp_handler;
 
 					scpClient.Disconnect();
 				}
@@ -243,10 +398,5 @@ namespace MovingWordpress.Models
 			}
 		}
 
-        private void ScpClient_Downloading(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
-        {
-
-            //throw new NotImplementedException();
-        }
     }
 }

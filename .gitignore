@@ -3,3 +3,10 @@
 ################################################################################
 
 /MovingWordpress/bin/Debug/net5.0-windows
+/.vs/MovingWordpress/v16
+/MovingWordpress/obj
+/MVVMCore/bin/Debug/net5.0-windows
+/MVVMCore/obj/Debug/net5.0-windows
+/MVVMCore/obj
+/MovingWordpress/bin/Release/net5.0-windows
+/MVVMCore/bin/Release/net5.0-windows

@@ -52,12 +52,12 @@
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.Port}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名"/>
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(サーバー)"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.UserName}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード"/>
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(サーバー)"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.PassWord}"/>
                             </StackPanel>
@@ -78,6 +78,27 @@
                                     </b:Interaction.Triggers>
                                 </Button>
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(MySQL)"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.MySQLUserID}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(MySQL)"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.MySQLPassword}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="リモートパス"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding SSHConnection.RemoteDirectory}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding SSHConnection.LocalDirectory}"/>
+                            </StackPanel>
+
                         </WrapPanel>
 
                         <Grid Grid.Row="1">
@@ -86,13 +107,6 @@
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="Click">
                                             <b:CallMethodAction MethodName="SaveSetting" TargetObject="{Binding}"/>
-                                        </b:EventTrigger>
-                                    </b:Interaction.Triggers>
-                                </Button>
-                                <Button Margin="5" HorizontalAlignment="Left" Width="100" Content="接続">
-                                    <b:Interaction.Triggers>
-                                        <b:EventTrigger EventName="Click">
-                                            <b:CallMethodAction MethodName="Connect" TargetObject="{Binding}"/>
                                         </b:EventTrigger>
                                     </b:Interaction.Triggers>
                                 </Button>
@@ -113,7 +127,7 @@
                         <Button Margin="5" Width="100" HorizontalAlignment="Left" Content="コマンド実行">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="Click">
-                                    <b:CallMethodAction MethodName="Execute" TargetObject="{Binding}"/>
+                                    <b:CallMethodAction MethodName="ExecuteSsh" TargetObject="{Binding}"/>
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </Button>
