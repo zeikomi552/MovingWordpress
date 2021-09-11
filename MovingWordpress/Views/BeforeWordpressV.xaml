@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:MovingWordpress.Views"
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.BeforeWordpressV"
         mc:Ignorable="d"
-        Title="BeforeWordpressV" Height="450" Width="800">
+        Title="BeforeWordpressV" Height="800" Width="1200">
     <Window.DataContext>
         <ViewModels:BeforeWordpressVM/>
     </Window.DataContext>
@@ -97,13 +97,20 @@
                                 <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding SSHConnection.LocalDirectory}"/>
+                                <Button Content="フォルダ選択">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="OpenFileBrowzeDialog" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
                             </StackPanel>
 
                         </WrapPanel>
 
                         <Grid Grid.Row="1">
                             <StackPanel Orientation="Horizontal">
-                                <Button Margin="5" HorizontalAlignment="Left" Width="100" Content="保存">
+                                <Button Margin="5" HorizontalAlignment="Left" Width="100" Content="設定を保存">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="Click">
                                             <b:CallMethodAction MethodName="SaveSetting" TargetObject="{Binding}"/>

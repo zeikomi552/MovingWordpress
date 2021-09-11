@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using MovingWordpress.Models;
 using MVVMCore.BaseClass;
 using MVVMCore.Common.Utilities;
@@ -238,6 +239,24 @@ namespace MovingWordpress.ViewModels
             }
         }
 
+
+        public void OpenFileBrowzeDialog()
+        {
+            using (var cofd = new CommonOpenFileDialog()
+            {
+                Title = "フォルダを選択してください",
+                InitialDirectory = @"D:\Users\threeshark",
+                // フォルダ選択モードにする
+                IsFolderPicker = true,
+            })
+            {
+                if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    this.SSHConnection.LocalDirectory = cofd.FileName;
+                }
+            }
+        }
+
         const string ConfigDir = "Config";
 
         string ConfigFile_Path = Path.Combine(ConfigDir, "Setting.config");
@@ -330,6 +349,11 @@ namespace MovingWordpress.ViewModels
             }
         }
         #endregion
+
+        public void FolderSelectDialog()
+        {
+
+        }
 
 
         private void ScpClient_Downloading_plugin(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
