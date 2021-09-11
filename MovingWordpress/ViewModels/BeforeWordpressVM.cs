@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace MovingWordpress.ViewModels
 {
@@ -37,6 +39,111 @@ namespace MovingWordpress.ViewModels
             }
         }
         #endregion
+
+        #region ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
+        /// <summary>
+        /// ダウンロードの進行状況[DownloadProgress_plugin]プロパティ用変数
+        /// </summary>
+        string _DownloadProgress_plugin = string.Empty;
+        /// <summary>
+        /// ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
+        /// </summary>
+        public string DownloadProgress_plugin
+        {
+            get
+            {
+                return _DownloadProgress_plugin;
+            }
+            set
+            {
+                if (_DownloadProgress_plugin == null || !_DownloadProgress_plugin.Equals(value))
+                {
+                    _DownloadProgress_plugin = value;
+                    NotifyPropertyChanged("DownloadProgress_plugin");
+                }
+            }
+        }
+        #endregion
+
+        #region ダウンロードの進行状況[DownloadProgress_themes]プロパティ
+        /// <summary>
+        /// ダウンロードの進行状況[DownloadProgress_themes]プロパティ用変数
+        /// </summary>
+        string _DownloadProgress_themes = string.Empty;
+        /// <summary>
+        /// ダウンロードの進行状況[DownloadProgress_themes]プロパティ
+        /// </summary>
+        public string DownloadProgress_themes
+        {
+            get
+            {
+                return _DownloadProgress_themes;
+            }
+            set
+            {
+                if (_DownloadProgress_themes == null || !_DownloadProgress_themes.Equals(value))
+                {
+                    _DownloadProgress_themes = value;
+                    NotifyPropertyChanged("DownloadProgress_themes");
+                }
+            }
+        }
+        #endregion
+
+        #region ダウンロードの進行状況[DownloadProgress_upload]プロパティ
+        /// <summary>
+        /// ダウンロードの進行状況[DownloadProgress_upload]プロパティ用変数
+        /// </summary>
+        string _DownloadProgress_upload = string.Empty;
+        /// <summary>
+        /// ダウンロードの進行状況[DownloadProgress_upload]プロパティ
+        /// </summary>
+        public string DownloadProgress_upload
+        {
+            get
+            {
+                return _DownloadProgress_upload;
+            }
+            set
+            {
+                if (_DownloadProgress_upload == null || !_DownloadProgress_upload.Equals(value))
+                {
+                    _DownloadProgress_upload = value;
+                    NotifyPropertyChanged("DownloadProgress_upload");
+                }
+            }
+        }
+        #endregion
+
+        #region ダウンロードの進行状況[DownloadProgress_sql]プロパティ
+        /// <summary>
+        /// ダウンロードの進行状況[DownloadProgress_sql]プロパティ用変数
+        /// </summary>
+        string _DownloadProgress_sql = string.Empty;
+        /// <summary>
+        /// ダウンロードの進行状況[DownloadProgress_sql]プロパティ
+        /// </summary>
+        public string DownloadProgress_sql
+        {
+            get
+            {
+                return _DownloadProgress_sql;
+            }
+            set
+            {
+                if (_DownloadProgress_sql == null || !_DownloadProgress_sql.Equals(value))
+                {
+                    _DownloadProgress_sql = value;
+                    NotifyPropertyChanged("DownloadProgress_sql");
+                }
+            }
+        }
+        #endregion
+
+
+
+
+
 
         #region 結果メッセージ[Message]プロパティ
         /// <summary>
@@ -174,9 +281,22 @@ namespace MovingWordpress.ViewModels
                 // 初期化処理
                 this.SSHConnection.Initialize();
 
-                // SCPによるダウンロード
-                this.SSHConnection.SCPDownload($"/tmp/{_PluginsGz}",
-                    this.SSHConnection.LocalDirectory, ScpClient_Downloading);
+                Task.Run(() =>
+                {
+                    // SCPによるダウンロード
+                    this.SSHConnection.SCPDownload($"/tmp/{_PluginsGz}",
+                        this.SSHConnection.LocalDirectory, ScpClient_Downloading_plugin);
+                    // SCPによるダウンロード
+                    this.SSHConnection.SCPDownload($"/tmp/{_ThemesGz}",
+                        this.SSHConnection.LocalDirectory, ScpClient_Downloading_themes);
+                    // SCPによるダウンロード
+                    this.SSHConnection.SCPDownload($"/tmp/{_UploadGz}",
+                        this.SSHConnection.LocalDirectory, ScpClient_Downloading_upload);
+                    // SCPによるダウンロード
+                    this.SSHConnection.SCPDownload($"/tmp/{_DumpSqlGz}",
+                        this.SSHConnection.LocalDirectory, ScpClient_Downloading_sql);
+                }
+                );
             }
             catch (Exception e)
             {
@@ -212,9 +332,36 @@ namespace MovingWordpress.ViewModels
         #endregion
 
 
-        private void ScpClient_Downloading(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
+        private void ScpClient_Downloading_plugin(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+               new Action(() => {
+                   this.DownloadProgress_plugin = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
+               }));
+        }
 
+        private void ScpClient_Downloading_upload(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+               new Action(() => {
+                   this.DownloadProgress_upload = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
+               }));
+        }
+
+        private void ScpClient_Downloading_themes(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+               new Action(() => {
+                   this.DownloadProgress_themes = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
+               }));
+        }
+
+        private void ScpClient_Downloading_sql(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+               new Action(() => {
+                   this.DownloadProgress_sql = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
+               }));
         }
     }
 }
