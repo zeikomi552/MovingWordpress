@@ -40,7 +40,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <WrapPanel Orientation="Horizontal">
+                        <StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ホスト名"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
@@ -81,12 +81,12 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(MySQL)"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.MySQLUserID}"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLSetting.MySQLUserID}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(MySQL)"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.MySQLPassword}"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLSetting.MySQLPassword}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="リモートパス"/>
@@ -106,7 +106,7 @@
                                 </Button>
                             </StackPanel>
 
-                        </WrapPanel>
+                        </StackPanel>
 
                         <Grid Grid.Row="1">
                             <StackPanel Orientation="Horizontal">

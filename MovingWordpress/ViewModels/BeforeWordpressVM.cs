@@ -20,11 +20,11 @@ namespace MovingWordpress.ViewModels
         /// <summary>
         /// SSH接続オブジェクト[SSHConnection]プロパティ用変数
         /// </summary>
-        SSHConnection _SSHConnection = new SSHConnection();
+        SSHManagerM _SSHConnection = new SSHManagerM();
         /// <summary>
         /// SSH接続オブジェクト[SSHConnection]プロパティ
         /// </summary>
-        public SSHConnection SSHConnection
+        public SSHManagerM SSHConnection
         {
             get
             {
@@ -40,6 +40,32 @@ namespace MovingWordpress.ViewModels
             }
         }
         #endregion
+
+        #region [MySQLSetting]プロパティ
+        /// <summary>
+        /// [MySQLSetting]プロパティ用変数
+        /// </summary>
+        MySqlSettingM _MySQLSetting = new MySqlSettingM();
+        /// <summary>
+        /// [MySQLSetting]プロパティ
+        /// </summary>
+        public MySqlSettingM MySQLSetting
+        {
+            get
+            {
+                return _MySQLSetting;
+            }
+            set
+            {
+                if (_MySQLSetting == null || !_MySQLSetting.Equals(value))
+                {
+                    _MySQLSetting = value;
+                    NotifyPropertyChanged("MySQLSetting");
+                }
+            }
+        }
+        #endregion
+
 
         #region ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
         /// <summary>
@@ -204,7 +230,7 @@ namespace MovingWordpress.ViewModels
                 // ファイルの存在確認
                 if (File.Exists(this.ConfigFile_Path))
                 {
-                    this.SSHConnection = XMLUtil.Deserialize<SSHConnection>(this.ConfigFile_Path);
+                    this.SSHConnection = XMLUtil.Deserialize<SSHManagerM>(this.ConfigFile_Path);
                 }
             }
             catch (Exception e)
@@ -275,7 +301,7 @@ namespace MovingWordpress.ViewModels
                     Directory.CreateDirectory(ConfigDir);
                 }
 
-                XMLUtil.Seialize<SSHConnection>(this.ConfigFile_Path, this.SSHConnection);
+                XMLUtil.Seialize<SSHManagerM>(this.ConfigFile_Path, this.SSHConnection);
             }
             catch (Exception e)
             {
@@ -339,7 +365,7 @@ namespace MovingWordpress.ViewModels
                 this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;");
                 this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;");
                 this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;");
-                this.Message += this.SSHConnection.SshCommand($"mysqldump -u {this.SSHConnection.MySQLUserID} -p{this.SSHConnection.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}");
+                this.Message += this.SSHConnection.SshCommand($"mysqldump -u {this.MySQLSetting.MySQLUserID} -p{this.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}");
                 this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;");
 
             }

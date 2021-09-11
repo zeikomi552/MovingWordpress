@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace MovingWordpress.Models
 {
-    public class SSHConnection : ModelBase
+    public class SSHManagerM : ModelBase
 	{
 		// 接続情報
 		[XmlIgnoreAttribute] 
@@ -166,55 +166,6 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
-		#region MySQLのユーザーID[MySQLUserID]プロパティ
-		/// <summary>
-		/// MySQLのユーザーID[MySQLUserID]プロパティ用変数
-		/// </summary>
-		string _MySQLUserID = string.Empty;
-		/// <summary>
-		/// MySQLのユーザーID[MySQLUserID]プロパティ
-		/// </summary>
-		public string MySQLUserID
-		{
-			get
-			{
-				return _MySQLUserID;
-			}
-			set
-			{
-				if (_MySQLUserID == null || !_MySQLUserID.Equals(value))
-				{
-					_MySQLUserID = value;
-					NotifyPropertyChanged("MySQLUserID");
-				}
-			}
-		}
-		#endregion
-
-		#region MySQLのパスワード[MySQLPassword]プロパティ
-		/// <summary>
-		/// MySQLのパスワード[MySQLPassword]プロパティ用変数
-		/// </summary>
-		string _MySQLPassword = string.Empty;
-		/// <summary>
-		/// MySQLのパスワード[MySQLPassword]プロパティ
-		/// </summary>
-		public string MySQLPassword
-		{
-			get
-			{
-				return _MySQLPassword;
-			}
-			set
-			{
-				if (_MySQLPassword == null || !_MySQLPassword.Equals(value))
-				{
-					_MySQLPassword = value;
-					NotifyPropertyChanged("MySQLPassword");
-				}
-			}
-		}
-		#endregion
 
 
 		#region リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ
@@ -268,7 +219,7 @@ namespace MovingWordpress.Models
 			}
 		}
 		#endregion
-
+		
 
 		/// <summary>
 		/// 最後の文字列を確認して
@@ -299,7 +250,7 @@ namespace MovingWordpress.Models
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		public SSHConnection()
+		public SSHManagerM()
 		{
 		}
 		#endregion
