@@ -1,0 +1,149 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:MovingWordpress.Views"
+        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.BeforeWordpressV"
+        mc:Ignorable="d"
+        Title="BeforeWordpressV" Height="450" Width="800">
+    <Window.DataContext>
+        <ViewModels:BeforeWordpressVM/>
+    </Window.DataContext>
+    <b:Interaction.Triggers>
+        <b:EventTrigger>
+            <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Margin="5" BorderBrush="AliceBlue" BorderThickness="5" CornerRadius="5">
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷づくり画面" FontSize="30"/>
+        </Border>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <GroupBox Header="設定値">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <WrapPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ホスト名"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.HostName}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ポート"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.Port}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.UserName}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.PassWord}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスフレーズ"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.PassPhrase}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="秘密鍵のパス(.pem)"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding SSHConnection.KeyFilePath}"/>
+                                <Button Width="100" Content="ファイル">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="OpenPemFileDialog" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                            </StackPanel>
+                        </WrapPanel>
+
+                        <Grid Grid.Row="1">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Margin="5" HorizontalAlignment="Left" Width="100" Content="保存">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="SaveSetting" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                                <Button Margin="5" HorizontalAlignment="Left" Width="100" Content="接続">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="Connect" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+
+                </GroupBox>
+            </Grid>
+            <GroupBox Margin="5" Grid.Column="1" Header="コマンドリスト">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Margin="5" Width="100" HorizontalAlignment="Left" Content="コマンド実行">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Click">
+                                    <b:CallMethodAction MethodName="Execute" TargetObject="{Binding}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Button>
+                        <Button Margin="5" Width="100" HorizontalAlignment="Left" Content="コマンド実行">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Click">
+                                    <b:CallMethodAction MethodName="ExecuteScp" TargetObject="{Binding}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Button>
+
+                    </StackPanel>
+                    <DataGrid Margin="5" Grid.Row="1" AutoGenerateColumns="False" 
+                              ItemsSource="{Binding CommandList.Commands.Items}"
+                              SelectedItem="{Binding CommandList.Commands.SelectedItem}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="コマンド" Binding="{Binding Command}"/>
+                            <!--<DataGridTextColumn Header="結果" Binding="{Binding Result}"/>-->
+                        </DataGrid.Columns>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Height" Value="20"/>
+                            </Style>
+                        </DataGrid.CellStyle>
+                    </DataGrid>
+                    <GroupBox Header="選択行の結果内容" Grid.Row="2">
+                        <TextBox VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding CommandList.Commands.SelectedItem.Result}"/>
+                    </GroupBox>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>
