@@ -41,55 +41,7 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region [MySQLSetting]プロパティ
-        /// <summary>
-        /// [MySQLSetting]プロパティ用変数
-        /// </summary>
-        MySqlSettingM _MySQLSetting = new MySqlSettingM();
-        /// <summary>
-        /// [MySQLSetting]プロパティ
-        /// </summary>
-        public MySqlSettingM MySQLSetting
-        {
-            get
-            {
-                return _MySQLSetting;
-            }
-            set
-            {
-                if (_MySQLSetting == null || !_MySQLSetting.Equals(value))
-                {
-                    _MySQLSetting = value;
-                    NotifyPropertyChanged("MySQLSetting");
-                }
-            }
-        }
-        #endregion
-
-        #region フォルダ設定[FolderSetting]プロパティ
-        /// <summary>
-        /// フォルダ設定[FolderSetting]プロパティ用変数
-        /// </summary>
-        FolderSettingM _FolderSetting = new FolderSettingM();
-        /// <summary>
-        /// フォルダ設定[FolderSetting]プロパティ
-        /// </summary>
-        public FolderSettingM FolderSetting
-        {
-            get
-            {
-                return _FolderSetting;
-            }
-            set
-            {
-                if (_FolderSetting == null || !_FolderSetting.Equals(value))
-                {
-                    _FolderSetting = value;
-                    NotifyPropertyChanged("FolderSetting");
-                }
-            }
-        }
-        #endregion
+       
 
         #region ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
         /// <summary>
@@ -266,20 +218,22 @@ namespace MovingWordpress.ViewModels
                 // 初期化処理
                 this.SSHConnection.Initialize();
 
+                string local_dir = this.SSHConnection.FolderSetting.LocalDirectory;
+
                 Task.Run(() =>
                 {
                     // SCPによるダウンロード
                     this.SSHConnection.SCPDownload($"/tmp/{_PluginsGz}",
-                        this.FolderSetting.LocalDirectory, ScpClient_Downloading_plugin);
+                        local_dir, ScpClient_Downloading_plugin);
                     // SCPによるダウンロード
                     this.SSHConnection.SCPDownload($"/tmp/{_ThemesGz}",
-                        this.FolderSetting.LocalDirectory, ScpClient_Downloading_themes);
+                        local_dir, ScpClient_Downloading_themes);
                     // SCPによるダウンロード
                     this.SSHConnection.SCPDownload($"/tmp/{_UploadGz}",
-                        this.FolderSetting.LocalDirectory, ScpClient_Downloading_upload);
+                        local_dir, ScpClient_Downloading_upload);
                     // SCPによるダウンロード
                     this.SSHConnection.SCPDownload($"/tmp/{_DumpSqlGz}",
-                        this.FolderSetting.LocalDirectory, ScpClient_Downloading_sql);
+                        local_dir, ScpClient_Downloading_sql);
                 }
                 );
             }
@@ -301,12 +255,55 @@ namespace MovingWordpress.ViewModels
                 // 初期化処理
                 this.SSHConnection.Initialize();
 
-                // SSHによるコマンド実行
-                this.Message += this.SSHConnection.SshCommand("cd " + this.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;");
-                this.Message += this.SSHConnection.SshCommand("cd " + this.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;");
-                this.Message += this.SSHConnection.SshCommand("cd " + this.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;");
-                this.Message += this.SSHConnection.SshCommand($"mysqldump -u {this.MySQLSetting.MySQLUserID} -p{this.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}");
-                this.Message += this.SSHConnection.SshCommand("cd " + this.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;");
+
+                Task.Run(() =>
+                {
+                    StringBuilder message = new StringBuilder();
+                    message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       new Action(() => {
+                           this.Message = message.ToString();
+                       }));
+
+                    // SSHによるコマンド実行
+                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;"));
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       new Action(() => {
+                           this.Message = message.ToString();
+                       }));
+
+                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;"));
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       new Action(() => {
+                           this.Message = message.ToString();
+                       }));
+
+                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;"));
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       new Action(() => {
+                           this.Message = message.ToString();
+                       }));
+
+                    message.AppendLine(this.SSHConnection.SshCommand($"mysqldump -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}"));
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       new Action(() => {
+                           this.Message = message.ToString();
+                       }));
+
+                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;"));
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       new Action(() => {
+                           this.Message = message.ToString();
+                       }));
+
+                    message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       new Action(() => {
+                           this.Message = message.ToString();
+                       }));
+
+                }
+                );
 
             }
             catch (Exception e)
