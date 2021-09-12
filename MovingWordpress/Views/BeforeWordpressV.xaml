@@ -106,13 +106,6 @@
                                         <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="リモートパス"/>
                                         <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                         <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding RemoteDirectory}"/>
-                                        <Button Content="フォルダを探す">
-                                            <b:Interaction.Triggers>
-                                                <b:EventTrigger EventName="Click">
-                                                    <b:CallMethodAction MethodName="SearchDir" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
-                                                </b:EventTrigger>
-                                            </b:Interaction.Triggers>
-                                        </Button>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
@@ -143,6 +136,34 @@
                         </Grid>
                     </Grid>
 
+                </GroupBox>
+                
+                <GroupBox Grid.Row="1" Header="ちょっと便利に">
+                    <StackPanel Margin="5">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Margin="5" Width="100" Content="フォルダを探す">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:CallMethodAction MethodName="SearchDir" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+                            <Button Margin="5" Width="100" Content="Wordpressパスワード">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:CallMethodAction MethodName="CheckWordpressUserPassword" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+                            <Button Margin="5" Width="100" Content="MySQLパスワード">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:CallMethodAction MethodName="CheckMySQLPassword" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
                 </GroupBox>
             </Grid>
             <GroupBox Margin="5" Grid.Column="1" Header="コマンドリスト">

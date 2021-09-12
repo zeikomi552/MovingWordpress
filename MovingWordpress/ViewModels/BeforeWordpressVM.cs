@@ -254,7 +254,9 @@ namespace MovingWordpress.ViewModels
 
         }
 
-        public void SearchDir()
+
+
+        private void ExecuteCommand(string cmd)
         {
             try
             {
@@ -264,17 +266,21 @@ namespace MovingWordpress.ViewModels
                 Task.Run(() =>
                 {
                     StringBuilder message = new StringBuilder();
+
+                    // コマンド開始のメモ
                     message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+
+                    // コマンド内容のセット
+                    message.AppendLine(cmd);
 
                     // メッセージの更新
                     UpdateMessage(message.ToString());
 
-                    message.AppendLine(this.SSHConnection.SshCommand("find /opt -name wp-content;"));
+                    message.AppendLine(this.SSHConnection.SshCommand(cmd));
                     message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
 
                     // メッセージの更新
                     UpdateMessage(message.ToString());
-
                 }
                 );
             }
@@ -282,7 +288,64 @@ namespace MovingWordpress.ViewModels
             {
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
+        }
 
+        #region バックアップ用のディレクトリを探す
+        /// <summary>
+        /// バックアップ用のディレクトリを探す
+        /// </summary>
+        public void SearchDir()
+        {
+            try
+            {
+                // コマンド
+                string cmd = "find /opt -name wp-content;";
+
+                // コマンドの発行処理
+                ExecuteCommand(cmd);
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region ワードプレスのパスワードおよびユーザー名の確認コマンド
+        /// <summary>
+        /// ワードプレスのパスワードおよびユーザー名の確認コマンド
+        /// </summary>
+        public void CheckWordpressUserPassword()
+        {
+            try
+            {
+                // コマンド
+                string cmd = "sudo cat /home/bitnami/bitnami_credentials;";
+
+                // コマンドの発酵処理
+                ExecuteCommand(cmd);
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        public void CheckMySQLPassword()
+        {
+            try
+            {
+                // コマンド
+                string cmd = $"cd {this.SSHConnection.FolderSetting.RemoteDirectory};cd ..;cat wp-config.php;";
+
+                // コマンドの発酵処理
+                ExecuteCommand(cmd);
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
         }
 
         #region SSHによるコマンドの実行
