@@ -91,9 +91,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
-
-
         #region ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
         /// <summary>
         /// ダウンロードの進行状況[DownloadProgress_plugin]プロパティ用変数
@@ -194,11 +191,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
-
-
-
-
         #region 結果メッセージ[Message]プロパティ
         /// <summary>
         /// 結果メッセージ[Message]プロパティ用変数
@@ -224,32 +216,7 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region [CommandList]プロパティ
-        /// <summary>
-        /// [CommandList]プロパティ用変数
-        /// </summary>
-        CommandListsM _CommandList = new CommandListsM();
-        /// <summary>
-        /// [CommandList]プロパティ
-        /// </summary>
-        public CommandListsM CommandList
-        {
-            get
-            {
-                return _CommandList;
-            }
-            set
-            {
-                if (_CommandList == null || !_CommandList.Equals(value))
-                {
-                    _CommandList = value;
-                    NotifyPropertyChanged("CommandList");
-                }
-            }
-        }
-        #endregion
-
-
+        #region 初期化処理
         /// <summary>
         /// 初期化処理
         /// </summary>
@@ -264,7 +231,9 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
 
+        #region 設定ファイル保存処理
         /// <summary>
         /// 設定ファイル保存処理
         /// </summary>
@@ -279,7 +248,7 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
-
+        #endregion
 
         string _DumpSqlGz = "dump.sql.gz";
         string _UploadGz = "uploads.tar.gz";
@@ -347,12 +316,13 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        public void FolderSelectDialog()
-        {
 
-        }
-
-
+        #region plugins.tar.gzフォルダのダウンロード進捗
+        /// <summary>
+        /// plugins.tar.gzフォルダのダウンロード進捗
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ScpClient_Downloading_plugin(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
@@ -360,7 +330,14 @@ namespace MovingWordpress.ViewModels
                    this.DownloadProgress_plugin = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
                }));
         }
+        #endregion
 
+        #region uploads.tar.gzのダウンロード進捗
+        /// <summary>
+        /// uploads.tar.gzのダウンロード進捗
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ScpClient_Downloading_upload(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
@@ -368,7 +345,14 @@ namespace MovingWordpress.ViewModels
                    this.DownloadProgress_upload = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
                }));
         }
+        #endregion
 
+        #region themes.tar.gzフォルダのダウンロード進捗
+        /// <summary>
+        /// themes.tar.gzフォルダのダウンロード進捗
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ScpClient_Downloading_themes(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
@@ -376,7 +360,14 @@ namespace MovingWordpress.ViewModels
                    this.DownloadProgress_themes = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
                }));
         }
+        #endregion
 
+        #region dump.sql.gzのダウンロード進捗
+        /// <summary>
+        /// dump.sql.gzのダウンロード進捗
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ScpClient_Downloading_sql(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
@@ -384,5 +375,6 @@ namespace MovingWordpress.ViewModels
                    this.DownloadProgress_sql = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
                }));
         }
+        #endregion
     }
 }
