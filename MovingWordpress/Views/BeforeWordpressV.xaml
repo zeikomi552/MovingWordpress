@@ -41,71 +41,83 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ホスト名"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.HostName}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ポート"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.Port}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(サーバー)"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.UserName}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(サーバー)"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.PassWord}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスフレーズ"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding SSHConnection.PassPhrase}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="秘密鍵のパス(.pem)"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding SSHConnection.KeyFilePath}"/>
-                                <Button Width="100" Content="ファイル">
-                                    <b:Interaction.Triggers>
-                                        <b:EventTrigger EventName="Click">
-                                            <b:CallMethodAction MethodName="OpenPemFileDialog" TargetObject="{Binding}"/>
-                                        </b:EventTrigger>
-                                    </b:Interaction.Triggers>
-                                </Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(MySQL)"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLSetting.MySQLUserID}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(MySQL)"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLSetting.MySQLPassword}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="リモートパス"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding SSHConnection.RemoteDirectory}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding SSHConnection.LocalDirectory}"/>
-                                <Button Content="フォルダ選択">
-                                    <b:Interaction.Triggers>
-                                        <b:EventTrigger EventName="Click">
-                                            <b:CallMethodAction MethodName="OpenFileBrowzeDialog" TargetObject="{Binding}"/>
-                                        </b:EventTrigger>
-                                    </b:Interaction.Triggers>
-                                </Button>
-                            </StackPanel>
+                            <GroupBox Header="SSH設定" DataContext="{Binding SSHConnection.SSHSetting}">
+                                <StackPanel Margin="5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ホスト名"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding HostName}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ポート"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding Port}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(サーバー)"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding UserName}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(サーバー)"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding PassWord}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスフレーズ"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding PassPhrase}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="秘密鍵のパス(.pem)"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding KeyFilePath}"/>
+                                        <Button Width="100" Content="ファイル">
+                                            <b:Interaction.Triggers>
+                                                <b:EventTrigger EventName="Click">
+                                                    <b:CallMethodAction MethodName="OpenPemFileDialog" TargetObject="{Binding}"/>
+                                                </b:EventTrigger>
+                                            </b:Interaction.Triggers>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox Header="MySQL設定" DataContext="{Binding SSHConnection.MySQLSetting}">
+                                <StackPanel Margin="5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(MySQL)"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLUserID}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(MySQL)"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLPassword}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </GroupBox>
 
+                            <GroupBox Header="フォルダ設定" DataContext="{Binding SSHConnection.FolderSetting}">
+                                <StackPanel Margin="5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="リモートパス"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding RemoteDirectory}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
+                                        <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                        <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding LocalDirectory}"/>
+                                        <Button Content="フォルダ選択">
+                                            <b:Interaction.Triggers>
+                                                <b:EventTrigger EventName="Click">
+                                                    <b:CallMethodAction MethodName="OpenFileBrowzeDialog" TargetObject="{Binding}"/>
+                                                </b:EventTrigger>
+                                            </b:Interaction.Triggers>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </GroupBox>
                         </StackPanel>
 
                         <Grid Grid.Row="1">

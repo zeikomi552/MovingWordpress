@@ -66,6 +66,33 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region フォルダ設定[FolderSetting]プロパティ
+        /// <summary>
+        /// フォルダ設定[FolderSetting]プロパティ用変数
+        /// </summary>
+        FolderSettingM _FolderSetting = new FolderSettingM();
+        /// <summary>
+        /// フォルダ設定[FolderSetting]プロパティ
+        /// </summary>
+        public FolderSettingM FolderSetting
+        {
+            get
+            {
+                return _FolderSetting;
+            }
+            set
+            {
+                if (_FolderSetting == null || !_FolderSetting.Equals(value))
+                {
+                    _FolderSetting = value;
+                    NotifyPropertyChanged("FolderSetting");
+                }
+            }
+        }
+        #endregion
+
+
+
 
         #region ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
         /// <summary>
@@ -256,7 +283,7 @@ namespace MovingWordpress.ViewModels
                 if (dialog.ShowDialog() == true)
                 {
                     // ファイルパスのセット
-                    this.SSHConnection.KeyFilePath = dialog.FileName;
+                    this.SSHConnection.SSHSetting.KeyFilePath = dialog.FileName;
                 }
             }
             catch (Exception e)
@@ -265,23 +292,6 @@ namespace MovingWordpress.ViewModels
             }
         }
 
-
-        public void OpenFileBrowzeDialog()
-        {
-            using (var cofd = new CommonOpenFileDialog()
-            {
-                Title = "フォルダを選択してください",
-                InitialDirectory = @"D:\Users\threeshark",
-                // フォルダ選択モードにする
-                IsFolderPicker = true,
-            })
-            {
-                if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    this.SSHConnection.LocalDirectory = cofd.FileName;
-                }
-            }
-        }
 
         const string ConfigDir = "Config";
 
@@ -294,14 +304,7 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // フォルダの存在確認
-                if (!Directory.Exists(ConfigDir))
-                {
-                    // フォルダの作成
-                    Directory.CreateDirectory(ConfigDir);
-                }
-
-                XMLUtil.Seialize<SSHManagerM>(this.ConfigFile_Path, this.SSHConnection);
+                this.SSHConnection.Save();
             }
             catch (Exception e)
             {
@@ -330,16 +333,16 @@ namespace MovingWordpress.ViewModels
                 {
                     // SCPによるダウンロード
                     this.SSHConnection.SCPDownload($"/tmp/{_PluginsGz}",
-                        this.SSHConnection.LocalDirectory, ScpClient_Downloading_plugin);
+                        this.FolderSetting.LocalDirectory, ScpClient_Downloading_plugin);
                     // SCPによるダウンロード
                     this.SSHConnection.SCPDownload($"/tmp/{_ThemesGz}",
-                        this.SSHConnection.LocalDirectory, ScpClient_Downloading_themes);
+                        this.FolderSetting.LocalDirectory, ScpClient_Downloading_themes);
                     // SCPによるダウンロード
                     this.SSHConnection.SCPDownload($"/tmp/{_UploadGz}",
-                        this.SSHConnection.LocalDirectory, ScpClient_Downloading_upload);
+                        this.FolderSetting.LocalDirectory, ScpClient_Downloading_upload);
                     // SCPによるダウンロード
                     this.SSHConnection.SCPDownload($"/tmp/{_DumpSqlGz}",
-                        this.SSHConnection.LocalDirectory, ScpClient_Downloading_sql);
+                        this.FolderSetting.LocalDirectory, ScpClient_Downloading_sql);
                 }
                 );
             }
@@ -362,11 +365,11 @@ namespace MovingWordpress.ViewModels
                 this.SSHConnection.Initialize();
 
                 // SSHによるコマンド実行
-                this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;");
-                this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;");
-                this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;");
+                this.Message += this.SSHConnection.SshCommand("cd " + this.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;");
+                this.Message += this.SSHConnection.SshCommand("cd " + this.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;");
+                this.Message += this.SSHConnection.SshCommand("cd " + this.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;");
                 this.Message += this.SSHConnection.SshCommand($"mysqldump -u {this.MySQLSetting.MySQLUserID} -p{this.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}");
-                this.Message += this.SSHConnection.SshCommand("cd " + this.SSHConnection.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;");
+                this.Message += this.SSHConnection.SshCommand("cd " + this.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;");
 
             }
             catch (Exception e)

@@ -10,241 +10,82 @@ using System.Xml.Serialization;
 
 namespace MovingWordpress.Models
 {
-    public class SSHManagerM : ModelBase
+    public class SSHManagerM : ConfigM
 	{
-		// 接続情報
-		[XmlIgnoreAttribute] 
-		public ConnectionInfo ConnNfo { private set; get; }
-
-		#region ホスト名[HostName]プロパティ
+		#region SSH設定[SSHSetting]プロパティ
 		/// <summary>
-		/// ホスト名[HostName]プロパティ用変数
+		/// SSH設定[SSHSetting]プロパティ用変数
 		/// </summary>
-		string _HostName = string.Empty;
+		SSHSettingM _SSHSetting = new SSHSettingM();
 		/// <summary>
-		/// ホスト名[HostName]プロパティ
+		/// SSH設定[SSHSetting]プロパティ
 		/// </summary>
-		public string HostName
+		public SSHSettingM SSHSetting
 		{
 			get
 			{
-				return _HostName;
+				return _SSHSetting;
 			}
 			set
 			{
-				if (_HostName == null || !_HostName.Equals(value))
+				if (_SSHSetting == null || !_SSHSetting.Equals(value))
 				{
-					_HostName = value;
-					NotifyPropertyChanged("HostName");
+					_SSHSetting = value;
+					NotifyPropertyChanged("SSHSetting");
 				}
 			}
 		}
 		#endregion
 
-		#region ポート番号[Port]プロパティ
+		#region フォルダ設定[FolderSetting]プロパティ
 		/// <summary>
-		/// ポート番号[Port]プロパティ用変数
+		/// フォルダ設定[FolderSetting]プロパティ用変数
 		/// </summary>
-		int _Port = 22;
+		FolderSettingM _FolderSetting = new FolderSettingM();
 		/// <summary>
-		/// ポート番号[Port]プロパティ
+		/// フォルダ設定[FolderSetting]プロパティ
 		/// </summary>
-		public int Port
+		public FolderSettingM FolderSetting
 		{
 			get
 			{
-				return _Port;
+				return _FolderSetting;
 			}
 			set
 			{
-				if (!_Port.Equals(value))
+				if (_FolderSetting == null || !_FolderSetting.Equals(value))
 				{
-					_Port = value;
-					NotifyPropertyChanged("Port");
+					_FolderSetting = value;
+					NotifyPropertyChanged("FolderSetting");
 				}
 			}
 		}
 		#endregion
 
-		#region ユーザー名[UserName]プロパティ
+		#region MySQL設定[MySQLSetting]プロパティ
 		/// <summary>
-		/// ユーザー名[UserName]プロパティ用変数
+		/// MySQL設定[MySQLSetting]プロパティ用変数
 		/// </summary>
-		string _UserName = string.Empty;
+		MySqlSettingM _MySQLSetting = new MySqlSettingM();
 		/// <summary>
-		/// ユーザー名[UserName]プロパティ
+		/// MySQL設定[MySQLSetting]プロパティ
 		/// </summary>
-		public string UserName
+		public MySqlSettingM MySQLSetting
 		{
 			get
 			{
-				return _UserName;
+				return _MySQLSetting;
 			}
 			set
 			{
-				if (_UserName == null || !_UserName.Equals(value))
+				if (_MySQLSetting == null || !_MySQLSetting.Equals(value))
 				{
-					_UserName = value;
-					NotifyPropertyChanged("UserName");
+					_MySQLSetting = value;
+					NotifyPropertyChanged("MySQLSetting");
 				}
 			}
 		}
 		#endregion
-
-		#region パスワード[PassWord]プロパティ
-		/// <summary>
-		/// パスワード[PassWord]プロパティ用変数
-		/// </summary>
-		string _PassWord = string.Empty;
-		/// <summary>
-		/// パスワード[PassWord]プロパティ
-		/// </summary>
-		public string PassWord
-		{
-			get
-			{
-				return _PassWord;
-			}
-			set
-			{
-				if (_PassWord == null || !_PassWord.Equals(value))
-				{
-					_PassWord = value;
-					NotifyPropertyChanged("PassWord");
-				}
-			}
-		}
-		#endregion
-
-		#region パスフレーズ[PassPhrase]プロパティ
-		/// <summary>
-		/// パスフレーズ[PassPhrase]プロパティ用変数
-		/// </summary>
-		string _PassPhrase = string.Empty;
-		/// <summary>
-		/// パスフレーズ[PassPhrase]プロパティ
-		/// </summary>
-		public string PassPhrase
-		{
-			get
-			{
-				return _PassPhrase;
-			}
-			set
-			{
-				if (_PassPhrase == null || !_PassPhrase.Equals(value))
-				{
-					_PassPhrase = value;
-					NotifyPropertyChanged("PassPhrase");
-				}
-			}
-		}
-		#endregion
-
-		#region 秘密鍵のパス[KeyFilePath]プロパティ
-		/// <summary>
-		/// 秘密鍵のパス[KeyFilePath]プロパティ用変数
-		/// </summary>
-		string _KeyFilePath = string.Empty;
-		/// <summary>
-		/// 秘密鍵のパス[KeyFilePath]プロパティ
-		/// </summary>
-		public string KeyFilePath
-		{
-			get
-			{
-				return _KeyFilePath;
-			}
-			set
-			{
-				if (_KeyFilePath == null || !_KeyFilePath.Equals(value))
-				{
-					_KeyFilePath = value;
-					NotifyPropertyChanged("KeyFilePath");
-				}
-			}
-		}
-		#endregion
-
-
-
-		#region リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ
-		/// <summary>
-		/// リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ用変数
-		/// </summary>
-		string _RemoteDirectory = "/opt/bitnami/apps/wordpress/htdocs/wp-content/";
-		/// <summary>
-		/// リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ
-		/// </summary>
-		public string RemoteDirectory
-		{
-			get
-			{
-				return _RemoteDirectory;
-			}
-			set
-			{
-				if (_RemoteDirectory == null || !_RemoteDirectory.Equals(value))
-				{
-					// 最後の一文字を確認した上でセット
-					_RemoteDirectory = CheckLastCharactor(value, "/");
-					NotifyPropertyChanged("RemoteDirectory");
-				}
-			}
-		}
-		#endregion
-
-		#region ローカルPC側のカレントディレクトリ[LocalDirectory]プロパティ
-		/// <summary>
-		/// ローカルPC側のカレントディレクトリ[LocalDirectory]プロパティ用変数
-		/// </summary>
-		string _LocalDirectory = string.Empty;
-		/// <summary>
-		/// ローカルPC側のカレントディレクトリ[LocalDirectory]プロパティ
-		/// </summary>
-		public string LocalDirectory
-		{
-			get
-			{
-				return _LocalDirectory;
-			}
-			set
-			{
-				if (_LocalDirectory == null || !_LocalDirectory.Equals(value))
-				{
-					// 最後の一文字を確認した上でセット
-					_LocalDirectory = CheckLastCharactor(value, @"\");
-					NotifyPropertyChanged("LocalDirectory");
-				}
-			}
-		}
-		#endregion
-		
-
-		/// <summary>
-		/// 最後の文字列を確認して
-		/// 指定した文字列でなければ付与して返却する。
-		/// 文字数が0の場合は何もしない
-		/// </summary>
-		/// <param name="text"></param>
-		/// <param name="last_caractor"></param>
-		/// <returns></returns>
-		private static string CheckLastCharactor(string text, string last_caractor)
-		{
-
-			if (text.Length > 0)
-			{
-				var tmp = text.Substring(text.Length - 1).Equals(last_caractor);
-				if (!tmp)
-				{
-					text += last_caractor;
-				}
-			}
-
-			return text;
-
-		}
-
 
 		#region コンストラクタ
 		/// <summary>
@@ -252,25 +93,13 @@ namespace MovingWordpress.Models
 		/// </summary>
 		public SSHManagerM()
 		{
+
 		}
 		#endregion
 
-		/// <summary>
-		/// パラメータの設定処理
-		/// </summary>
-		/// <param name="host_name">ホスト名</param>
-		/// <param name="port">ポート番号</param>
-		/// <param name="password">パスワード</param>
-		/// <param name="passphrase">パスフレーズ</param>
-		/// <param name="key_file_path">秘密鍵のファイルパス</param>
-		public void SetParameters(string host_name, int port, string password, string passphrase, string key_file_path)
-		{
-			this.HostName = host_name;
-			this.Port = port;
-			this.PassWord = password;
-			this.PassPhrase = passphrase;
-			this.KeyFilePath = key_file_path;
-		}
+		// 接続情報
+		[XmlIgnoreAttribute] 
+		public ConnectionInfo ConnNfo { private set; get; }
 
 		/// <summary>
 		/// 接続処理
@@ -278,15 +107,15 @@ namespace MovingWordpress.Models
 		public void Initialize()
 		{
 			// パスワード認証
-			var pass_auth = new PasswordAuthenticationMethod(this.UserName, this.PassWord);
+			var pass_auth = new PasswordAuthenticationMethod(this.SSHSetting.UserName, this.SSHSetting.PassWord);
 
 			// 秘密鍵認証
-			var private_key = new PrivateKeyAuthenticationMethod(UserName, new PrivateKeyFile[]{
-						new PrivateKeyFile(this.KeyFilePath, this.PassPhrase)
+			var private_key = new PrivateKeyAuthenticationMethod(this.SSHSetting.UserName, new PrivateKeyFile[]{
+						new PrivateKeyFile(this.SSHSetting.KeyFilePath, this.SSHSetting.PassPhrase)
 					});
 
 			// 接続情報の生成
-			this.ConnNfo = new ConnectionInfo(this.HostName, this.Port, this.UserName,
+			this.ConnNfo = new ConnectionInfo(this.SSHSetting.HostName, this.SSHSetting.Port, this.SSHSetting.UserName,
 				new AuthenticationMethod[]{
 					pass_auth,          // パスワード認証
                     private_key        // 秘密鍵認証
@@ -300,7 +129,7 @@ namespace MovingWordpress.Models
 		/// </summary>
 		/// <param name="command">コマンド</param>
 		/// <returns>結果</returns>
-		public string SshCommand(string command = "ls -lah")
+		public string SshCommand(string command)
 		{
 			StringBuilder result = new StringBuilder();
 			using (var sshclient = new SshClient(this.ConnNfo))
@@ -349,5 +178,17 @@ namespace MovingWordpress.Models
 			}
 		}
 
+		public void Save()
+		{
+			// フォルダ設定の保存処理
+			this.FolderSetting.Save();
+
+			// SSH設定の保存処理
+			this.SSHSetting.Save();
+
+			// MySQL設定の保存処理
+			this.MySQLSetting.Save();
+
+		}
 	}
 }

@@ -10,16 +10,13 @@ using System.Xml.Serialization;
 
 namespace MovingWordpress.Models
 {
-    public class MySqlSettingM : ModelBase
+    public class MySqlSettingM : ConfigM
 	{
-		/// <summary>
-		/// コンフィグファイル
-		/// </summary>
-		const string ConfigDir = "Config";
-		/// <summary>
-		/// Mysql用コンフィグファイル
-		/// </summary>
-		static string ConfigFile_Path = Path.Combine(ConfigDir, "MySQLSetting.config");
+		public MySqlSettingM()
+		{
+			this.ConfigDir = "Config";
+			this.ConfigFileName = "MysqlSetting.conf";
+		}
 
 		#region MySQLのユーザーID[MySQLUserID]プロパティ
 		/// <summary>
@@ -106,36 +103,30 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
-		#region 設定ファイルファイルの保存処理
+		#region 保存処理
 		/// <summary>
-		/// 設定ファイルファイルの保存処理
+		/// 保存処理
 		/// </summary>
-		/// <param name="file_path">ファイルパス</param>
-		/// <param name="setting">設定データ</param>
-		public static void Save(string file_path, MySqlSettingM setting)
+		public void Save()
 		{
-			// フォルダの存在確認
-			if (!Directory.Exists(ConfigDir))
-			{
-				// フォルダの作成
-				Directory.CreateDirectory(ConfigDir);
-			}
+			// カレントディレクトリがなければ再帰的に作成する
+			DirectoryUtil.CreateCurrentDirectory(ConfigFilePath);
 
-			XMLUtil.Seialize<MySqlSettingM>(ConfigFile_Path, setting);
+			// ファイルの保存処理
+			base.Save<MySqlSettingM>(this.ConfigFilePath, this);
 		}
 		#endregion
 
-		#region 設定ファイルのロード処理
+		#region ロード処理
 		/// <summary>
-		/// 設定ファイルのロード処理
+		/// ロード処理
 		/// </summary>
-		/// <returns>読み込んだデータ</returns>
-		public static MySqlSettingM Load()
+		/// <returns></returns>
+		public MySqlSettingM Load()
 		{
-			// ファイルの存在確認
-			if (File.Exists(ConfigFile_Path))
+			if (File.Exists(this.ConfigFilePath))
 			{
-				return XMLUtil.Deserialize<MySqlSettingM>(ConfigFile_Path);
+				return base.Load<MySqlSettingM>(this.ConfigFilePath);
 			}
 			else
 			{
