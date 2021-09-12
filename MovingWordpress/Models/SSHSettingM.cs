@@ -1,4 +1,5 @@
-﻿using MVVMCore.Common.Utilities;
+﻿using Microsoft.Win32;
+using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -203,5 +204,25 @@ namespace MovingWordpress.Models
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// 秘密鍵ファイルを開くダイアログ
+		/// </summary>
+		public void OpenPemFileDialog()
+		{
+			// ダイアログのインスタンスを生成
+			var dialog = new OpenFileDialog();
+
+			// ファイルの種類を設定
+			dialog.Filter = "秘密鍵ファイル (*.pem)|*.pem|全てのファイル (*.*)|*.*";
+
+			// ダイアログを表示する
+			if (dialog.ShowDialog() == true)
+			{
+				// ファイルパスのセット
+				this.KeyFilePath = dialog.FileName;
+			}
+		}
+
 	}
 }

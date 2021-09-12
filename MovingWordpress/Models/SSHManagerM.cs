@@ -1,4 +1,6 @@
-﻿using MVVMCore.BaseClass;
+﻿using Microsoft.Win32;
+using MVVMCore.BaseClass;
+using MVVMCore.Common.Utilities;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using System;
@@ -178,6 +180,10 @@ namespace MovingWordpress.Models
 			}
 		}
 
+
+		/// <summary>
+		/// Configファイルの保存処理
+		/// </summary>
 		public void Save()
 		{
 			// フォルダ設定の保存処理
@@ -189,6 +195,21 @@ namespace MovingWordpress.Models
 			// MySQL設定の保存処理
 			this.MySQLSetting.Save();
 
+		}
+
+		/// <summary>
+		/// Configファイルのロード処理
+		/// </summary>
+		public void Load()
+		{
+			// フォルダ設定の保存処理
+			this.FolderSetting = this.FolderSetting.Load();
+
+			// SSH設定の保存処理
+			this.SSHSetting = this.SSHSetting.Load();
+
+			// MySQL設定の保存処理
+			this.MySQLSetting = this.MySQLSetting.Load();
 		}
 	}
 }

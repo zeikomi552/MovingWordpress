@@ -254,37 +254,7 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // ファイルの存在確認
-                if (File.Exists(this.ConfigFile_Path))
-                {
-                    this.SSHConnection = XMLUtil.Deserialize<SSHManagerM>(this.ConfigFile_Path);
-                }
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-
-        /// <summary>
-        /// 秘密鍵ファイルを開くダイアログ
-        /// </summary>
-        public void OpenPemFileDialog()
-        {
-            try
-            {
-                // ダイアログのインスタンスを生成
-                var dialog = new OpenFileDialog();
-
-                // ファイルの種類を設定
-                dialog.Filter = "秘密鍵ファイル (*.pem)|*.pem|全てのファイル (*.*)|*.*";
-
-                // ダイアログを表示する
-                if (dialog.ShowDialog() == true)
-                {
-                    // ファイルパスのセット
-                    this.SSHConnection.SSHSetting.KeyFilePath = dialog.FileName;
-                }
+                this.SSHConnection.Load();
             }
             catch (Exception e)
             {
