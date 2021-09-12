@@ -8,8 +8,11 @@
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.BeforeWordpressV"
         mc:Ignorable="d"
         Title="BeforeWordpressV" Height="800" Width="1200">
+    <Window.Resources>
+        <ViewModels:BeforeWordpressVM x:Key="vm"/>
+    </Window.Resources>
     <Window.DataContext>
-        <ViewModels:BeforeWordpressVM/>
+        <Binding Source="{StaticResource vm}"/>
     </Window.DataContext>
     <b:Interaction.Triggers>
         <b:EventTrigger>
@@ -103,6 +106,13 @@
                                         <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="リモートパス"/>
                                         <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                         <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding RemoteDirectory}"/>
+                                        <Button Content="フォルダを探す">
+                                            <b:Interaction.Triggers>
+                                                <b:EventTrigger EventName="Click">
+                                                    <b:CallMethodAction MethodName="SearchDir" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                                                </b:EventTrigger>
+                                            </b:Interaction.Triggers>
+                                        </Button>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
@@ -157,6 +167,13 @@
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </Button>
+                        <Button Margin="5" Width="100" HorizontalAlignment="Left" Content="クリーニング">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Click">
+                                    <b:CallMethodAction MethodName="ExecuteSshClearn" TargetObject="{Binding}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Button>
 
                     </StackPanel>
                     <GroupBox Header="結果" Grid.Row="1">
@@ -164,9 +181,9 @@
                     </GroupBox>
                     <StackPanel Grid.Row="2">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="5" Text="ダウンロード(Themes)"/>
+                            <TextBlock Margin="5" Text="ダウンロード(Uploads)"/>
                             <TextBlock Margin="5" Text=":"/>
-                            <TextBlock Margin="5" Text="{Binding DownloadProgress_themes}"/>
+                            <TextBlock Margin="5" Text="{Binding DownloadProgress_upload}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Margin="5" Text="ダウンロード(Plugins)"/>
@@ -174,9 +191,9 @@
                             <TextBlock Margin="5" Text="{Binding DownloadProgress_plugin}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="5" Text="ダウンロード(Uploads)"/>
+                            <TextBlock Margin="5" Text="ダウンロード(Themes)"/>
                             <TextBlock Margin="5" Text=":"/>
-                            <TextBlock Margin="5" Text="{Binding DownloadProgress_upload}"/>
+                            <TextBlock Margin="5" Text="{Binding DownloadProgress_themes}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Margin="5" Text="ダウンロード(Sql)"/>
