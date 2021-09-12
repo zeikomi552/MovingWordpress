@@ -15,11 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
+    <ProjectReference Include="..\MVVMCore\MVVMCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MVVMCore\MVVMCore.csproj" />
+    <Folder Include="Common\Themes\" />
   </ItemGroup>
 
 </Project>
