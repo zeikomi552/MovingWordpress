@@ -250,6 +250,9 @@ namespace MovingWordpress.ViewModels
         #endregion
 
 
+        /// <summary>
+        /// 初期化処理
+        /// </summary>
         public void Init()
         {
             try
@@ -261,11 +264,6 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
-
-
-        const string ConfigDir = "Config";
-
-        string ConfigFile_Path = Path.Combine(ConfigDir, "Setting.config");
 
         /// <summary>
         /// 設定ファイル保存処理

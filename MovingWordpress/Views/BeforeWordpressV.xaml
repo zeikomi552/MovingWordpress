@@ -72,7 +72,7 @@
                                         <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="秘密鍵のパス(.pem)"/>
                                         <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                         <TextBox Margin="5" Width="350" VerticalAlignment="Center" Text="{Binding KeyFilePath}"/>
-                                        <Button Width="100" Content="ファイル">
+                                        <Button Content="ファイル">
                                             <b:Interaction.Triggers>
                                                 <b:EventTrigger EventName="Click">
                                                     <b:CallMethodAction MethodName="OpenPemFileDialog" TargetObject="{Binding}"/>
