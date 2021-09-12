@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace MovingWordpress.Views
     /// <summary>
     /// AfterWordpressV.xaml の相互作用ロジック
     /// </summary>
-    public partial class AfterWordpressV : Window
+    public partial class AfterWordpressV : MetroWindow
     {
         public AfterWordpressV()
         {
