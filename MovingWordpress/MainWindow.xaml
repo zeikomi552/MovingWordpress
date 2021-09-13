@@ -24,19 +24,37 @@
 
     <Grid>
         <WrapPanel Orientation="Horizontal">
-            <Button Margin="5" Height="100" Width="100" Content="今のWordpress">
+            <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="Click">
                         <b:CallMethodAction MethodName="BeforeWordpressV" TargetObject="{Binding}"/>
                     </b:EventTrigger>
                 </b:Interaction.Triggers>
+                <Button.Content>
+                    <StackPanel Orientation="Vertical">
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-compress.png" />
+                        <Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷づくり"/>
+                        </Viewbox>
+                    </StackPanel>
+                </Button.Content>
+
             </Button>
-            <Button Margin="5" Height="100" Width="100" Content="引っ越し先">
+            <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="Click">
                         <b:CallMethodAction MethodName="AfterWordpressV" TargetObject="{Binding}"/>
                     </b:EventTrigger>
                 </b:Interaction.Triggers>
+                <Button.Content>
+                    <StackPanel Orientation="Vertical">
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-moving.png" />
+                        <Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="お引越し"/>
+                        </Viewbox>
+                    </StackPanel>
+                </Button.Content>
+
             </Button>
         </WrapPanel>
     </Grid>

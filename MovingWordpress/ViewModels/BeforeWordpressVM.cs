@@ -41,7 +41,33 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-       
+        #region 実行中フラグ(true:実行中 false:停止中)[IsExecute]プロパティ
+        /// <summary>
+        /// 実行中フラグ(true:実行中 false:停止中)[IsExecute]プロパティ用変数
+        /// </summary>
+        bool _IsExecute = false;
+        /// <summary>
+        /// 実行中フラグ(true:実行中 false:停止中)[IsExecute]プロパティ
+        /// </summary>
+        public bool IsExecute
+        {
+            get
+            {
+                return _IsExecute;
+            }
+            set
+            {
+                if (!_IsExecute.Equals(value))
+                {
+                    _IsExecute = value;
+                    NotifyPropertyChanged("IsExecute");
+                }
+            }
+        }
+        #endregion
+
+
+
 
         #region ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
         /// <summary>

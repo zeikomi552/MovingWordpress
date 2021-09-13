@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Common\Icons\icon-after-wordpress.png" />
+    <None Remove="Common\Icons\icon-before-wordpress.png" />
+    <None Remove="Common\Icons\Icon-clearn.png" />
+    <None Remove="Common\Icons\Icon-compress.png" />
+    <None Remove="Common\Icons\icon-download.png" />
+    <None Remove="Common\Icons\icon-moving.png" />
+    <None Remove="Common\Icons\icon-search.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.4.7" />
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.7" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
@@ -20,6 +30,16 @@
 
   <ItemGroup>
     <Folder Include="Common\Themes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Common\Icons\icon-after-wordpress.png" />
+    <Resource Include="Common\Icons\icon-before-wordpress.png" />
+    <Resource Include="Common\Icons\Icon-clearn.png" />
+    <Resource Include="Common\Icons\Icon-compress.png" />
+    <Resource Include="Common\Icons\icon-download.png" />
+    <Resource Include="Common\Icons\icon-moving.png" />
+    <Resource Include="Common\Icons\icon-search.png" />
   </ItemGroup>
 
 </Project>
