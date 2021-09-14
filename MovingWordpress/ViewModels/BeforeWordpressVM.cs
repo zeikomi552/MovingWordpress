@@ -265,13 +265,8 @@ namespace MovingWordpress.ViewModels
                     // コマンド開始のメモ
                     message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
 
-                    // コマンド内容のセット
-                    message.AppendLine("Command ==> " + cmd);
+                    ExecuteCommandSub(message, cmd);
 
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-
-                    message.AppendLine(this.SSHConnection.SshCommand(cmd));
                     message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
 
                     // メッセージの更新
@@ -284,6 +279,26 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+
+        #region コメント付きのコマンド実行処理
+        /// <summary>
+        /// コメント付きのコマンド実行処理
+        /// </summary>
+        /// <param name="cmd">コマンド</param>
+        private void ExecuteCommandSub(StringBuilder message, string cmd)
+        {
+            // コマンド内容のセット
+            message.AppendLine("Command ==> " + cmd);
+
+            // メッセージの更新
+            UpdateMessage(message.ToString());
+
+            message.AppendLine(this.SSHConnection.SshCommand(cmd));
+
+            // メッセージの更新
+            UpdateMessage(message.ToString());
+        }
+        #endregion
 
         #region バックアップ用のディレクトリを探す
         /// <summary>
@@ -334,7 +349,7 @@ namespace MovingWordpress.ViewModels
                 // コマンド
                 string cmd = $"cd {this.SSHConnection.FolderSetting.RemoteDirectory};cd ..;cat wp-config.php;";
 
-                // コマンドの発酵処理
+                // コマンドの発行処理
                 ExecuteCommand(cmd);
             }
             catch (Exception e)
@@ -362,26 +377,20 @@ namespace MovingWordpress.ViewModels
                     // メッセージの更新
                     UpdateMessage(message.ToString());
 
-                    // SSHによるコマンド実行
-                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;";
+                    ExecuteCommandSub(message, cmd);
 
-                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;";
+                    ExecuteCommandSub(message, cmd);
 
-                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;";
+                    ExecuteCommandSub(message, cmd);
 
-                    message.AppendLine(this.SSHConnection.SshCommand($"mysqldump -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    cmd = $"mysqldump -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}";
+                    ExecuteCommandSub(message, cmd);
 
-                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;";
+                    ExecuteCommandSub(message, cmd);
 
                     message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
                     // メッセージの更新
@@ -416,26 +425,20 @@ namespace MovingWordpress.ViewModels
                     // メッセージの更新
                     UpdateMessage(message.ToString());
 
-                    // SSHによるコマンド実行
-                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_UploadGz};"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_UploadGz};";
+                    ExecuteCommandSub(message, cmd);
 
-                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_PluginsGz};"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_PluginsGz};";
+                    ExecuteCommandSub(message, cmd);
 
-                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_ThemesGz};"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_ThemesGz};";
+                    ExecuteCommandSub(message, cmd);
 
-                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_DumpSqlGz};"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_DumpSqlGz};";
+                    ExecuteCommandSub(message, cmd);
 
-                    message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp;ls -lh;"));
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp;ls -lh;";
+                    ExecuteCommandSub(message, cmd);
 
                     message.Append($"====== 後片付け End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
                     // メッセージの更新
