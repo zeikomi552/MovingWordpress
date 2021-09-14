@@ -199,6 +199,9 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                // 引っ越し前のパラメータを取得するように設定
+                this.SSHConnection.Initialize(true);
+
                 this.SSHConnection.Load();
             }
             catch (Exception e)
@@ -256,7 +259,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 // 初期化処理
-                this.SSHConnection.Initialize();
+                this.SSHConnection.CreateConnection();
 
                 Task.Run(() =>
                 {
@@ -367,7 +370,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 // 初期化処理
-                this.SSHConnection.Initialize();
+                this.SSHConnection.CreateConnection();
 
 
                 Task.Run(() =>
@@ -415,7 +418,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 // 初期化処理
-                this.SSHConnection.Initialize();
+                this.SSHConnection.CreateConnection();
 
 
                 Task.Run(() =>
@@ -467,7 +470,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 // 初期化処理
-                this.SSHConnection.Initialize();
+                this.SSHConnection.CreateConnection();
 
                 string local_dir = this.SSHConnection.FolderSetting.LocalDirectory;
 

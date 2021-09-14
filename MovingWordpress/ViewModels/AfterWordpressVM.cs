@@ -68,6 +68,10 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                // 引っ越し後のパラメータを取得するように設定
+                this.SSHConnection.Initialize(false);
+
+                // 各種ファイルのロード処理を行う
                 this.SSHConnection.Load();
 
             }

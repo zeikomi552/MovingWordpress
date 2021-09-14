@@ -22,6 +22,17 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
+		#region 引っ越し後のコンフィグファイル情報をセットする関数
+		/// <summary>
+		/// 引っ越し後のコンフィグファイル情報をセットする関数
+		/// </summary>
+		public void SetAfterConfig()
+		{
+			this.ConfigDir = "Config";
+			this.ConfigFileName = "SSHSettingAfter.conf";
+		}
+		#endregion
+
 		#region ホスト名[HostName]プロパティ
 		/// <summary>
 		/// ホスト名[HostName]プロパティ用変数

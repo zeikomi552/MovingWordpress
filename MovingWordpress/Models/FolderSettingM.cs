@@ -18,6 +18,17 @@ namespace MovingWordpress.Models
 			this.ConfigFileName = "FoloderSetting.conf";
         }
 
+		#region 引っ越し後のコンフィグファイル情報をセットする関数
+		/// <summary>
+		/// 引っ越し後のコンフィグファイル情報をセットする関数
+		/// </summary>
+		public void SetAfterConfig()
+		{
+			this.ConfigDir = "Config";
+			this.ConfigFileName = "FoloderSettingAfter.conf";
+		}
+		#endregion
+
 		#region リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ
 		/// <summary>
 		/// リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ用変数

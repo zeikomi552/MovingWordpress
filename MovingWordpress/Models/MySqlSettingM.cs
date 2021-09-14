@@ -18,6 +18,17 @@ namespace MovingWordpress.Models
 			this.ConfigFileName = "MysqlSetting.conf";
 		}
 
+		#region 引っ越し後のコンフィグファイル情報をセットする関数
+		/// <summary>
+		/// 引っ越し後のコンフィグファイル情報をセットする関数
+		/// </summary>
+		public void SetAfterConfig()
+		{
+			this.ConfigDir = "Config";
+			this.ConfigFileName = "MysqlSettingAfter.conf";
+		}
+		#endregion
+
 		#region MySQLのユーザーID[MySQLUserID]プロパティ
 		/// <summary>
 		/// MySQLのユーザーID[MySQLUserID]プロパティ用変数

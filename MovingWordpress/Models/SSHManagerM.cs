@@ -14,13 +14,13 @@ namespace MovingWordpress.Models
 {
     public class SSHManagerM : ConfigM
 	{
-		#region SSH設定(引っ越し前)[SSHSetting]プロパティ
+		#region SSH設定[SSHSetting]プロパティ
 		/// <summary>
-		/// SSH設定(引っ越し前)[SSHSetting]プロパティ用変数
+		/// SSH設定[SSHSetting]プロパティ用変数
 		/// </summary>
 		SSHSettingM _SSHSetting = new SSHSettingM();
 		/// <summary>
-		/// SSH設定(引っ越し前)[SSHSetting]プロパティ
+		/// SSH設定[SSHSetting]プロパティ
 		/// </summary>
 		public SSHSettingM SSHSetting
 		{
@@ -34,32 +34,6 @@ namespace MovingWordpress.Models
 				{
 					_SSHSetting = value;
 					NotifyPropertyChanged("SSHSetting");
-				}
-			}
-		}
-		#endregion
-
-
-		#region SSH設定(引っ越し先)[AfterSSHSetting]プロパティ
-		/// <summary>
-		/// SSH設定(引っ越し先)[AfterSSHSetting]プロパティ用変数
-		/// </summary>
-		SSHSettingM _AfterSSHSetting = new SSHSettingM();
-		/// <summary>
-		/// SSH設定(引っ越し先)[AfterSSHSetting]プロパティ
-		/// </summary>
-		public SSHSettingM AfterSSHSetting
-		{
-			get
-			{
-				return _AfterSSHSetting;
-			}
-			set
-			{
-				if (_AfterSSHSetting == null || !_AfterSSHSetting.Equals(value))
-				{
-					_AfterSSHSetting = value;
-					NotifyPropertyChanged("AfterSSHSetting");
 				}
 			}
 		}
@@ -90,13 +64,13 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
-		#region MySQL設定(引っ越し前)[MySQLSetting]プロパティ
+		#region MySQL設定[MySQLSetting]プロパティ
 		/// <summary>
-		/// MySQL設定(引っ越し前)[MySQLSetting]プロパティ用変数
+		/// MySQL設定[MySQLSetting]プロパティ用変数
 		/// </summary>
 		MySqlSettingM _MySQLSetting = new MySqlSettingM();
 		/// <summary>
-		/// MySQL設定(引っ越し前)[MySQLSetting]プロパティ
+		/// MySQL設定[MySQLSetting]プロパティ
 		/// </summary>
 		public MySqlSettingM MySQLSetting
 		{
@@ -110,31 +84,6 @@ namespace MovingWordpress.Models
 				{
 					_MySQLSetting = value;
 					NotifyPropertyChanged("MySQLSetting");
-				}
-			}
-		}
-		#endregion
-
-		#region MySQL設定(引っ越し先)[AfterMySQLSetting]プロパティ
-		/// <summary>
-		/// MySQL設定(引っ越し先)[AfterMySQLSetting]プロパティ用変数
-		/// </summary>
-		MySqlSettingM _AfterMySQLSetting = new MySqlSettingM();
-		/// <summary>
-		/// MySQL設定(引っ越し先)[AfterMySQLSetting]プロパティ
-		/// </summary>
-		public MySqlSettingM AfterMySQLSetting
-		{
-			get
-			{
-				return _AfterMySQLSetting;
-			}
-			set
-			{
-				if (_AfterMySQLSetting == null || !_AfterMySQLSetting.Equals(value))
-				{
-					_AfterMySQLSetting = value;
-					NotifyPropertyChanged("AfterMySQLSetting");
 				}
 			}
 		}
@@ -154,46 +103,44 @@ namespace MovingWordpress.Models
 		[XmlIgnoreAttribute] 
 		public ConnectionInfo ConnNfo { private set; get; }
 
-
-		[XmlIgnoreAttribute]
-		public ConnectionInfo ConnNfoAfter { private set; get; }
-
 		/// <summary>
-		/// 接続処理
+		/// 初期化処理
 		/// </summary>
-		public void Initialize()
-		{
-			// 接続情報の生成(引っ越し前)
-			this.ConnNfo = CreateSSHConnector(this.SSHSetting);
+		/// <param name="isBefore">true:引っ越し前の情報を扱う false:引っ越し後の情報を扱う</param>
+        public void Initialize(bool isBefore)
+        {
+            // 引っ越し後の情報を使用する？
+            if (!isBefore)
+            {
+                this.SSHSetting.SetAfterConfig();
+                this.FolderSetting.SetAfterConfig();
+                this.MySQLSetting.SetAfterConfig();
+            }
+        }
 
-			// 接続情報の生成(引っ越し後)
-			this.ConnNfoAfter = CreateSSHConnector(this.AfterSSHSetting);    // 秘密鍵認証
-		}
-
-		/// <summary>
-		/// SSHの接続用コネクタを作成する処理
-		/// </summary>
-		/// <param name="setting">SSH設定</param>
-		/// <returns>コネクタ</returns>
-		public ConnectionInfo CreateSSHConnector(SSHSettingM setting)
+        /// <summary>
+        /// 接続情報の初期化処理
+        /// </summary>
+        /// <param name="isBefore">true:引っ越し前の処理 false:引っ越し後の処理</param>
+        public void CreateConnection(bool isBefore = true)
 		{
+
 			// パスワード認証
-			var pass_auth = new PasswordAuthenticationMethod(setting.UserName, setting.PassWord);
-
+			var pass_auth = new PasswordAuthenticationMethod(this.SSHSetting.UserName, this.SSHSetting.PassWord);
 
 			// 秘密鍵認証
-			var private_key = new PrivateKeyAuthenticationMethod(setting.UserName, new PrivateKeyFile[]{
-						new PrivateKeyFile(setting.KeyFilePath, setting.PassPhrase)
+			var private_key = new PrivateKeyAuthenticationMethod(this.SSHSetting.UserName, new PrivateKeyFile[]{
+						new PrivateKeyFile(this.SSHSetting.KeyFilePath, this.SSHSetting.PassPhrase)
 					});
 
-
 			// 接続情報の生成
-			return new ConnectionInfo(setting.HostName, setting.Port, setting.UserName,
+			this.ConnNfo = new ConnectionInfo(this.SSHSetting.HostName, this.SSHSetting.Port, this.SSHSetting.UserName,
 				new AuthenticationMethod[]{
 					pass_auth,          // パスワード認証
                     private_key        // 秘密鍵認証
                 }
 			);
+
 		}
 
 		/// <summary>
