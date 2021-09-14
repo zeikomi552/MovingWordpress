@@ -80,5 +80,22 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+
+        #region 設定ファイル保存処理
+        /// <summary>
+        /// 設定ファイル保存処理
+        /// </summary>
+        public void SaveSetting()
+        {
+            try
+            {
+                this.SSHConnection.Save();
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
     }
 }

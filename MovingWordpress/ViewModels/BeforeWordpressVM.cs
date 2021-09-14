@@ -14,57 +14,8 @@ using System.Windows.Threading;
 
 namespace MovingWordpress.ViewModels
 {
-    public class BeforeWordpressVM : ViewModelBase
+    public class BeforeWordpressVM : BaseWordpressVM
     {
-        #region SSH接続オブジェクト[SSHConnection]プロパティ
-        /// <summary>
-        /// SSH接続オブジェクト[SSHConnection]プロパティ用変数
-        /// </summary>
-        SSHManagerM _SSHConnection = new SSHManagerM();
-        /// <summary>
-        /// SSH接続オブジェクト[SSHConnection]プロパティ
-        /// </summary>
-        public SSHManagerM SSHConnection
-        {
-            get
-            {
-                return _SSHConnection;
-            }
-            set
-            {
-                if (_SSHConnection == null || !_SSHConnection.Equals(value))
-                {
-                    _SSHConnection = value;
-                    NotifyPropertyChanged("SSHConnection");
-                }
-            }
-        }
-        #endregion
-
-        #region 実行中フラグ(true:実行中 false:停止中)[IsExecute]プロパティ
-        /// <summary>
-        /// 実行中フラグ(true:実行中 false:停止中)[IsExecute]プロパティ用変数
-        /// </summary>
-        bool _IsExecute = false;
-        /// <summary>
-        /// 実行中フラグ(true:実行中 false:停止中)[IsExecute]プロパティ
-        /// </summary>
-        public bool IsExecute
-        {
-            get
-            {
-                return _IsExecute;
-            }
-            set
-            {
-                if (!_IsExecute.Equals(value))
-                {
-                    _IsExecute = value;
-                    NotifyPropertyChanged("IsExecute");
-                }
-            }
-        }
-        #endregion
 
         #region ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
         /// <summary>
@@ -166,36 +117,12 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region 結果メッセージ[Message]プロパティ
-        /// <summary>
-        /// 結果メッセージ[Message]プロパティ用変数
-        /// </summary>
-        string _Message = string.Empty;
-        /// <summary>
-        /// 結果メッセージ[Message]プロパティ
-        /// </summary>
-        public string Message
-        {
-            get
-            {
-                return _Message;
-            }
-            set
-            {
-                if (_Message == null || !_Message.Equals(value))
-                {
-                    _Message = value;
-                    NotifyPropertyChanged("Message");
-                }
-            }
-        }
-        #endregion
 
         #region 初期化処理
         /// <summary>
         /// 初期化処理
         /// </summary>
-        public void Init()
+        public override void Init()
         {
             try
             {
@@ -211,22 +138,7 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region 設定ファイル保存処理
-        /// <summary>
-        /// 設定ファイル保存処理
-        /// </summary>
-        public void SaveSetting()
-        {
-            try
-            {
-                this.SSHConnection.Save();
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-        #endregion
+
 
         string _DumpSqlGz = "dump.sql.gz";
         string _UploadGz = "uploads.tar.gz";
@@ -234,95 +146,6 @@ namespace MovingWordpress.ViewModels
         string _ThemesGz = "themes.tar.gz";
 
 
-
-        /// <summary>
-        /// メッセージ更新処理
-        /// </summary>
-        /// <param name="message"></param>
-        private void UpdateMessage(string message)
-        {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-               new Action(() =>
-               {
-                   this.Message = message.ToString();
-               }));
-
-        }
-
-
-        /// <summary>
-        /// コマンド実行処理
-        /// </summary>
-        /// <param name="cmd"></param>
-        private void ExecuteCommand(string cmd)
-        {
-            try
-            {
-                // 初期化処理
-                this.SSHConnection.CreateConnection();
-
-                Task.Run(() =>
-                {
-                    StringBuilder message = new StringBuilder();
-
-                    // コマンド開始のメモ
-                    message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-
-                    ExecuteCommandSub(message, cmd);
-
-                    message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-                }
-                );
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-
-        #region コメント付きのコマンド実行処理
-        /// <summary>
-        /// コメント付きのコマンド実行処理
-        /// </summary>
-        /// <param name="cmd">コマンド</param>
-        private void ExecuteCommandSub(StringBuilder message, string cmd)
-        {
-            // コマンド内容のセット
-            message.AppendLine("Command ==> " + cmd);
-
-            // メッセージの更新
-            UpdateMessage(message.ToString());
-
-            message.AppendLine(this.SSHConnection.SshCommand(cmd));
-
-            // メッセージの更新
-            UpdateMessage(message.ToString());
-        }
-        #endregion
-
-        #region バックアップ用のディレクトリを探す
-        /// <summary>
-        /// バックアップ用のディレクトリを探す
-        /// </summary>
-        public void SearchDir()
-        {
-            try
-            {
-                // コマンド
-                string cmd = "find /opt -name wp-content;";
-
-                // コマンドの発行処理
-                ExecuteCommand(cmd);
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-        #endregion
 
         #region ワードプレスのパスワードおよびユーザー名の確認コマンド
         /// <summary>
@@ -381,19 +204,19 @@ namespace MovingWordpress.ViewModels
                     UpdateMessage(message.ToString());
 
                     string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     cmd = $"mysqldump -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
                     // メッセージの更新
@@ -429,19 +252,19 @@ namespace MovingWordpress.ViewModels
                     UpdateMessage(message.ToString());
 
                     string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_UploadGz};";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_PluginsGz};";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_ThemesGz};";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_DumpSqlGz};";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp;ls -lh;";
-                    ExecuteCommandSub(message, cmd);
+                    ExecuteCommand(message, cmd);
 
                     message.Append($"====== 後片付け End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
                     // メッセージの更新
