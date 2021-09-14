@@ -68,6 +68,7 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                this.SSHConnection.Load();
 
             }
             catch (Exception e)

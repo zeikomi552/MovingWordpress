@@ -6,9 +6,249 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MovingWordpress.Views"
+        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels"
         mc:Ignorable="d"
-        Title="AfterWordpressV" Height="450" Width="800">
-    <Grid>
-        
+        Title="AfterWordpressV" Height="1000" Width="1200">
+
+    <Window.Resources>
+        <ViewModels:AfterWordpressVM x:Key="vm"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <Binding Source="{StaticResource vm}"/>
+    </Window.DataContext>
+    <b:Interaction.Triggers>
+        <b:EventTrigger>
+            <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+    <Grid Grid.ColumnSpan="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="引っ越し" FontSize="30"/>
+        </Border>
+        <GroupBox Margin="5" Grid.Row="1" Header="アクションアイテム">
+            <StackPanel Margin="5" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
+
+                    <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="ExecuteSsh" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <Button.Content>
+                            <StackPanel Orientation="Vertical">
+                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-compress.png" />
+                                <Grid>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷づくり"/>
+                                </Grid>
+                            </StackPanel>
+                        </Button.Content>
+
+                    </Button>
+                    <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="ExecuteScp" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <Button.Content>
+                            <StackPanel Orientation="Vertical">
+                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-download.png" />
+                                <Viewbox>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="バックアップ"/>
+                                </Viewbox>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Margin="5" Height="100" Width="100" HorizontalAlignment="Left">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="ExecuteSshClearn" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <Button.Content>
+                            <StackPanel Orientation="Vertical">
+                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-clearn.png" />
+                                <Grid>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="後片付け"/>
+                                </Grid>
+                            </StackPanel>
+                        </Button.Content>
+
+                    </Button>
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Height="100" Width="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="CheckWordpressUserPassword" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <Button.Content>
+                            <StackPanel Orientation="Vertical">
+                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-before-wordpress.png" />
+                                <Viewbox>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="パスワード確認"/>
+                                </Viewbox>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Margin="5" Height="100" Width="100">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="SearchDir" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <Button.Content>
+                            <StackPanel Orientation="Vertical">
+                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
+                                <Viewbox>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="リモートパス確認"/>
+                                </Viewbox>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Margin="5" Height="100" Width="100">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="CheckMySQLPassword" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <Button.Content>
+                            <StackPanel Orientation="Vertical">
+                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
+                                <Viewbox>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="データベース確認"/>
+                                </Viewbox>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+
+                </StackPanel>
+
+            </StackPanel>
+        </GroupBox>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel>
+                    <GroupBox Header="SSH設定" DataContext="{Binding SSHConnection.SSHSetting}">
+                        <StackPanel Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ホスト名"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding HostName}" Cursor="IBeam"/>
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ポート"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding Port}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(OS)"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding UserName}"/>
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding PassWord}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="秘密鍵のパス(.pem)"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="250" VerticalAlignment="Center" Text="{Binding KeyFilePath}"/>
+                                <Button Content="ファイル" Width="100">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="OpenPemFileDialog" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスフレーズ"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding PassPhrase}"/>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="MySQL設定" DataContext="{Binding SSHConnection.MySQLSetting}">
+                        <StackPanel Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(MySQL)"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLUserID}"/>
+                                <Button Margin="5" Width="100" Content="確認">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="CheckMySQLPassword" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(MySQL)"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLPassword}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="フォルダ設定" DataContext="{Binding SSHConnection.FolderSetting}">
+                        <StackPanel Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="リモートパス"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="250" VerticalAlignment="Center" Text="{Binding RemoteDirectory}"/>
+                                <Button Margin="5" Width="100" Content="確認">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="SearchDir" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="250" VerticalAlignment="Center" Text="{Binding LocalDirectory}" Cursor="IBeam"/>
+                                <Button Margin="5" Content="フォルダ選択">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="OpenFileBrowzeDialog" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <Button Margin="5" HorizontalAlignment="Left" Width="100" Content="設定を保存">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="SaveSetting" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <Grid Margin="5" Grid.Column="1">
+                <GroupBox Header="結果" Grid.Row="1">
+                    <TextBox VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding Message}" Margin="5"/>
+                </GroupBox>
+            </Grid>
+        </Grid>
     </Grid>
+
 </mah:MetroWindow>
