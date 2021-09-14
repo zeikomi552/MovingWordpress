@@ -23,7 +23,14 @@
 
 
     <Grid>
-        <WrapPanel Orientation="Horizontal">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="ワードプレスの引っ越し屋さん" FontSize="30"/>
+        </Border>
+        <WrapPanel Margin="5" Grid.Row="1" Orientation="Horizontal">
             <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="Click">

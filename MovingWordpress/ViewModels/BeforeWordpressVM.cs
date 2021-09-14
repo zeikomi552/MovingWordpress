@@ -66,9 +66,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
-
-
         #region ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
         /// <summary>
         /// ダウンロードの進行状況[DownloadProgress_plugin]プロパティ用変数
@@ -233,43 +230,12 @@ namespace MovingWordpress.ViewModels
         string _PluginsGz = "plugins.tar.gz";
         string _ThemesGz = "themes.tar.gz";
 
-        #region SCPによるダウンロードの実行
+
+
         /// <summary>
-        /// SCPによるダウンロードの実行
+        /// メッセージ更新処理
         /// </summary>
-        public void ExecuteScp()
-        {
-            try
-            {
-                // 初期化処理
-                this.SSHConnection.Initialize();
-
-                string local_dir = this.SSHConnection.FolderSetting.LocalDirectory;
-
-                Task.Run(() =>
-                {
-                    // SCPによるダウンロード
-                    this.SSHConnection.SCPDownload($"/tmp/{_UploadGz}",
-                        local_dir, ScpClient_Downloading_upload);
-                    // SCPによるダウンロード
-                    this.SSHConnection.SCPDownload($"/tmp/{_PluginsGz}",
-                        local_dir, ScpClient_Downloading_plugin);
-                    // SCPによるダウンロード
-                    this.SSHConnection.SCPDownload($"/tmp/{_ThemesGz}",
-                        local_dir, ScpClient_Downloading_themes);
-                    // SCPによるダウンロード
-                    this.SSHConnection.SCPDownload($"/tmp/{_DumpSqlGz}",
-                        local_dir, ScpClient_Downloading_sql);
-                }
-                );
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-        #endregion
-
+        /// <param name="message"></param>
         private void UpdateMessage(string message)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
@@ -281,7 +247,10 @@ namespace MovingWordpress.ViewModels
         }
 
 
-
+        /// <summary>
+        /// コマンド実行処理
+        /// </summary>
+        /// <param name="cmd"></param>
         private void ExecuteCommand(string cmd)
         {
             try
@@ -297,7 +266,7 @@ namespace MovingWordpress.ViewModels
                     message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
 
                     // コマンド内容のセット
-                    message.AppendLine(cmd);
+                    message.AppendLine("Command ==> " + cmd);
 
                     // メッセージの更新
                     UpdateMessage(message.ToString());
@@ -390,47 +359,33 @@ namespace MovingWordpress.ViewModels
                 {
                     StringBuilder message = new StringBuilder();
                     message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     // SSHによるコマンド実行
                     message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     message.AppendLine(this.SSHConnection.SshCommand($"mysqldump -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                 }
                 );
@@ -443,6 +398,9 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        /// <summary>
+        /// 後片付け実行処理
+        /// </summary>
         public void ExecuteSshClearn()
         {
             try
@@ -454,48 +412,34 @@ namespace MovingWordpress.ViewModels
                 Task.Run(() =>
                 {
                     StringBuilder message = new StringBuilder();
-                    message.AppendLine($"====== クリーニング Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    message.AppendLine($"====== 後片付け Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     // SSHによるコマンド実行
                     message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_UploadGz};"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_PluginsGz};"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_ThemesGz};"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
+
                     message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_DumpSqlGz};"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
                     message.AppendLine(this.SSHConnection.SshCommand("cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp;ls -lh;"));
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
 
-                    message.Append($"====== クリーニング End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                       new Action(() => {
-                           this.Message = message.ToString();
-                       }));
-
+                    message.Append($"====== 後片付け End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
                 }
                 );
 
@@ -506,7 +450,77 @@ namespace MovingWordpress.ViewModels
             }
         }
 
+        /// <summary>
+        /// ダウンロード用のメッセージ(一時保存用)
+        /// </summary>
+        StringBuilder _DownloadTemporaryMessage = new StringBuilder();
 
+        #region SCPによるダウンロードの実行
+        /// <summary>
+        /// SCPによるダウンロードの実行
+        /// </summary>
+        public void ExecuteScp()
+        {
+            try
+            {
+                // 初期化処理
+                this.SSHConnection.Initialize();
+
+                string local_dir = this.SSHConnection.FolderSetting.LocalDirectory;
+
+                Task.Run(() =>
+                {
+                    this._DownloadTemporaryMessage.AppendLine($"====== ダウンロード Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    this._DownloadTemporaryMessage.AppendLine($"/tmp/{_UploadGz} ------> {local_dir} 計:4ファイル");
+
+                    // メッセージの更新
+                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
+
+                    // SCPによるダウンロード
+                    this.SSHConnection.SCPDownload($"/tmp/{_UploadGz}",
+                        local_dir, ScpClient_Downloading_upload);
+
+                    this._DownloadTemporaryMessage.AppendLine(this.DownloadProgress_upload);
+                    // メッセージの更新
+                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
+
+                    // SCPによるダウンロード
+                    this.SSHConnection.SCPDownload($"/tmp/{_PluginsGz}",
+                        local_dir, ScpClient_Downloading_plugin);
+
+                    this._DownloadTemporaryMessage.AppendLine(this.DownloadProgress_plugin);
+                    // メッセージの更新
+                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
+
+                    // SCPによるダウンロード
+                    this.SSHConnection.SCPDownload($"/tmp/{_ThemesGz}",
+                        local_dir, ScpClient_Downloading_themes);
+
+                    this._DownloadTemporaryMessage.AppendLine(this.DownloadProgress_themes);
+                    // メッセージの更新
+                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
+
+                    // SCPによるダウンロード
+                    this.SSHConnection.SCPDownload($"/tmp/{_DumpSqlGz}",
+                        local_dir, ScpClient_Downloading_sql);
+
+                    this._DownloadTemporaryMessage.AppendLine(this.DownloadProgress_sql);
+
+                    // メッセージの更新
+                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
+
+                    this._DownloadTemporaryMessage.AppendLine($"====== ダウンロード End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    // メッセージの更新
+                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
+                }
+                );
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
         #region plugins.tar.gzフォルダのダウンロード進捗
         /// <summary>
         /// plugins.tar.gzフォルダのダウンロード進捗
@@ -515,12 +529,12 @@ namespace MovingWordpress.ViewModels
         /// <param name="e"></param>
         private void ScpClient_Downloading_plugin(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-               new Action(() => {
-                   this.DownloadProgress_plugin = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
-               }));
+            this.DownloadProgress_plugin = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded/ (double)e.Size * 100)}%)";
+            // メッセージの更新
+            UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_plugin);
         }
         #endregion
+
 
         #region uploads.tar.gzのダウンロード進捗
         /// <summary>
@@ -530,10 +544,9 @@ namespace MovingWordpress.ViewModels
         /// <param name="e"></param>
         private void ScpClient_Downloading_upload(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-               new Action(() => {
-                   this.DownloadProgress_upload = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
-               }));
+            this.DownloadProgress_upload = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)";
+            // メッセージの更新
+            UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_upload);
         }
         #endregion
 
@@ -545,10 +558,9 @@ namespace MovingWordpress.ViewModels
         /// <param name="e"></param>
         private void ScpClient_Downloading_themes(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-               new Action(() => {
-                   this.DownloadProgress_themes = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
-               }));
+            this.DownloadProgress_themes = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)";
+            // メッセージの更新
+            UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_themes);
         }
         #endregion
 
@@ -560,10 +572,9 @@ namespace MovingWordpress.ViewModels
         /// <param name="e"></param>
         private void ScpClient_Downloading_sql(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-               new Action(() => {
-                   this.DownloadProgress_sql = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()}";
-               }));
+            this.DownloadProgress_sql = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)";
+            // メッセージの更新
+            UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_sql);
         }
         #endregion
     }
