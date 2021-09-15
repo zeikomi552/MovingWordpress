@@ -140,49 +140,12 @@ namespace MovingWordpress.ViewModels
 
 
 
-        string _DumpSqlGz = "dump.sql.gz";
-        string _UploadGz = "uploads.tar.gz";
-        string _PluginsGz = "plugins.tar.gz";
-        string _ThemesGz = "themes.tar.gz";
 
 
 
-        #region ワードプレスのパスワードおよびユーザー名の確認コマンド
-        /// <summary>
-        /// ワードプレスのパスワードおよびユーザー名の確認コマンド
-        /// </summary>
-        public void CheckWordpressUserPassword()
-        {
-            try
-            {
-                // コマンド
-                string cmd = "sudo cat /home/bitnami/bitnami_credentials;";
 
-                // コマンドの発酵処理
-                ExecuteCommand(cmd);
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-        #endregion
 
-        public void CheckMySQLPassword()
-        {
-            try
-            {
-                // コマンド
-                string cmd = $"cd {this.SSHConnection.FolderSetting.RemoteDirectory};cd ..;cat wp-config.php;";
 
-                // コマンドの発行処理
-                ExecuteCommand(cmd);
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
 
         #region SSHによるコマンドの実行
         /// <summary>
@@ -194,7 +157,6 @@ namespace MovingWordpress.ViewModels
             {
                 // 初期化処理
                 this.SSHConnection.CreateConnection();
-
 
                 Task.Run(() =>
                 {
@@ -233,51 +195,7 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        /// <summary>
-        /// 後片付け実行処理
-        /// </summary>
-        public void ExecuteSshClearn()
-        {
-            try
-            {
-                // 初期化処理
-                this.SSHConnection.CreateConnection();
 
-
-                Task.Run(() =>
-                {
-                    StringBuilder message = new StringBuilder();
-                    message.AppendLine($"====== 後片付け Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-
-                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_UploadGz};";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_PluginsGz};";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_ThemesGz};";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_DumpSqlGz};";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp;ls -lh;";
-                    ExecuteCommand(message, cmd);
-
-                    message.Append($"====== 後片付け End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-                }
-                );
-
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
 
         /// <summary>
         /// ダウンロード用のメッセージ(一時保存用)

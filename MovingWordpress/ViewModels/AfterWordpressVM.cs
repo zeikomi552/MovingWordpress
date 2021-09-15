@@ -9,62 +9,12 @@ using System.Threading.Tasks;
 
 namespace MovingWordpress.ViewModels
 {
-    public class AfterWordpressVM : ViewModelBase
+    public class AfterWordpressVM : BaseWordpressVM
     {
-        #region SSH接続オブジェクト[SSHConnection]プロパティ
-        /// <summary>
-        /// SSH接続オブジェクト[SSHConnection]プロパティ用変数
-        /// </summary>
-        SSHManagerM _SSHConnection = new SSHManagerM();
-        /// <summary>
-        /// SSH接続オブジェクト[SSHConnection]プロパティ
-        /// </summary>
-        public SSHManagerM SSHConnection
-        {
-            get
-            {
-                return _SSHConnection;
-            }
-            set
-            {
-                if (_SSHConnection == null || !_SSHConnection.Equals(value))
-                {
-                    _SSHConnection = value;
-                    NotifyPropertyChanged("SSHConnection");
-                }
-            }
-        }
-        #endregion
-
-        #region 結果メッセージ[Message]プロパティ
-        /// <summary>
-        /// 結果メッセージ[Message]プロパティ用変数
-        /// </summary>
-        string _Message = string.Empty;
-        /// <summary>
-        /// 結果メッセージ[Message]プロパティ
-        /// </summary>
-        public string Message
-        {
-            get
-            {
-                return _Message;
-            }
-            set
-            {
-                if (_Message == null || !_Message.Equals(value))
-                {
-                    _Message = value;
-                    NotifyPropertyChanged("Message");
-                }
-            }
-        }
-        #endregion
-
         /// <summary>
         /// 初期化処理
         /// </summary>
-        public void Init()
+        public override void Init()
         {
             try
             {
@@ -80,22 +30,5 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
-
-        #region 設定ファイル保存処理
-        /// <summary>
-        /// 設定ファイル保存処理
-        /// </summary>
-        public void SaveSetting()
-        {
-            try
-            {
-                this.SSHConnection.Save();
-            }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-        #endregion
     }
 }

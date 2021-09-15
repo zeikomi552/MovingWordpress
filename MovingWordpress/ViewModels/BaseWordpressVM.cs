@@ -88,6 +88,25 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region バックアップファイル名
+        /// <summary>
+        /// SQLダンプのファイル名
+        /// </summary>
+        protected string _DumpSqlGz = "dump.sql.gz";
+        /// <summary>
+        /// Uploadsバックアップファイル名
+        /// </summary>
+        protected string _UploadGz = "uploads.tar.gz";
+        /// <summary>
+        /// Pluginsバックアップファイル名
+        /// </summary>
+        protected string _PluginsGz = "plugins.tar.gz";
+        /// <summary>
+        /// Themesバックアップファイル名
+        /// </summary>
+        protected string _ThemesGz = "themes.tar.gz";
+        #endregion
+
         #region 初期化処理
         /// <summary>
         /// 初期化処理
@@ -115,7 +134,7 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
+        #region メッセージ更新処理
         /// <summary>
         /// メッセージ更新処理
         /// </summary>
@@ -129,7 +148,7 @@ namespace MovingWordpress.ViewModels
                }));
 
         }
-
+        #endregion
 
         #region コメント付きのコマンド実行処理
         /// <summary>
@@ -198,6 +217,96 @@ namespace MovingWordpress.ViewModels
 
                 // コマンドの発行処理
                 ExecuteCommand(cmd);
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region ワードプレスのパスワードおよびユーザー名の確認コマンド
+        /// <summary>
+        /// ワードプレスのパスワードおよびユーザー名の確認コマンド
+        /// </summary>
+        public void CheckWordpressUserPassword()
+        {
+            try
+            {
+                // コマンド
+                string cmd = "sudo cat /home/bitnami/bitnami_credentials;";
+
+                // コマンドの発酵処理
+                ExecuteCommand(cmd);
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region MySQLデータベースのパスワード確認
+        /// <summary>
+        /// MySQLデータベースのパスワード確認
+        /// </summary>
+        public void CheckMySQLPassword()
+        {
+            try
+            {
+                // コマンド
+                string cmd = $"cd {this.SSHConnection.FolderSetting.RemoteDirectory};cd ..;cat wp-config.php;";
+
+                // コマンドの発行処理
+                ExecuteCommand(cmd);
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region 後片付け実行処理
+        /// <summary>
+        /// 後片付け実行処理
+        /// </summary>
+        public void ExecuteSshClearn()
+        {
+            try
+            {
+                // 初期化処理
+                this.SSHConnection.CreateConnection();
+
+
+                Task.Run(() =>
+                {
+                    StringBuilder message = new StringBuilder();
+                    message.AppendLine($"====== 後片付け Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
+
+                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_UploadGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_PluginsGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_ThemesGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_DumpSqlGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp;ls -lh;";
+                    ExecuteCommand(message, cmd);
+
+                    message.Append($"====== 後片付け End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
+                }
+                );
+
             }
             catch (Exception e)
             {

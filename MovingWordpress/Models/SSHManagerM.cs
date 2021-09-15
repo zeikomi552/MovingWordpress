@@ -5,6 +5,7 @@ using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -219,14 +220,26 @@ namespace MovingWordpress.Models
 		/// </summary>
 		public void Load()
 		{
-			// フォルダ設定の保存処理
-			this.FolderSetting = this.FolderSetting.Load();
+			// フォルダのコンフィグ存在確認
+			if (File.Exists(this.FolderSetting.ConfigFilePath))
+            {
+				// フォルダ設定の保存処理
+				this.FolderSetting = this.FolderSetting.Load();
+			}
 
-			// SSH設定の保存処理
-			this.SSHSetting = this.SSHSetting.Load();
+			// SSHのコンフィグ存在確認
+			if (File.Exists(this.SSHSetting.ConfigFilePath))
+			{
+				// SSH設定の保存処理
+				this.SSHSetting = this.SSHSetting.Load();
+			}
 
-			// MySQL設定の保存処理
-			this.MySQLSetting = this.MySQLSetting.Load();
+			// MySQLのコンフィグ存在確認
+			if (File.Exists(this.MySQLSetting.ConfigFilePath))
+			{
+				// MySQL設定の保存処理
+				this.MySQLSetting = this.MySQLSetting.Load();
+			}
 		}
 	}
 }

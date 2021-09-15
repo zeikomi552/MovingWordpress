@@ -184,6 +184,35 @@
 
                         </StackPanel>
                     </GroupBox>
+                    <GroupBox Header="フォルダ設定" DataContext="{Binding SSHConnection.FolderSetting}">
+                        <StackPanel Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="リモートパス"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="250" VerticalAlignment="Center" Text="{Binding RemoteDirectory}"/>
+                                <Button Margin="5" Width="100" Content="確認">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="SearchDir" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="250" VerticalAlignment="Center" Text="{Binding LocalDirectory}" Cursor="IBeam"/>
+                                <Button Margin="5" Content="フォルダ選択" Cursor="Hand">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="OpenFileBrowzeDialog" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+
                     <GroupBox Header="MySQL設定" DataContext="{Binding SSHConnection.MySQLSetting}">
                         <StackPanel Margin="5">
                             <StackPanel Orientation="Horizontal">
@@ -206,34 +235,6 @@
                         </StackPanel>
                     </GroupBox>
 
-                    <GroupBox Header="フォルダ設定" DataContext="{Binding SSHConnection.FolderSetting}">
-                        <StackPanel Margin="5">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="リモートパス"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="250" VerticalAlignment="Center" Text="{Binding RemoteDirectory}"/>
-                                <Button Margin="5" Width="100" Content="確認">
-                                    <b:Interaction.Triggers>
-                                        <b:EventTrigger EventName="Click">
-                                            <b:CallMethodAction MethodName="SearchDir" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
-                                        </b:EventTrigger>
-                                    </b:Interaction.Triggers>
-                                </Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="250" VerticalAlignment="Center" Text="{Binding LocalDirectory}" Cursor="IBeam"/>
-                                <Button Margin="5" Content="フォルダ選択">
-                                    <b:Interaction.Triggers>
-                                        <b:EventTrigger EventName="Click">
-                                            <b:CallMethodAction MethodName="OpenFileBrowzeDialog" TargetObject="{Binding}"/>
-                                        </b:EventTrigger>
-                                    </b:Interaction.Triggers>
-                                </Button>
-                            </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
                     <Button Margin="5" HorizontalAlignment="Left" Width="100" Content="設定を保存">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">

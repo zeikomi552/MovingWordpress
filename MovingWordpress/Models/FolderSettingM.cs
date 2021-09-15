@@ -146,14 +146,7 @@ namespace MovingWordpress.Models
 		/// <returns></returns>
 		public FolderSettingM Load()
 		{
-			if (File.Exists(this.ConfigFilePath))
-			{
-				return base.Load<FolderSettingM>(this.ConfigFilePath);
-			}
-			else
-			{
-				return new FolderSettingM();
-			}
+			return base.Load<FolderSettingM>(this.ConfigFilePath);
 		}
 		#endregion
 	}
