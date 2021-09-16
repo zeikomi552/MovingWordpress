@@ -198,6 +198,34 @@ namespace MovingWordpress.Models
 			}
 		}
 
+		/// <summary>
+		/// SCPによるファイルアップロード処理を行う
+		/// </summary>
+		/// <param name="remote_file_path">リモートサーバー側のファイルの保管パス</param>
+		/// <param name="local_file_path">ローカルファイルパスの保管場所</param>
+		public void SCPUpload(string remote_file_path, string local_file_path, EventHandler<Renci.SshNet.Common.ScpUploadEventArgs> scp_handler)
+		{
+			using (var sshclient = new SshClient(this.ConnNfo))
+			{
+				sshclient.Connect();
+				using (var scpClient = new ScpClient(this.ConnNfo))
+				{
+					scpClient.Connect();
+
+					// イベントのセット
+					scpClient.Uploading += scp_handler;
+					scpClient.RemotePathTransformation = RemotePathTransformation.ShellQuote;
+					// アップロード処理
+					scpClient.Upload(new System.IO.FileInfo(local_file_path), remote_file_path);
+
+					// イベントの解除
+					scpClient.Uploading -= scp_handler;
+
+					scpClient.Disconnect();
+				}
+				sshclient.Disconnect();
+			}
+		}
 
 		/// <summary>
 		/// Configファイルの保存処理
