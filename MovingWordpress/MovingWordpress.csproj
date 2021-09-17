@@ -11,9 +11,11 @@
     <None Remove="Common\Icons\icon-before-wordpress.png" />
     <None Remove="Common\Icons\Icon-clearn.png" />
     <None Remove="Common\Icons\Icon-compress.png" />
+    <None Remove="Common\Icons\Icon-depress.png" />
     <None Remove="Common\Icons\icon-download.png" />
     <None Remove="Common\Icons\icon-moving.png" />
     <None Remove="Common\Icons\icon-search.png" />
+    <None Remove="Common\Icons\icon-upload.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,9 +39,11 @@
     <Resource Include="Common\Icons\icon-before-wordpress.png" />
     <Resource Include="Common\Icons\Icon-clearn.png" />
     <Resource Include="Common\Icons\Icon-compress.png" />
+    <Resource Include="Common\Icons\Icon-depress.png" />
     <Resource Include="Common\Icons\icon-download.png" />
     <Resource Include="Common\Icons\icon-moving.png" />
     <Resource Include="Common\Icons\icon-search.png" />
+    <Resource Include="Common\Icons\icon-upload.png" />
   </ItemGroup>
 
 </Project>

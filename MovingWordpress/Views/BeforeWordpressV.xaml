@@ -66,7 +66,7 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <Button Margin="5" Height="100" Width="100" HorizontalAlignment="Left">
+                    <Button Margin="5" Height="100" Width="100" HorizontalAlignment="Left" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
                                 <b:CallMethodAction MethodName="ExecuteSshClearn" TargetObject="{Binding}"/>

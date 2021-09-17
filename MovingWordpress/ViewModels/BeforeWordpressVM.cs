@@ -196,6 +196,53 @@ namespace MovingWordpress.ViewModels
         #endregion
 
 
+        #region 後片付け実行処理
+        /// <summary>
+        /// 後片付け実行処理
+        /// </summary>
+        public void ExecuteSshClearn()
+        {
+            try
+            {
+                // 初期化処理
+                this.SSHConnection.CreateConnection();
+
+
+                Task.Run(() =>
+                {
+                    StringBuilder message = new StringBuilder();
+                    message.AppendLine($"====== 後片付け Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
+
+                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_UploadGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_PluginsGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_ThemesGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_DumpSqlGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp;ls -lh;";
+                    ExecuteCommand(message, cmd);
+
+                    message.Append($"====== 後片付け End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
+                }
+                );
+
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
 
         /// <summary>
         /// ダウンロード用のメッセージ(一時保存用)

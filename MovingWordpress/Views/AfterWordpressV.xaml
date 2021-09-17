@@ -34,6 +34,21 @@
         <GroupBox Margin="5" Grid.Row="1" Header="アクションアイテム">
             <StackPanel Margin="5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal">
+                    <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="ExecuteScp" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <Button.Content>
+                            <StackPanel Orientation="Vertical">
+                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-upload.png" />
+                                <Viewbox>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="アップロード"/>
+                                </Viewbox>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
 
                     <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
                         <b:Interaction.Triggers>
@@ -43,28 +58,13 @@
                         </b:Interaction.Triggers>
                         <Button.Content>
                             <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-compress.png" />
+                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-depress.png" />
                                 <Grid>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷づくり"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷ほどき"/>
                                 </Grid>
                             </StackPanel>
                         </Button.Content>
 
-                    </Button>
-                    <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="ExecuteScp" TargetObject="{Binding}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-download.png" />
-                                <Viewbox>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="バックアップ"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Button.Content>
                     </Button>
                     <Button Margin="5" Height="100" Width="100" HorizontalAlignment="Left">
                         <b:Interaction.Triggers>

@@ -137,6 +137,9 @@ namespace MovingWordpress.ViewModels
             }
         }
 
+        /// <summary>
+        /// SSHの実行処理
+        /// </summary>
         public void ExecuteSsh()
         {
             try
@@ -151,19 +154,32 @@ namespace MovingWordpress.ViewModels
                     // メッセージの更新
                     UpdateMessage(message.ToString());
 
-                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;";
+                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"mv uploads/ _uploads/;mv plugins/ _plugins/;mv themes/ _themes/;";
                     ExecuteCommand(message, cmd);
 
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;";
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"mv /tmp/{_UploadGz} {_UploadGz};mv /tmp/{_PluginsGz} {_PluginsGz};mv /tmp/{_ThemesGz} {_ThemesGz};mv /tmp/{_DumpSqlGz} {_DumpSqlGz};";
                     ExecuteCommand(message, cmd);
 
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;";
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar -zxvf {_UploadGz};tar -zxvf {_PluginsGz};tar -zxvf {_ThemesGz};rm -f {_UploadGz};rm -f{_PluginsGz};rm -f {_PluginsGz};";
                     ExecuteCommand(message, cmd);
 
-                    cmd = $"mysqldump -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}";
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"sudo chown bitnami:daemon -R uploads;sudo chown bitnami:daemon -R plugins;sudo chown bitnami:daemon -R themes;";
                     ExecuteCommand(message, cmd);
 
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;";
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + $"uploads;sudo chown daemon:daemon -R *;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {{}} +;";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + $"plugins;sudo chown daemon:daemon -R all-in-one-seo-pack;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {{}} +;";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + $"themes;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {{}} +;";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"gzip -d -f {this.SSHConnection.FolderSetting.RemoteDirectory}dump.sql.gz;";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"mysql -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost -D bitnami_wordpress < dump.sql";
                     ExecuteCommand(message, cmd);
 
                     message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
@@ -203,7 +219,7 @@ namespace MovingWordpress.ViewModels
                     UpdateMessage(this._UploadTemporaryMessage.ToString());
 
                     // SCPによるアップロード
-                    this.SSHConnection.SCPUpload($"/tmp/" + _UploadGz,
+                    this.SSHConnection.SCPUpload($"/tmp/{_UploadGz}",
                         local_dir + _UploadGz, ScpClient_Uploading_upload);
 
                     this._UploadTemporaryMessage.AppendLine(this.DownloadProgress_upload);
@@ -240,6 +256,59 @@ namespace MovingWordpress.ViewModels
                     UpdateMessage(this._UploadTemporaryMessage.ToString());
                 }
                 );
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+
+        #region 後片付け実行処理
+        /// <summary>
+        /// 後片付け実行処理
+        /// </summary>
+        public void ExecuteSshClearn()
+        {
+            try
+            {
+                // 初期化処理
+                this.SSHConnection.CreateConnection();
+
+
+                Task.Run(() =>
+                {
+                    StringBuilder message = new StringBuilder();
+                    message.AppendLine($"====== 後片付け Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
+
+                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f {_UploadGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f {_PluginsGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f {_ThemesGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f {_DumpSqlGz};";
+                    ExecuteCommand(message, cmd);
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f dump.sql;";
+                    ExecuteCommand(message, cmd);
+
+
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"ls -lh;";
+                    ExecuteCommand(message, cmd);
+
+                    message.Append($"====== 後片付け End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    // メッセージの更新
+                    UpdateMessage(message.ToString());
+                }
+                );
+
             }
             catch (Exception e)
             {
