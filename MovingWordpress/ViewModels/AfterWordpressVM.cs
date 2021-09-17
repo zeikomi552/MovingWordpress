@@ -299,7 +299,6 @@ namespace MovingWordpress.ViewModels
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f dump.sql;";
                     ExecuteCommand(message, cmd);
 
-
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"ls -lh;";
                     ExecuteCommand(message, cmd);
 
