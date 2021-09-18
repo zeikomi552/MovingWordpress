@@ -4,6 +4,7 @@ using MVVMCore.BaseClass;
 using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -218,7 +219,11 @@ namespace MovingWordpress.ViewModels
 
             Task.Run(() =>
             {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
                 message.AppendLine($"******** {action_name} Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ********");
+                message.AppendLine();
+
                 // メッセージの更新
                 UpdateMessage(message.ToString());
 
@@ -231,7 +236,9 @@ namespace MovingWordpress.ViewModels
                     ExecuteCommand(tmp, message);
                 }
 
-                message.AppendLine($"******** {action_name} End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ********");
+                message.AppendLine();
+                message.AppendLine($"******** {action_name} End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}");
+                message.AppendLine($"経過時間：{sw.ElapsedMilliseconds / 1000}秒");
                 // メッセージの更新
                 UpdateMessage(message.ToString());
             });
