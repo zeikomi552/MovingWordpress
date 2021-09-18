@@ -174,7 +174,7 @@ namespace MovingWordpress.ViewModels
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;";
                     ExecuteCommand(message, cmd);
 
-                    cmd = $"mysqldump -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost bitnami_wordpress | gzip > /tmp/{_DumpSqlGz}";
+                    cmd = $"mysqldump -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost {this.SSHConnection.MySQLSetting.Database} | gzip > /tmp/{_DumpSqlGz}";
                     ExecuteCommand(message, cmd);
 
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;";

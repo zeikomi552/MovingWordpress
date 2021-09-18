@@ -183,7 +183,7 @@ namespace MovingWordpress.ViewModels
                     cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"gzip -d -f {this.SSHConnection.FolderSetting.RemoteDirectory}dump.sql.gz;";
                     ExecuteCommand(message, cmd);
 
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"mysql -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost -D bitnami_wordpress < dump.sql";
+                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"mysql -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost -D {this.SSHConnection.MySQLSetting.Database} < dump.sql";
                     ExecuteCommand(message, cmd);
 
                     message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
