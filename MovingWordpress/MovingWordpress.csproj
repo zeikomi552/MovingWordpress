@@ -47,6 +47,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="CommandFiles\before_cleanup.mw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="CommandFiles\check_database_info.mw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

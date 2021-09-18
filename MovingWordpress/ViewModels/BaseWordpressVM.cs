@@ -207,6 +207,37 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region ファイルパスを指定してコマンドを実行する
+        /// <summary>
+        /// ファイルパスを指定してコマンドを実行する
+        /// </summary>
+        /// <param name="command_file_path">コマンドファイルパス</param>
+        protected void ExecuteCommandList(string command_file_path, string action_name, StringBuilder message)
+        {
+            var command_list = MovingWordpressUtilities.ReadCommandList(command_file_path);
+
+            Task.Run(() =>
+            {
+                message.AppendLine($"******** {action_name} End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ********");
+                // メッセージの更新
+                UpdateMessage(message.ToString());
+
+                foreach (var command in command_list)
+                {
+                    // タグを変換
+                    var tmp = MovingWordpressUtilities.ConvertCommandTags(command, this.SSHConnection);
+
+                    // コマンドの発酵処理
+                    ExecuteCommand(tmp, message);
+                }
+
+                message.AppendLine($"******** {action_name} End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ********");
+                // メッセージの更新
+                UpdateMessage(message.ToString());
+            });
+        }
+        #endregion
+
         #region バックアップ用のディレクトリを探す
         /// <summary>
         /// バックアップ用のディレクトリを探す
@@ -216,7 +247,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 StringBuilder message = new StringBuilder();
-                ExecuteCommandList(@"CommandFiles\check_directory_info.mw", message);
+                ExecuteCommandList(@"CommandFiles\check_directory_info.mw", "フォルダを探す", message);
             }
             catch (Exception e)
             {
@@ -234,7 +265,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 StringBuilder message = new StringBuilder();
-                ExecuteCommandList(@"CommandFiles\check_wordpress_info.mw", message);
+                ExecuteCommandList(@"CommandFiles\check_wordpress_info.mw", "ワードプレス用パスワード確認", message);
             }
             catch (Exception e)
             {
@@ -252,7 +283,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 StringBuilder message = new StringBuilder();
-                ExecuteCommandList(@"CommandFiles\check_database_info.mw", message);
+                ExecuteCommandList(@"CommandFiles\check_database_info.mw", "データベース情報確認", message);
             }
             catch (Exception e)
             {
@@ -261,27 +292,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region ファイルパスを指定してコマンドを実行する
-        /// <summary>
-        /// ファイルパスを指定してコマンドを実行する
-        /// </summary>
-        /// <param name="command_file_path">コマンドファイルパス</param>
-        private void ExecuteCommandList(string command_file_path, StringBuilder message)
-        {
-            var command_list = MovingWordpressUtilities.ReadCommandList(command_file_path);
-
-            Task.Run(() =>
-            {
-                foreach (var command in command_list)
-                {
-                    // タグを変換
-                    var tmp = MovingWordpressUtilities.ConvertCommandTags(command, this.SSHConnection);
-
-                    // コマンドの発酵処理
-                    ExecuteCommand(tmp, message);
-                }
-            });
-        }
-        #endregion
+        
     }
 }
