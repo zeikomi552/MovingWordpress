@@ -50,6 +50,9 @@
     <None Update="CommandFiles\check_database_info.mw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="CommandFiles\check_directory_info.mw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="CommandFiles\check_wordpress_info.mw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

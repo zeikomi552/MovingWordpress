@@ -183,28 +183,22 @@ namespace MovingWordpress.ViewModels
         /// コマンド実行処理
         /// </summary>
         /// <param name="cmd">コマンド</param>
-        protected void ExecuteCommand(string cmd)
+        protected void ExecuteCommand(string cmd, StringBuilder message)
         {
             try
             {
                 // 初期化処理
                 this.SSHConnection.CreateConnection();
 
-                Task.Run(() =>
-                {
-                    StringBuilder message = new StringBuilder();
+                // コマンド開始のメモ
+                message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
 
-                    // コマンド開始のメモ
-                    message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                ExecuteCommand(message, cmd);
 
-                    ExecuteCommand(message, cmd);
+                message.AppendLine($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
 
-                    message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-                }
-                );
+                // メッセージの更新
+                UpdateMessage(message.ToString());
             }
             catch (Exception e)
             {
@@ -221,11 +215,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // コマンド
-                string cmd = "find /opt -name wp-content;";
-
-                // コマンドの発行処理
-                ExecuteCommand(cmd);
+                StringBuilder message = new StringBuilder();
+                ExecuteCommandList(@"CommandFiles\check_directory_info.mw", message);
             }
             catch (Exception e)
             {
@@ -242,7 +233,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                ExecuteCommandList(@"CommandFiles\check_wordpress_info.mw");
+                StringBuilder message = new StringBuilder();
+                ExecuteCommandList(@"CommandFiles\check_wordpress_info.mw", message);
             }
             catch (Exception e)
             {
@@ -259,7 +251,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                ExecuteCommandList(@"CommandFiles\check_database_info.mw");
+                StringBuilder message = new StringBuilder();
+                ExecuteCommandList(@"CommandFiles\check_database_info.mw", message);
             }
             catch (Exception e)
             {
@@ -273,17 +266,21 @@ namespace MovingWordpress.ViewModels
         /// ファイルパスを指定してコマンドを実行する
         /// </summary>
         /// <param name="command_file_path">コマンドファイルパス</param>
-        private void ExecuteCommandList(string command_file_path)
+        private void ExecuteCommandList(string command_file_path, StringBuilder message)
         {
             var command_list = MovingWordpressUtilities.ReadCommandList(command_file_path);
-            foreach (var command in command_list)
-            {
-                // タグを変換
-                var tmp = MovingWordpressUtilities.ConvertCommandTags(command, this.SSHConnection);
 
-                // コマンドの発酵処理
-                ExecuteCommand(tmp);
-            }
+            Task.Run(() =>
+            {
+                foreach (var command in command_list)
+                {
+                    // タグを変換
+                    var tmp = MovingWordpressUtilities.ConvertCommandTags(command, this.SSHConnection);
+
+                    // コマンドの発酵処理
+                    ExecuteCommand(tmp, message);
+                }
+            });
         }
         #endregion
     }
