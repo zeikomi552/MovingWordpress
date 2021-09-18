@@ -138,15 +138,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
-
-
-
-
-
-
-
-
         #region SSHによるコマンドの実行
         /// <summary>
         /// SSHによるコマンドの実行

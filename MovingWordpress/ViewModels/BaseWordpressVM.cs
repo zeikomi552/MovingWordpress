@@ -167,7 +167,11 @@ namespace MovingWordpress.ViewModels
             // コマンド内容のセット
             message.AppendLine("result ==> " + cmd);
 
-            message.AppendLine(this.SSHConnection.SshCommand(cmd));
+            // コマンドの実行
+            var result = this.SSHConnection.SshCommand(cmd);
+
+            // 実行結果をセット
+            message.AppendLine(result);
 
             // メッセージの更新
             UpdateMessage(message.ToString());
