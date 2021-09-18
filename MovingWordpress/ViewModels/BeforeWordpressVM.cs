@@ -145,7 +145,6 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\before_compress.mw", "荷づくり", message);
             }
@@ -155,7 +154,6 @@ namespace MovingWordpress.ViewModels
             }
             finally
             {
-                this.IsExecute = false;
             }
         }
         #endregion
@@ -168,7 +166,6 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\before_cleanup.mw", "後片付け", message);
             }
@@ -178,7 +175,6 @@ namespace MovingWordpress.ViewModels
             }
             finally
             {
-                this.IsExecute = false;
             }
         }
         #endregion

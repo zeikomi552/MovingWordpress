@@ -203,6 +203,8 @@ namespace MovingWordpress.ViewModels
 
             Task.Run(() =>
             {
+                this.IsExecute = true;
+
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 message.AppendLine($"******** {action_name} Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ********");
@@ -223,8 +225,12 @@ namespace MovingWordpress.ViewModels
                 message.AppendLine();
                 message.AppendLine($"******** {action_name} End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}");
                 message.AppendLine($"経過時間：{sw.ElapsedMilliseconds / 1000}秒");
+
+                this.IsExecute = false;
+
                 // メッセージの更新
                 UpdateMessage(message.ToString());
+
             });
         }
         #endregion
@@ -237,12 +243,11 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_directory_info.mw", "フォルダを探す", message);
             }
             catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
-            finally { this.IsExecute = false; }
+            finally {  }
         }
         #endregion
 
@@ -254,12 +259,11 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_wordpress_info.mw", "ワードプレス用パスワード確認", message);
             }
             catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
-            finally { this.IsExecute = false; }
+            finally {  }
         }
         #endregion
 
@@ -271,12 +275,11 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_database_info.mw", "データベース情報確認", message);
             }
             catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
-            finally { this.IsExecute = false; }
+            finally {}
         }
         #endregion
 

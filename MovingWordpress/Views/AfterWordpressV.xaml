@@ -1,21 +1,26 @@
-﻿<mah:MetroWindow x:Class="MovingWordpress.Views.AfterWordpressV"
+﻿<mah:MetroWindow
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:hlp="clr-namespace:MovingWordpress.Common.Helpers"
         xmlns:local="clr-namespace:MovingWordpress.Views"
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels"
+        xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters" x:Class="MovingWordpress.Views.AfterWordpressV"
         mc:Ignorable="d"
         Title="AfterWordpressV" Height="1000" Width="1200">
 
-    <Window.Resources>
+    <mah:MetroWindow.Resources>
+        <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+        <Converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <ViewModels:AfterWordpressVM x:Key="vm"/>
-    </Window.Resources>
-    <Window.DataContext>
+    </mah:MetroWindow.Resources>
+    <mah:MetroWindow.DataContext>
         <Binding Source="{StaticResource vm}"/>
-    </Window.DataContext>
+    </mah:MetroWindow.DataContext>
     <b:Interaction.Triggers>
         <b:EventTrigger>
             <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
@@ -32,7 +37,7 @@
             <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="引っ越し" FontSize="30"/>
         </Border>
         <GroupBox Margin="5" Grid.Row="1" Header="アクションアイテム">
-            <StackPanel Margin="5" Orientation="Horizontal">
+            <StackPanel Margin="5" Orientation="Horizontal" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}">
                 <StackPanel Orientation="Horizontal">
                     <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
                         <b:Interaction.Triggers>
@@ -40,14 +45,12 @@
                                 <b:CallMethodAction MethodName="ExecuteScp" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-upload.png" />
-                                <Viewbox>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="アップロード"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-upload.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="アップロード"/>
+                            </Viewbox>
+                        </StackPanel>
                     </Button>
 
                     <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
@@ -56,14 +59,12 @@
                                 <b:CallMethodAction MethodName="ExecuteSsh" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-depress.png" />
-                                <Grid>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷ほどき"/>
-                                </Grid>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-depress.png" />
+                            <Grid>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷ほどき"/>
+                            </Grid>
+                        </StackPanel>
 
                     </Button>
                     <Button Margin="5" Height="100" Width="100" HorizontalAlignment="Left">
@@ -72,14 +73,12 @@
                                 <b:CallMethodAction MethodName="ExecuteSshClearn" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-clearn.png" />
-                                <Grid>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="後片付け"/>
-                                </Grid>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-clearn.png" />
+                            <Grid>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="後片付け"/>
+                            </Grid>
+                        </StackPanel>
 
                     </Button>
 
@@ -91,14 +90,12 @@
                                 <b:CallMethodAction MethodName="CheckWordpressUserPassword" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-before-wordpress.png" />
-                                <Viewbox>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="パスワード確認"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-before-wordpress.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="パスワード確認"/>
+                            </Viewbox>
+                        </StackPanel>
                     </Button>
                     <Button Margin="5" Height="100" Width="100">
                         <b:Interaction.Triggers>
@@ -106,14 +103,12 @@
                                 <b:CallMethodAction MethodName="SearchDir" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
-                                <Viewbox>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="リモートパス確認"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="リモートパス確認"/>
+                            </Viewbox>
+                        </StackPanel>
                     </Button>
                     <Button Margin="5" Height="100" Width="100">
                         <b:Interaction.Triggers>
@@ -121,14 +116,12 @@
                                 <b:CallMethodAction MethodName="CheckMySQLPassword" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
-                                <Viewbox>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="データベース確認"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="データベース確認"/>
+                            </Viewbox>
+                        </StackPanel>
                     </Button>
 
                 </StackPanel>
@@ -145,7 +138,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <StackPanel>
+                <StackPanel IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}" >
                     <GroupBox Header="SSH設定" DataContext="{Binding SSHConnection.SSHSetting}">
                         <StackPanel Margin="5">
                             <StackPanel Orientation="Horizontal">
@@ -162,7 +155,12 @@
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding UserName}"/>
                                 <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding PassWord}"/>
+                                <Grid>
+                                    <TextBox Margin="5" Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=toggleButton}" VerticalAlignment="Center" Width="150" Text="{Binding PassWord}" Cursor="IBeam"/>
+                                    <PasswordBox Width="150" hlp:PasswordBoxHelper.IsAttached="True" hlp:PasswordBoxHelper.Password="{Binding PassWord}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam" Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=toggleButton}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False" x:Name="toggleButton" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="秘密鍵のパス(.pem)"/>
@@ -179,7 +177,12 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="パスフレーズ"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding PassPhrase}"/>
+                                <Grid>
+                                    <TextBox Margin="5" Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=toggleButton2}" VerticalAlignment="Center" Width="150" Text="{Binding PassPhrase}" Cursor="IBeam"/>
+                                    <PasswordBox Width="150" hlp:PasswordBoxHelper.IsAttached="True" hlp:PasswordBoxHelper.Password="{Binding PassPhrase}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam" Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=toggleButton2}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False" x:Name="toggleButton2" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
                             </StackPanel>
 
                         </StackPanel>
@@ -236,7 +239,12 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(MySQL)"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLPassword}"/>
+                                <Grid>
+                                    <TextBox Margin="5" Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=toggleButton3}" VerticalAlignment="Center" Width="400" Text="{Binding MySQLPassword}" Cursor="IBeam"/>
+                                    <PasswordBox Width="400" hlp:PasswordBoxHelper.IsAttached="True" hlp:PasswordBoxHelper.Password="{Binding MySQLPassword}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam" Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=toggleButton3}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False" x:Name="toggleButton3" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>

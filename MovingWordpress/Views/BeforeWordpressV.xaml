@@ -6,16 +6,17 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MovingWordpress.Views"
-        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.BeforeWordpressV"
+        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters" x:Class="MovingWordpress.Views.BeforeWordpressV"
         mc:Ignorable="d"
         Title="荷造り画面" Height="1000" Width="1200">
 
-    <Window.Resources>
+    <mah:MetroWindow.Resources>
+        <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <ViewModels:BeforeWordpressVM x:Key="vm"/>
-    </Window.Resources>
-    <Window.DataContext>
+    </mah:MetroWindow.Resources>
+    <mah:MetroWindow.DataContext>
         <Binding Source="{StaticResource vm}"/>
-    </Window.DataContext>
+    </mah:MetroWindow.DataContext>
     <b:Interaction.Triggers>
         <b:EventTrigger>
             <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
@@ -32,23 +33,21 @@
             <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷づくり" FontSize="30"/>
         </Border>
         <GroupBox Margin="5" Grid.Row="1" Header="アクションアイテム">
-            <StackPanel Margin="5" Orientation="Horizontal">
+            <StackPanel Margin="5" Orientation="Horizontal" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}">
                 <StackPanel Orientation="Horizontal">
 
-                    <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}" Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
                                 <b:CallMethodAction MethodName="ExecuteSsh" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-compress.png" />
-                                <Grid>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷づくり"/>
-                                </Grid>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-compress.png" />
+                            <Grid>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷づくり"/>
+                            </Grid>
+                        </StackPanel>
 
                     </Button>
                     <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
@@ -57,14 +56,12 @@
                                 <b:CallMethodAction MethodName="ExecuteScp" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-download.png" />
-                                <Viewbox>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="バックアップ"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-download.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="バックアップ"/>
+                            </Viewbox>
+                        </StackPanel>
                     </Button>
                     <Button Margin="5" Height="100" Width="100" HorizontalAlignment="Left" Cursor="Hand">
                         <b:Interaction.Triggers>
@@ -72,14 +69,12 @@
                                 <b:CallMethodAction MethodName="ExecuteSshClearn" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-clearn.png" />
-                                <Grid>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="後片付け"/>
-                                </Grid>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-clearn.png" />
+                            <Grid>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="後片付け"/>
+                            </Grid>
+                        </StackPanel>
 
                     </Button>
 
@@ -91,14 +86,12 @@
                                 <b:CallMethodAction MethodName="CheckWordpressUserPassword" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-before-wordpress.png" />
-                                <Viewbox>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="パスワード確認"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-before-wordpress.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="パスワード確認"/>
+                            </Viewbox>
+                        </StackPanel>
                     </Button>
                     <Button Margin="5" Height="100" Width="100">
                         <b:Interaction.Triggers>
@@ -106,14 +99,12 @@
                                 <b:CallMethodAction MethodName="SearchDir" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
-                                <Viewbox>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="リモートパス確認"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="リモートパス確認"/>
+                            </Viewbox>
+                        </StackPanel>
                     </Button>
                     <Button Margin="5" Height="100" Width="100">
                         <b:Interaction.Triggers>
@@ -121,14 +112,12 @@
                                 <b:CallMethodAction MethodName="CheckMySQLPassword" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
-                                <Viewbox>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="データベース確認"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="データベース確認"/>
+                            </Viewbox>
+                        </StackPanel>
                     </Button>
 
                 </StackPanel>
@@ -145,7 +134,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <StackPanel>
+                <StackPanel IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}">
                     <GroupBox Header="SSH設定" DataContext="{Binding SSHConnection.SSHSetting}">
                         <StackPanel Margin="5">
                             <StackPanel Orientation="Horizontal">

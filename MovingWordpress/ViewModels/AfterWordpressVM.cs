@@ -148,8 +148,6 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.IsExecute = true;
-
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\after_decompress.mw", "荷ほどき", message);
 
@@ -160,7 +158,6 @@ namespace MovingWordpress.ViewModels
             }
             finally
             {
-                this.IsExecute = false;
             }
         }
         #endregion
@@ -246,7 +243,6 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\after_cleanup.mw", "後片付け", message);
 
@@ -257,7 +253,6 @@ namespace MovingWordpress.ViewModels
             }
             finally
             {
-                this.IsExecute = false;
             }
         }
         #endregion
