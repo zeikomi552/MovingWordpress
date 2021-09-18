@@ -152,33 +152,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region コメント付きのコマンド実行処理
-        /// <summary>
-        /// コメント付きのコマンド実行処理
-        /// </summary>
-        /// <param name="cmd">コマンド</param>
-        protected void ExecuteCommand(StringBuilder message, string cmd)
-        {
-            // コマンド内容のセット
-            message.AppendLine("Command ==> " + cmd);
-
-            // メッセージの更新
-            UpdateMessage(message.ToString());
-
-            // コマンド内容のセット
-            message.AppendLine("result ==> " + cmd);
-
-            // コマンドの実行
-            var result = this.SSHConnection.SshCommand(cmd);
-
-            // 実行結果をセット
-            message.AppendLine(result);
-
-            // メッセージの更新
-            UpdateMessage(message.ToString());
-        }
-        #endregion
-
         #region コマンド実行処理
         /// <summary>
         /// コマンド実行処理
@@ -193,9 +166,20 @@ namespace MovingWordpress.ViewModels
 
                 // コマンド開始のメモ
                 message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                // コマンド内容のセット
+                message.AppendLine("Command ==> " + cmd);
 
-                ExecuteCommand(message, cmd);
+                // メッセージの更新
+                UpdateMessage(message.ToString());
 
+                // コマンド内容のセット
+                message.AppendLine("result ==> " + cmd);
+
+                // コマンドの実行
+                var result = this.SSHConnection.SshCommand(cmd);
+
+                // 実行結果をセット
+                message.AppendLine(result);
                 message.AppendLine($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
 
                 // メッセージの更新
@@ -253,13 +237,12 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_directory_info.mw", "フォルダを探す", message);
             }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
+            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            finally { this.IsExecute = false; }
         }
         #endregion
 
@@ -271,13 +254,12 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_wordpress_info.mw", "ワードプレス用パスワード確認", message);
             }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
+            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            finally { this.IsExecute = false; }
         }
         #endregion
 
@@ -289,16 +271,15 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_database_info.mw", "データベース情報確認", message);
             }
-            catch (Exception e)
-            {
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
+            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            finally { this.IsExecute = false; }
         }
         #endregion
 
-        
+
     }
 }

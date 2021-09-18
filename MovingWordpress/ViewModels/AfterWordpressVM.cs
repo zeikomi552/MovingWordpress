@@ -148,6 +148,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                this.IsExecute = true;
+
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\after_decompress.mw", "荷ほどき", message);
 
@@ -155,6 +157,10 @@ namespace MovingWordpress.ViewModels
             catch (Exception e)
             {
                 ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+            finally
+            {
+                this.IsExecute = false;
             }
         }
         #endregion
@@ -167,6 +173,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                this.IsExecute = true;
+
                 // 初期化処理
                 this.SSHConnection.CreateConnection();
 
@@ -216,12 +224,15 @@ namespace MovingWordpress.ViewModels
                     this._UploadTemporaryMessage.AppendLine($"====== アップロード End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
                     // メッセージの更新
                     UpdateMessage(this._UploadTemporaryMessage.ToString());
+
+                    this.IsExecute = false;
                 }
                 );
             }
             catch (Exception e)
             {
                 ShowMessage.ShowErrorOK(e.Message, "Error");
+                this.IsExecute = false;
             }
         }
         #endregion
@@ -235,6 +246,7 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                this.IsExecute = true;
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\after_cleanup.mw", "後片付け", message);
 
@@ -242,6 +254,10 @@ namespace MovingWordpress.ViewModels
             catch (Exception e)
             {
                 ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+            finally
+            {
+                this.IsExecute = false;
             }
         }
         #endregion
