@@ -218,7 +218,7 @@ namespace MovingWordpress.ViewModels
 
             Task.Run(() =>
             {
-                message.AppendLine($"******** {action_name} End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ********");
+                message.AppendLine($"******** {action_name} Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ********");
                 // メッセージの更新
                 UpdateMessage(message.ToString());
 
