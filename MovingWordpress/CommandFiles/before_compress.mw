@@ -1,0 +1,15 @@
+﻿//*******************************
+// 荷づくり画面の荷づくりコマンド
+//*******************************
+
+// 各ファイルの圧縮
+cd {mw:RemoteDirecotry};tar zcvf /tmp/uploads.tar.gz uploads;
+cd {mw:RemoteDirecotry};tar zcvf /tmp/plugins.tar.gz plugins;
+cd {mw:RemoteDirecotry};tar zcvf /tmp/themes.tar.gz themes;
+cd {mw:RemoteDirecotry};tar zcvf /tmp/uploads.tar.gz uploads;
+
+// データベースデータのdumpと圧縮
+mysqldump -u {mw:DatabaseUserID} -p{mw:DatabasePassword} -h localhost {mw:Database} | gzip > /tmp/dump.sql.gz
+
+// tmpフォルダの確認
+cd /tmp/;ls -lh;

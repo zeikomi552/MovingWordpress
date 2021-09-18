@@ -146,37 +146,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // 初期化処理
-                this.SSHConnection.CreateConnection();
-
-                Task.Run(() =>
-                {
-                    StringBuilder message = new StringBuilder();
-                    message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-
-                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_UploadGz} uploads;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_PluginsGz} plugins;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar zcvf /tmp/{_ThemesGz} themes;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = $"mysqldump -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost {this.SSHConnection.MySQLSetting.Database} | gzip > /tmp/{_DumpSqlGz}";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp/;ls -lh;";
-                    ExecuteCommand(message, cmd);
-
-                    message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-
-                }
-                );
+                StringBuilder message = new StringBuilder();
+                ExecuteCommandList(@"CommandFiles\before_compress.mw", "荷づくり", message);
 
             }
             catch (Exception e)
@@ -195,42 +166,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\before_cleanup.mw", "後片付け", message);
-
-                //// 初期化処理
-                //this.SSHConnection.CreateConnection();
-
-
-                //Task.Run(() =>
-                //{
-                //    StringBuilder message = new StringBuilder();
-                //    message.AppendLine($"====== 後片付け Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                //    // メッセージの更新
-                //    UpdateMessage(message.ToString());
-
-                //    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_UploadGz};";
-                //    ExecuteCommand(message, cmd);
-
-                //    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_PluginsGz};";
-                //    ExecuteCommand(message, cmd);
-
-                //    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_ThemesGz};";
-                //    ExecuteCommand(message, cmd);
-
-                //    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f /tmp/{_DumpSqlGz};";
-                //    ExecuteCommand(message, cmd);
-
-                //    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"cd /tmp;ls -lh;";
-                //    ExecuteCommand(message, cmd);
-
-                //    message.Append($"====== 後片付け End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                //    // メッセージの更新
-                //    UpdateMessage(message.ToString());
-                //}
-                //);
-
             }
             catch (Exception e)
             {

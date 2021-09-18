@@ -45,6 +45,7 @@ namespace MovingWordpress.Common
             command = command.Replace("{mw:RemoteDirecotry}", ssh_manager.FolderSetting.RemoteDirectory);
             command = command.Replace("{mw:LocalDirecotry}", ssh_manager.FolderSetting.LocalDirectory);
             command = command.Replace("{mw:DatabasePassword}", ssh_manager.MySQLSetting.MySQLPassword);
+            command = command.Replace("{mw:Database}", ssh_manager.MySQLSetting.Database);
             command = command.Replace("{mw:DatabaseUserID}", ssh_manager.MySQLSetting.MySQLUserID);
             command = command.Replace("{mw:SSHHostName}", ssh_manager.SSHSetting.HostName);
             command = command.Replace("{mw:SSHUserName}", ssh_manager.SSHSetting.UserName);
