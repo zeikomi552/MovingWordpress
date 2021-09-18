@@ -148,50 +148,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // 初期化処理
-                this.SSHConnection.CreateConnection();
-
-                Task.Run(() =>
-                {
-                    StringBuilder message = new StringBuilder();
-                    message.AppendLine($"====== Command Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-
-                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"mv uploads/ _uploads/;mv plugins/ _plugins/;mv themes/ _themes/;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"mv /tmp/{_UploadGz} {_UploadGz};mv /tmp/{_PluginsGz} {_PluginsGz};mv /tmp/{_ThemesGz} {_ThemesGz};mv /tmp/{_DumpSqlGz} {_DumpSqlGz};";
-                    ExecuteCommand(message, cmd);
-
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"tar -zxvf {_UploadGz};tar -zxvf {_PluginsGz};tar -zxvf {_ThemesGz};rm -f {_UploadGz};rm -f{_PluginsGz};rm -f {_PluginsGz};";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"sudo chown bitnami:daemon -R uploads;sudo chown bitnami:daemon -R plugins;sudo chown bitnami:daemon -R themes;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + $"uploads;sudo chown daemon:daemon -R *;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {{}} +;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + $"plugins;sudo chown daemon:daemon -R all-in-one-seo-pack;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {{}} +;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + $"themes;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {{}} +;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"gzip -d -f {this.SSHConnection.FolderSetting.RemoteDirectory}dump.sql.gz;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"mysql -u {this.SSHConnection.MySQLSetting.MySQLUserID} -p{this.SSHConnection.MySQLSetting.MySQLPassword} -h localhost -D {this.SSHConnection.MySQLSetting.Database} < dump.sql";
-                    ExecuteCommand(message, cmd);
-
-                    message.Append($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-
-                }
-                );
+                StringBuilder message = new StringBuilder();
+                ExecuteCommandList(@"CommandFiles\after_decompress.mw", "荷ほどき", message);
 
             }
             catch (Exception e)
@@ -277,40 +235,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // 初期化処理
-                this.SSHConnection.CreateConnection();
-
-
-                Task.Run(() =>
-                {
-                    StringBuilder message = new StringBuilder();
-                    message.AppendLine($"====== 後片付け Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-
-                    string cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f {_UploadGz};";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f {_PluginsGz};";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f {_ThemesGz};";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f {_DumpSqlGz};";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"rm -f dump.sql;";
-                    ExecuteCommand(message, cmd);
-
-                    cmd = "cd " + this.SSHConnection.FolderSetting.RemoteDirectory + ";" + $"ls -lh;";
-                    ExecuteCommand(message, cmd);
-
-                    message.Append($"====== 後片付け End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    // メッセージの更新
-                    UpdateMessage(message.ToString());
-                }
-                );
+                StringBuilder message = new StringBuilder();
+                ExecuteCommandList(@"CommandFiles\after_cleanup.mw", "後片付け", message);
 
             }
             catch (Exception e)

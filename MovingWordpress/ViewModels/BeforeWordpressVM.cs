@@ -117,7 +117,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
         #region 初期化処理
         /// <summary>
         /// 初期化処理
@@ -156,7 +155,6 @@ namespace MovingWordpress.ViewModels
             }
         }
         #endregion
-
 
         #region 後片付け実行処理
         /// <summary>
@@ -247,6 +245,7 @@ namespace MovingWordpress.ViewModels
             }
         }
         #endregion
+
         #region plugins.tar.gzフォルダのダウンロード進捗
         /// <summary>
         /// plugins.tar.gzフォルダのダウンロード進捗
@@ -260,7 +259,6 @@ namespace MovingWordpress.ViewModels
             UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_plugin);
         }
         #endregion
-
 
         #region uploads.tar.gzのダウンロード進捗
         /// <summary>

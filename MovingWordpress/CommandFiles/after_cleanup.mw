@@ -1,0 +1,7 @@
+﻿//*******************************
+// 引っ越し画面の後片付けコマンド
+//*******************************
+rm -f /tmp/uploads.tar.gz;
+rm -f /tmp/plugins.tar.gz;
+rm -f /tmp/themes.tar.gz;
+rm -f /tmp/dump.sql.gz;

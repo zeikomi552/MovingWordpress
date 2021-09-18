@@ -47,6 +47,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="CommandFiles\after_cleanup.mw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandFiles\after_decompress.mw">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="CommandFiles\before_cleanup.mw">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

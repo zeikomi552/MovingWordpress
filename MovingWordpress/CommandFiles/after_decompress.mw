@@ -1,0 +1,32 @@
+﻿//*******************************
+// 引っ越し画面の荷ほどきボタンのコマンド
+//*******************************
+
+// 元々いるディレクトリをリネーム
+cd {mw:RemoteDirecotry};mv uploads/ _uploads/;mv plugins/ _plugins/;mv themes/ _themes/;
+
+// /tmpにいる圧縮ファイルをwp-contentsディレクトリ配下に移動
+cd {mw:RemoteDirecotry};mv /tmp/uploads.tar.gz uploads.tar.gz;mv /tmp/plugins.tar.gz plugins.tar.gz;mv /tmp/themes.tar.gz themes.tar.gz;mv /tmp/dump.sql.gz dump.sql.gz;
+
+// 各種圧縮ファイルを解凍
+cd {mw:RemoteDirecotry};tar -zxvf uploads.tar.gz;tar -zxvf plugins.tar.gz;tar -zxvf themes.tar.gz;rm -f uploads.tar.gz;rm -f plugins.tar.gz;rm -f themes.tar.gz;
+
+// ディレクトリの権限を変更
+cd {mw:RemoteDirecotry};sudo chown bitnami:daemon -R uploads;sudo chown bitnami:daemon -R plugins;sudo chown bitnami:daemon -R themes;
+
+// uploadsディレクトリの権限変更
+cd {mw:RemoteDirecotry}uploads;sudo chown daemon:daemon -R *;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {} +;
+
+// pluginsディレクトの権限変更
+cd {mw:RemoteDirecotry}plugins;sudo chown daemon:daemon -R all-in-one-seo-pack;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {} +;
+
+// themesディレクトリの権限変更
+cd {mw:RemoteDirecotry}themes;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {} +;
+
+// データベースデータの解凍
+cd {mw:RemoteDirecotry};gzip -d -f {mw:RemoteDirecotry}dump.sql.gz;
+
+// データベースのリストア
+cd {mw:RemoteDirecotry};" + $"mysql -u {mw:DatabaseUserID} -p{mw:DatabasePassword} -h localhost -D {mw:Database} < dump.sql
+
+chmod 700 bitnami_credentials

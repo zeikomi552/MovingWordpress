@@ -1,7 +1,7 @@
 ﻿//*******************************
 // 荷づくり画面の後片付けコマンド
 //*******************************
-cd {mw:RemoteDirecotry};rm -f /tmp/uploads.tar.gz;
-cd {mw:RemoteDirecotry};rm -f /tmp/plugins.tar.gz;
-cd {mw:RemoteDirecotry};rm -f /tmp/themes.tar.gz;
-cd {mw:RemoteDirecotry};rm -f /tmp/dump.sql.gz;
+cd {mw:RemoteDirecotry};rm -f uploads.tar.gz;
+cd {mw:RemoteDirecotry};rm -f plugins.tar.gz;
+cd {mw:RemoteDirecotry};rm -f themes.tar.gz;
+cd {mw:RemoteDirecotry};rm -f dump.sql.gz;
