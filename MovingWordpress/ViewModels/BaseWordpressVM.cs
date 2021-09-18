@@ -1,4 +1,5 @@
-﻿using MovingWordpress.Models;
+﻿using MovingWordpress.Common;
+using MovingWordpress.Models;
 using MVVMCore.BaseClass;
 using MVVMCore.Common.Utilities;
 using System;
@@ -163,6 +164,9 @@ namespace MovingWordpress.ViewModels
             // メッセージの更新
             UpdateMessage(message.ToString());
 
+            // コマンド内容のセット
+            message.AppendLine("result ==> " + cmd);
+
             message.AppendLine(this.SSHConnection.SshCommand(cmd));
 
             // メッセージの更新
@@ -174,7 +178,7 @@ namespace MovingWordpress.ViewModels
         /// <summary>
         /// コマンド実行処理
         /// </summary>
-        /// <param name="cmd"></param>
+        /// <param name="cmd">コマンド</param>
         protected void ExecuteCommand(string cmd)
         {
             try
@@ -204,6 +208,7 @@ namespace MovingWordpress.ViewModels
             }
         }
         #endregion
+
         #region バックアップ用のディレクトリを探す
         /// <summary>
         /// バックアップ用のディレクトリを探す
@@ -233,11 +238,7 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // コマンド
-                string cmd = "sudo cat /home/bitnami/bitnami_credentials;";
-
-                // コマンドの発酵処理
-                ExecuteCommand(cmd);
+                ExecuteCommandList(@"CommandFiles\check_wordpress_info.mw");
             }
             catch (Exception e)
             {
@@ -254,11 +255,7 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // コマンド
-                string cmd = $"cd {this.SSHConnection.FolderSetting.RemoteDirectory};cd ..;cat wp-config.php;";
-
-                // コマンドの発行処理
-                ExecuteCommand(cmd);
+                ExecuteCommandList(@"CommandFiles\check_database_info.mw");
             }
             catch (Exception e)
             {
@@ -267,5 +264,23 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region ファイルパスを指定してコマンドを実行する
+        /// <summary>
+        /// ファイルパスを指定してコマンドを実行する
+        /// </summary>
+        /// <param name="command_file_path">コマンドファイルパス</param>
+        private void ExecuteCommandList(string command_file_path)
+        {
+            var command_list = MovingWordpressUtilities.ReadCommandList(command_file_path);
+            foreach (var command in command_list)
+            {
+                // タグを変換
+                var tmp = MovingWordpressUtilities.ConvertCommandTags(command, this.SSHConnection);
+
+                // コマンドの発酵処理
+                ExecuteCommand(tmp);
+            }
+        }
+        #endregion
     }
 }

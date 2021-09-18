@@ -11,11 +11,12 @@ namespace MovingWordpress.ViewModels
 {
     public class AfterWordpressVM : BaseWordpressVM
     {
-
+        #region アップロード用のメッセージ(一時保存用)
         /// <summary>
         /// アップロード用のメッセージ(一時保存用)
         /// </summary>
         StringBuilder _UploadTemporaryMessage = new StringBuilder();
+        #endregion
 
         #region アップロードの進行状況[DownloadProgress_plugin]プロパティ
         /// <summary>
@@ -117,6 +118,7 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region 初期化処理
         /// <summary>
         /// 初期化処理
         /// </summary>
@@ -136,7 +138,9 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
 
+        #region SSHの実行処理
         /// <summary>
         /// SSHの実行処理
         /// </summary>
@@ -195,7 +199,7 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
-
+        #endregion
 
         #region SCPによるアップロードの実行
         /// <summary>

@@ -29,6 +29,31 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
+		#region データベース名[Database]プロパティ
+		/// <summary>
+		/// データベース名[Database]プロパティ用変数
+		/// </summary>
+		string _Database = string.Empty;
+		/// <summary>
+		/// データベース名[Database]プロパティ
+		/// </summary>
+		public string Database
+		{
+			get
+			{
+				return _Database;
+			}
+			set
+			{
+				if (_Database == null || !_Database.Equals(value))
+				{
+					_Database = value;
+					NotifyPropertyChanged("Database");
+				}
+			}
+		}
+		#endregion
+
 		#region MySQLのユーザーID[MySQLUserID]プロパティ
 		/// <summary>
 		/// MySQLのユーザーID[MySQLUserID]プロパティ用変数

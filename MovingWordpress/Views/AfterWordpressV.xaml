@@ -149,23 +149,23 @@
                     <GroupBox Header="SSH設定" DataContext="{Binding SSHConnection.SSHSetting}">
                         <StackPanel Margin="5">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ホスト名"/>
+                                <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="ホスト名"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding HostName}" Cursor="IBeam"/>
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ポート"/>
+                                <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="ポート"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding Port}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(OS)"/>
+                                <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(OS)"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding UserName}"/>
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード"/>
+                                <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding PassWord}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="秘密鍵のパス(.pem)"/>
+                                <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="秘密鍵のパス(.pem)"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="250" VerticalAlignment="Center" Text="{Binding KeyFilePath}"/>
                                 <Button Content="ファイル" Width="100">
@@ -177,7 +177,7 @@
                                 </Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスフレーズ"/>
+                                <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="パスフレーズ"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding PassPhrase}"/>
                             </StackPanel>
@@ -217,9 +217,9 @@
                     <GroupBox Header="MySQL設定" DataContext="{Binding SSHConnection.MySQLSetting}">
                         <StackPanel Margin="5">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(MySQL)"/>
+                                <TextBlock Margin="5" Width="100" TextAlignment="Right" VerticalAlignment="Center" Text="データベース名"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLUserID}"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding Database}"/>
                                 <Button Margin="5" Width="100" Content="確認">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="Click">
@@ -229,7 +229,12 @@
                                 </Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(MySQL)"/>
+                                <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="ユーザー名(MySQL)"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLUserID}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock TextAlignment="Right" Margin="5" Width="100" VerticalAlignment="Center" Text="パスワード(MySQL)"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="100" VerticalAlignment="Center" Text="{Binding MySQLPassword}"/>
                             </StackPanel>
