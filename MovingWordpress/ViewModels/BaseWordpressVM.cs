@@ -235,6 +235,22 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region パーミッション確認用
+        /// <summary>
+        /// パーミッション確認用
+        /// </summary>
+        public void CheckPermission()
+        {
+            try
+            {
+                StringBuilder message = new StringBuilder();
+                ExecuteCommandList(@"CommandFiles\check_permission.mw", "パーミッションの確認", message);
+            }
+            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            finally { }
+        }
+        #endregion
+
         #region バックアップ用のディレクトリを探す
         /// <summary>
         /// バックアップ用のディレクトリを探す

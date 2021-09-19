@@ -6,7 +6,7 @@
 cd {mw:RemoteDirecotry};mv uploads/ _uploads/;mv plugins/ _plugins/;mv themes/ _themes/;
 
 // /tmpにいる圧縮ファイルをwp-contentsディレクトリ配下に移動
-cd {mw:RemoteDirecotry};mv /tmp/uploads.tar.gz uploads.tar.gz;mv /tmp/plugins.tar.gz plugins.tar.gz;mv /tmp/themes.tar.gz themes.tar.gz;mv /tmp/dump.sql.gz dump.sql.gz;
+cd {mw:RemoteDirecotry};cp /tmp/uploads.tar.gz uploads.tar.gz;cp /tmp/plugins.tar.gz plugins.tar.gz;cp /tmp/themes.tar.gz themes.tar.gz;cp /tmp/dump.sql.gz dump.sql.gz;
 
 // 各種圧縮ファイルを解凍
 cd {mw:RemoteDirecotry};tar -zxvf uploads.tar.gz;tar -zxvf plugins.tar.gz;tar -zxvf themes.tar.gz;rm -f uploads.tar.gz;rm -f plugins.tar.gz;rm -f themes.tar.gz;
@@ -27,6 +27,6 @@ cd {mw:RemoteDirecotry}themes;sudo chmod 664 -R *;sudo find . -type d -exec chmo
 cd {mw:RemoteDirecotry};gzip -d -f {mw:RemoteDirecotry}dump.sql.gz;
 
 // データベースのリストア
-cd {mw:RemoteDirecotry};" + $"mysql -u {mw:DatabaseUserID} -p{mw:DatabasePassword} -h localhost -D {mw:Database} < dump.sql
+cd {mw:RemoteDirecotry};mysql -u {mw:DatabaseUserID} -p{mw:DatabasePassword} -h localhost -D {mw:Database} < dump.sql
 
 chmod 700 bitnami_credentials

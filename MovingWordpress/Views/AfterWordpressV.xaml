@@ -10,7 +10,7 @@
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels"
         xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters" x:Class="MovingWordpress.Views.AfterWordpressV"
         mc:Ignorable="d"
-        Title="AfterWordpressV" Height="1000" Width="1200">
+        Title="引っ越し画面" Height="1000" Width="1200">
 
     <mah:MetroWindow.Resources>
         <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
@@ -34,11 +34,11 @@
         </Grid.RowDefinitions>
 
         <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
-            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="引っ越し" FontSize="30"/>
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="引っ越し画面" FontSize="30"/>
         </Border>
-        <GroupBox Margin="5" Grid.Row="1" Header="アクションアイテム">
-            <StackPanel Margin="5" Orientation="Horizontal" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}">
-                <StackPanel Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <GroupBox Margin="5,5,0,5" Header="メインアクションアイテム">
+                <StackPanel Margin="5" Orientation="Horizontal" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}">
                     <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
@@ -52,7 +52,6 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
-
                     <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
@@ -79,11 +78,11 @@
                                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="後片付け"/>
                             </Grid>
                         </StackPanel>
-
                     </Button>
-
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
+            </GroupBox>
+            <GroupBox Margin="0,5" Grid.Row="1" Header="サブアクションアイテム">
+                <StackPanel Margin="5" Orientation="Horizontal" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}">
                     <Button Height="100" Width="100" Margin="5" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
@@ -123,11 +122,22 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
-
+                    <Button Margin="5" Height="100" Width="100">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="CheckPermission" TargetObject="{Binding Mode=OneWay, Source={StaticResource vm}}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="パーミッション確認"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
-
-            </StackPanel>
-        </GroupBox>
+            </GroupBox>
+        </StackPanel>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
