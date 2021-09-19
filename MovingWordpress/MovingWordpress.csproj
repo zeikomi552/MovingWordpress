@@ -4,9 +4,12 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Common\Icons\app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Common\Icons\app-icon.ico" />
+    <None Remove="Common\Icons\app.ico" />
     <None Remove="Common\Icons\icon-after-wordpress.png" />
     <None Remove="Common\Icons\icon-before-wordpress.png" />
     <None Remove="Common\Icons\Icon-clearn.png" />
@@ -35,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Common\Icons\app.ico" />
     <Resource Include="Common\Icons\icon-after-wordpress.png" />
     <Resource Include="Common\Icons\icon-before-wordpress.png" />
     <Resource Include="Common\Icons\Icon-clearn.png" />
