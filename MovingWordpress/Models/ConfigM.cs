@@ -2,6 +2,7 @@
 using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,18 @@ namespace MovingWordpress.Models
 {
     public class ConfigM : ModelBase
     {
+		#region アプリケーションフォルダの取得
+		/// <summary>
+		/// アプリケーションフォルダの取得
+		/// </summary>
+		/// <returns>アプリケーションフォルダパス</returns>
+		public static string GetApplicationFolder()
+		{
+			var fv = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), fv.CompanyName, fv.ProductName);
+		}
+		#endregion
+
 		#region コンフィグディレクトリパス[ConfigDir]プロパティ
 		/// <summary>
 		/// コンフィグディレクトリパス[ConfigDir]プロパティ用変数
@@ -71,7 +84,16 @@ namespace MovingWordpress.Models
 		{
 			get
 			{
-				return Path.Combine(this.ConfigDir, this.ConfigFileName);
+				// Configフォルダのパス取得
+				string conf_dir = Path.Combine(GetApplicationFolder(), this.ConfigDir);
+				// 存在確認
+				if (!Directory.Exists(conf_dir))
+				{
+					// 存在しない場合は作成
+					DirectoryUtil.CreateDirectory(conf_dir);
+				}
+
+				return Path.Combine(conf_dir, this.ConfigFileName);
 			}
 		}
         #endregion

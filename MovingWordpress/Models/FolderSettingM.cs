@@ -33,7 +33,7 @@ namespace MovingWordpress.Models
 		/// <summary>
 		/// リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ用変数
 		/// </summary>
-		string _RemoteDirectory = "/opt/bitnami/apps/wordpress/htdocs/wp-content/";
+		string _RemoteDirectory = string.Empty;
 		/// <summary>
 		/// リモートPC側のファイル保存ディレクトリ[RemoteDirectory]プロパティ
 		/// </summary>
