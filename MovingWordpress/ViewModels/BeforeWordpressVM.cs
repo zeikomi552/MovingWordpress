@@ -193,6 +193,8 @@ namespace MovingWordpress.ViewModels
             try
             {
                 this.IsExecute = true;
+                this._DownloadTemporaryMessage.Clear();
+
                 // 初期化処理
                 this.SSHConnection.CreateConnection();
 

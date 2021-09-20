@@ -14,6 +14,10 @@ namespace MovingWordpress.ViewModels
 {
     public class MainWindowVM : ViewModelBase
     {
+        #region 初期化処理
+        /// <summary>
+        /// 初期化処理
+        /// </summary>
         public void Init()
         {
             try
@@ -25,7 +29,12 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
 
+        #region 荷づくり画面への遷移処理
+        /// <summary>
+        /// 荷づくり画面への遷移処理
+        /// </summary>
         public void BeforeWordpressV()
         {
             try
@@ -43,7 +52,12 @@ namespace MovingWordpress.ViewModels
             }
 
         }
+        #endregion
 
+        #region 引っ越し画面への遷移処理
+        /// <summary>
+        /// 引っ越し画面への遷移処理
+        /// </summary>
         public void AfterWordpressV()
         {
             try
@@ -62,6 +76,6 @@ namespace MovingWordpress.ViewModels
             }
 
         }
-
+        #endregion
     }
 }
