@@ -299,6 +299,36 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region クリップボードへのコピー
+        /// <summary>
+        /// クリップボードへのコピー
+        /// </summary>
+        public void CopyClipboard()
+        {
+            try
+            {
+                //クリップボードに文字列をコピーする
+                Clipboard.SetText(this.Message);
+            }
+            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            finally { }
+        }
+        #endregion
 
+        #region 結果のクリア処理
+        /// <summary>
+        /// 結果のクリア処理
+        /// </summary>
+        public void ClearResult()
+        {
+            try
+            {
+                //クリップボードに文字列をコピーする
+                this.Message = string.Empty;
+            }
+            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            finally { }
+        }
+        #endregion
     }
 }

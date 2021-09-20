@@ -269,10 +269,30 @@
                 </StackPanel>
             </Grid>
             <Grid Margin="5" Grid.Column="1">
-                <GroupBox Header="結果" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <GroupBox Header="結果">
                     <TextBox hlp:TextBoxAttachedHelper.AutoScrollToEnd="True"
                              VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding Message}" Margin="5" Cursor="IBeam"/>
                 </GroupBox>
+                <StackPanel Orientation="Horizontal" Grid.Row="1">
+                    <Button Margin="5" Content="コピー" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="CopyClipboard" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </Button>
+                    <Button Margin="5" Content="クリア" Cursor="Hand" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="ClearResult" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Grid>
     </Grid>
