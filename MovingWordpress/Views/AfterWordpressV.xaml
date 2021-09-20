@@ -270,7 +270,8 @@
             </Grid>
             <Grid Margin="5" Grid.Column="1">
                 <GroupBox Header="結果" Grid.Row="1">
-                    <TextBox VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding Message}" Margin="5"/>
+                    <TextBox hlp:TextBoxAttachedHelper.AutoScrollToEnd="True"
+                             VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding Message}" Margin="5" Cursor="IBeam"/>
                 </GroupBox>
             </Grid>
         </Grid>
