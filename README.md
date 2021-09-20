@@ -1,2 +1,4 @@
 # MovingWordpress
 Wordpress引っ越し用のツール
+
+本ソフトウェアの開発者はWordPress団体との関係は一切ありません。
