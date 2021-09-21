@@ -9,6 +9,11 @@ namespace MVVMCore.BaseClass
 {
     public class ModelBase : INotifyPropertyChanged
     {
+		/// <summary>
+		/// ロガー
+		/// </summary>
+		protected static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		#region シャローコピー
 		/// <summary>
 		/// シャローコピー

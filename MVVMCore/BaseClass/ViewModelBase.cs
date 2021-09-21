@@ -9,6 +9,12 @@ namespace MVVMCore.BaseClass
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
 	{
+		/// <summary>
+		/// ロガー
+		/// </summary>
+		protected static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+
 		#region ダイアログ結果[DialogResult]プロパティ
 		/// <summary>
 		/// ダイアログ結果[DialogResult]プロパティ用変数
