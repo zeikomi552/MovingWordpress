@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovingWordpress", "MovingWo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MVVMCore", "MVVMCore\MVVMCore.csproj", "{862553FE-6864-4001-8DFF-0AF0377B1527}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MovingWordPressInstaller", "MovingWordPressInstaller\MovingWordPressInstaller.vdproj", "{963E7BE0-5321-4F50-B671-ACB2689FBFB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,8 @@ Global
 		{862553FE-6864-4001-8DFF-0AF0377B1527}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{862553FE-6864-4001-8DFF-0AF0377B1527}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{862553FE-6864-4001-8DFF-0AF0377B1527}.Release|Any CPU.Build.0 = Release|Any CPU
+		{963E7BE0-5321-4F50-B671-ACB2689FBFB5}.Debug|Any CPU.ActiveCfg = Debug
+		{963E7BE0-5321-4F50-B671-ACB2689FBFB5}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
