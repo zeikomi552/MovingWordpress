@@ -9,7 +9,7 @@
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels"
         x:Class="MovingWordpress.MainWindow"
         mc:Ignorable="d"
-        Title="ワードプレスの引っ越し屋さん" Height="450" Width="800">
+        Title="ワードプレスの引っ越し屋さん" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <b:Interaction.Triggers>
         <b:EventTrigger>
             <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>

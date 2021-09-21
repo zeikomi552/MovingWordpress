@@ -27,6 +27,7 @@
     <None Remove="Common\Icons\icon-moving.png" />
     <None Remove="Common\Icons\icon-search.png" />
     <None Remove="Common\Icons\icon-upload.png" />
+    <None Remove="Common\Themes\SplushScreen.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,10 +41,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MVVMCore\MVVMCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Themes\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -87,6 +84,10 @@
     <None Update="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SplashScreen Include="Common\Themes\SplushScreen.png" />
   </ItemGroup>
 
 </Project>

@@ -9,7 +9,7 @@
         xmlns:local="clr-namespace:MovingWordpress.Views"
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters" x:Class="MovingWordpress.Views.BeforeWordpressV"
         mc:Ignorable="d"
-        Title="荷造り画面" Height="1000" Width="1200">
+        Title="荷造り画面" Height="1000" Width="1200" WindowStartupLocation="CenterScreen">
 
     <mah:MetroWindow.Resources>
         <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
