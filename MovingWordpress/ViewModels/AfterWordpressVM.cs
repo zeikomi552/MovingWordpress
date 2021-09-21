@@ -135,6 +135,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
@@ -154,6 +155,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
             finally
@@ -229,6 +231,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
                 this.IsExecute = false;
             }
@@ -250,6 +253,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
             finally

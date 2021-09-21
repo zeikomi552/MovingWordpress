@@ -30,6 +30,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
@@ -52,6 +53,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
 
@@ -76,6 +78,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
 

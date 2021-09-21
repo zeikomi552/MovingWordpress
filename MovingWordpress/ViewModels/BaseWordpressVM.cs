@@ -131,6 +131,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
@@ -187,6 +188,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
@@ -246,7 +248,10 @@ namespace MovingWordpress.ViewModels
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_permission.mw", "パーミッションの確認", message);
             }
-            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error"); }
             finally { }
         }
         #endregion
@@ -262,7 +267,10 @@ namespace MovingWordpress.ViewModels
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_directory_info.mw", "フォルダを探す", message);
             }
-            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error"); }
             finally {  }
         }
         #endregion
@@ -278,7 +286,10 @@ namespace MovingWordpress.ViewModels
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_wordpress_info.mw", "ワードプレス用パスワード確認", message);
             }
-            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error"); }
             finally {  }
         }
         #endregion
@@ -294,7 +305,10 @@ namespace MovingWordpress.ViewModels
                 StringBuilder message = new StringBuilder();
                 ExecuteCommandList(@"CommandFiles\check_database_info.mw", "データベース情報確認", message);
             }
-            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error"); }
             finally {}
         }
         #endregion
@@ -310,7 +324,10 @@ namespace MovingWordpress.ViewModels
                 //クリップボードに文字列をコピーする
                 Clipboard.SetText(this.Message);
             }
-            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error"); }
             finally { }
         }
         #endregion
@@ -326,7 +343,10 @@ namespace MovingWordpress.ViewModels
                 //クリップボードに文字列をコピーする
                 this.Message = string.Empty;
             }
-            catch (Exception e) { ShowMessage.ShowErrorOK(e.Message, "Error"); }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error"); }
             finally { }
         }
         #endregion
