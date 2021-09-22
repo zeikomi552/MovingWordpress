@@ -238,7 +238,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
         #region 後片付け実行処理
         /// <summary>
         /// 後片付け実行処理
