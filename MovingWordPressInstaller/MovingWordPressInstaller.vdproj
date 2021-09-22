@@ -43,6 +43,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -59,6 +75,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -165,9 +197,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:MovingWordPressInstaller"
+        "ProductName" = "8:MovingWordPress"
         "ProductCode" = "8:{B4424359-F315-45F4-8EE8-FC0E953429D4}"
-        "PackageCode" = "8:{493FE507-E0B9-410D-BF65-9E061135181F}"
+        "PackageCode" = "8:{A075AF06-C1DD-440C-BB83-66CA7B3FB437}"
         "UpgradeCode" = "8:{00AC879E-009D-4BE9-9C1E-DD7874CF6143}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -178,11 +210,11 @@
         "Manufacturer" = "8:Zeikomi"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:MovingWordPress"
+        "Title" = "8:ワードプレスの引っ越し屋さん"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Zeikomi552"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:ワードプレス引っ越し用ツール"
+        "ARPCOMMENTS" = "8:ワードプレスの引っ越し屋さん"
         "ARPURLINFOABOUT" = "8:"
         "ARPPRODUCTICON" = "8:_9115A14893874A82A9E2B24B888DF3D6"
         "ARPIconIndex" = "3:0"
@@ -716,7 +748,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AFC7347C626F410FAAA87AE7C5754DAA"
             {
-            "SourcePath" = "8:..\\MovingWordpress\\obj\\Debug\\net5.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\MovingWordpress\\obj\\Release\\net5.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_332EA1ED8AA8412090485B85B8C4D5D9"
