@@ -7,7 +7,7 @@
     <ApplicationIcon>Common\Icons\app.ico</ApplicationIcon>
     <Authors>Zeikomi</Authors>
     <Company>Zeikomi</Company>
-    <Product>MovingWordPress : ワードプレスの引っ越し屋さん</Product>
+    <Product>MovingWordPress</Product>
     <Description>ワードプレスの引っ越しを楽にするツールのはずです。
 SSHに対応したブログサイトを想定しています。
 </Description>

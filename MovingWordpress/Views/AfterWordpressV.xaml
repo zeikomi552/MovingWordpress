@@ -10,7 +10,7 @@
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels"
         xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters" x:Class="MovingWordpress.Views.AfterWordpressV"
         mc:Ignorable="d"
-        Title="引っ越し画面" Height="1000" Width="1200" WindowStartupLocation="CenterScreen">
+        Title="引っ越し画面" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
 
     <mah:MetroWindow.Resources>
         <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
@@ -26,7 +26,7 @@
             <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
         </b:EventTrigger>
     </b:Interaction.Triggers>
-    <Grid Grid.ColumnSpan="2">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
