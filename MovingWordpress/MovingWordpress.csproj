@@ -7,12 +7,13 @@
     <ApplicationIcon>Common\Icons\app.ico</ApplicationIcon>
     <Authors>Zeikomi</Authors>
     <Company>Zeikomi</Company>
-    <Product>MovingWordPress</Product>
-    <Description>MovingWordPress
+    <Product>MovingWordPress : ワードプレスの引っ越し屋さん</Product>
+    <Description>ワードプレスの引っ越しを楽にするツールのはずです。
+SSHに対応したブログサイトを想定しています。
 </Description>
-    <AssemblyVersion>0.0.0.1</AssemblyVersion>
-    <FileVersion>0.0.0.1</FileVersion>
-    <Version>0.0.1</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Version>0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
