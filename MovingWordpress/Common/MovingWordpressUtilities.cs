@@ -10,6 +10,7 @@ namespace MovingWordpress.Common
 {
     public class MovingWordpressUtilities
     {
+        #region コマンドリストを読み込む
         /// <summary>
         /// コマンドリストを読み込む
         /// </summary>
@@ -33,7 +34,9 @@ namespace MovingWordpress.Common
             }
             return command_list;
         }
+        #endregion
 
+        #region コマンド絡みのタグを変換する処理
         /// <summary>
         /// コマンド絡みのタグを変換する処理
         /// </summary>
@@ -54,5 +57,6 @@ namespace MovingWordpress.Common
             command = command.Replace("{mw:SSHKeyFilePathPassPhrase}", ssh_manager.SSHSetting.PassPhrase);
             return command;
         }
+        #endregion
     }
 }
