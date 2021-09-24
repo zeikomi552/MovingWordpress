@@ -20,6 +20,10 @@ MovingWordPress(ワードプレスの引っ越し屋さん)は、SSH経由で接
 
 更新頻度は不定期です。
 
+## 使い方動画
+
+https://www.youtube.com/watch?v=xGvn0l5z3WI
+
 ## ビルド
 
 ### 開発環境
@@ -34,6 +38,7 @@ MovingWordpress.slnをVisual Studioで起動してリビルドすれば実行フ
 
 開発に協力したい方などいらっしゃいましたらご連絡ください。
 どうやるのが正しいのか、まだわかっていませんが大歓迎です。
+
 
 
 ## ライセンス
