@@ -1,6 +1,8 @@
 # MovingWordPress - ワードプレスの引っ越し屋さん
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/zeikomi552/MovingWordpress)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/zeikomi552/MovingWordPress)
+![GitHub](https://img.shields.io/github/license/zeikomi552/MovingWordPress)
+
 ## リポジトリの説明
 
 このリポジトリは、[プログラマーやめました](https://www.premium-tsubu-hero.net/)の人が作っています。
