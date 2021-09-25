@@ -6,12 +6,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MovingWordpress.Views"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.AnalizeBacknumberV"
+        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters" x:Class="MovingWordpress.Views.AnalizeBacknumberV"
         mc:Ignorable="d"
         Title="過去記事分析" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
-    <Window.DataContext>
+    <mah:MetroWindow.Resources>
+        <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+    </mah:MetroWindow.Resources>
+    <mah:MetroWindow.DataContext>
         <ViewModels:AnalizeBacknumberVM/>
-    </Window.DataContext>
+    </mah:MetroWindow.DataContext>
     <b:Interaction.Triggers>
         <b:EventTrigger>
             <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
@@ -132,6 +135,8 @@
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </ComboBox>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="解析中:" Visibility="{Binding IsExecuteAnaize, Converter={StaticResource boolToVisibilityConverter}}"/>
+                        <ProgressBar Width="100" IsIndeterminate="True" Visibility="{Binding IsExecuteAnaize, Converter={StaticResource boolToVisibilityConverter}}"/>
                     </StackPanel>
                     <DataGrid AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding Analizer.RankItems.Items, Mode=OneWay}">
                         <DataGrid.Columns>

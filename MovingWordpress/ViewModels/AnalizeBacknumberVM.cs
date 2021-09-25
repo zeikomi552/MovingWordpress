@@ -143,6 +143,31 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region 解析中フラグ[IsExecuteAnaize]プロパティ
+        /// <summary>
+        /// 解析中フラグ[IsExecuteAnaize]プロパティ用変数
+        /// </summary>
+        bool _IsExecuteAnaize = false;
+        /// <summary>
+        /// 解析中フラグ[IsExecuteAnaize]プロパティ
+        /// </summary>
+        public bool IsExecuteAnaize
+        {
+            get
+            {
+                return _IsExecuteAnaize;
+            }
+            set
+            {
+                if (!_IsExecuteAnaize.Equals(value))
+                {
+                    _IsExecuteAnaize = value;
+                    NotifyPropertyChanged("IsExecuteAnaize");
+                }
+            }
+        }
+        #endregion
+
 
 
         #region 初期化処理
@@ -221,6 +246,13 @@ namespace MovingWordpress.ViewModels
 
                 Task.Run(() =>
                 {
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           // 解析開始
+                           this.IsExecuteAnaize = true;
+                       }));
+
                     // 形態素解析
                     an.UseMecab(this.BlogContentsManager.GetAllText());
 
@@ -239,6 +271,9 @@ namespace MovingWordpress.ViewModels
                                       select x.PartsOfSpeech).Distinct().ToList<string>();
 
                            this.PartsOfSpeechSelector.Items = new ObservableCollection<string>(tmp);
+
+                           // 解析終了
+                           this.IsExecuteAnaize = false;
                        }));
                 });
             }
