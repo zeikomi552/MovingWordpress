@@ -1,9 +1,11 @@
 ﻿using MVVMCore.BaseClass;
+using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace MovingWordpress.Models
 {
@@ -584,6 +586,10 @@ namespace MovingWordpress.Models
         }
         #endregion
 
+        #region 。を改行に変更しHTMLタグを取り除いたもの
+        /// <summary>
+        /// 。を改行に変更しHTMLタグを取り除いたもの
+        /// </summary>
         public string Post_content_Except
         {
             get
@@ -591,5 +597,34 @@ namespace MovingWordpress.Models
                 return FileAnalyzerM.ExceptHtmlTags(this.Post_content).Replace("。","。\r\n");
             }
         }
+        #endregion
+
+
+        #region 選択要素を含むアナライザ[SelectorAnalizer]プロパティ
+        /// <summary>
+        /// 選択要素を含むアナライザ[SelectorAnalizer]プロパティ用変数
+        /// </summary>
+        SelectorAnalizerM _SelectorAnalizer = new SelectorAnalizerM();
+        /// <summary>
+        /// 選択要素を含むアナライザ[SelectorAnalizer]プロパティ
+        /// </summary>
+        public SelectorAnalizerM SelectorAnalizer
+        {
+            get
+            {
+                return _SelectorAnalizer;
+            }
+            set
+            {
+                if (_SelectorAnalizer == null || !_SelectorAnalizer.Equals(value))
+                {
+                    _SelectorAnalizer = value;
+                    NotifyPropertyChanged("SelectorAnalizer");
+                }
+            }
+        }
+        #endregion
+
+
     }
 }

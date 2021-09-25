@@ -67,7 +67,7 @@ namespace MovingWordpress.Models
 		/// 頻出単語ランキングのクローン
 		/// </summary>
 		/// <returns>クローン結果</returns>
-		public ModelList<MecabRankM> RankIntemClone()
+		public ModelList<MecabRankM> RankItemClone()
 		{
 			ModelList<MecabRankM> ret = new ModelList<MecabRankM>();
 
