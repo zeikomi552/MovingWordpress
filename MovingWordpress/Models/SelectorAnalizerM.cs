@@ -89,7 +89,6 @@ namespace MovingWordpress.Models
         /// <summary>
         /// 品詞選択項目[PartsOfSpeechSelector]プロパティ
         /// </summary>
-        [XmlIgnoreAttribute]
         public ModelList<string> PartsOfSpeechSelector
         {
             get
@@ -115,7 +114,6 @@ namespace MovingWordpress.Models
         /// <summary>
         /// 品詞選択第2項目[PartsOfSpeechSelector2]プロパティ
         /// </summary>
-        [XmlIgnoreAttribute]
         public ModelList<string> PartsOfSpeechSelector2
         {
             get
