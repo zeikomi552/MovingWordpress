@@ -63,6 +63,22 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
+		/// <summary>
+		/// 頻出単語ランキングのクローン
+		/// </summary>
+		/// <returns>クローン結果</returns>
+		public ModelList<MecabRankM> RankIntemClone()
+		{
+			ModelList<MecabRankM> ret = new ModelList<MecabRankM>();
+
+			foreach (var tmp in this.RankItems.Items)
+			{
+				ret.Items.Add(tmp.ShallowCopy<MecabRankM>());
+			}
+
+			return ret;
+		}
+
 
 		#region MeCabを使用した処理
 		/// <summary>

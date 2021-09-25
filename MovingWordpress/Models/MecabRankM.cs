@@ -73,7 +73,18 @@ namespace MovingWordpress.Models
 				return tmp.ElementAt(0);
 			}
 		}
+		/// <summary>
+		/// 品詞2
+		/// </summary>
+		public string PartsOfSpeech2
+		{
+			get
+			{
+				string[] tmp = this.Feature.Split(',');
 
+				return tmp.ElementAt(1);
+			}
+		}
 		#region 出現回数[Count]プロパティ
 		/// <summary>
 		/// 出現回数[Count]プロパティ用変数
