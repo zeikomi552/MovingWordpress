@@ -357,7 +357,7 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.Analizer.SaveRank();
+                this.AnalizerBk.SaveRank();
             }
             catch (Exception e)
             {
