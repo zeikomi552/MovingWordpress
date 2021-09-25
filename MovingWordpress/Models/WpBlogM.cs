@@ -1,4 +1,5 @@
-﻿using MVVMCore.BaseClass;
+﻿using Microsoft.Win32;
+using MVVMCore.BaseClass;
 using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
@@ -62,6 +63,46 @@ namespace MovingWordpress.Models
 			}
 
 			return text.ToString();
+		}
+		#endregion
+
+		#region 過去記事のロード処理
+		/// <summary>
+		/// 過去記事のロード処理
+		/// </summary>
+		public void LoadContents()
+		{
+			// ダイアログのインスタンスを生成
+			var dialog = new OpenFileDialog();
+
+			// ファイルの種類を設定
+			dialog.Filter = "過去記事データ (*.mwc)|*.mwc";
+
+			// ダイアログを表示する
+			if (dialog.ShowDialog() == true)
+			{
+				this.BlogContents = XMLUtil.Deserialize<ModelList<WpContentsM>>(dialog.FileName);
+			}
+		}
+		#endregion
+
+		#region 過去記事の保存処理
+		/// <summary>
+		/// 過去記事の保存処理
+		/// </summary>
+		public void SaveContents()
+		{
+			// ダイアログのインスタンスを生成
+			var dialog = new SaveFileDialog();
+
+			// ファイルの種類を設定
+			dialog.Filter = "過去記事データ (*.mwc)|*.mwc";
+
+			// ダイアログを表示する
+			if (dialog.ShowDialog() == true)
+			{
+				XMLUtil.Seialize<ModelList<WpContentsM>>(dialog.FileName, this.BlogContents);
+			}	
 		}
 		#endregion
 	}

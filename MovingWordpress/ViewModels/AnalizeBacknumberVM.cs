@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using MovingWordpress.Common;
 using MovingWordpress.Models;
 using MVVMCore.BaseClass;
 using MVVMCore.Common.Utilities;
@@ -64,8 +65,7 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
-
+        #region 初期化処理
         /// <summary>
         /// 初期化処理
         /// </summary>
@@ -80,55 +80,6 @@ namespace MovingWordpress.ViewModels
                 _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
-        }
-
-        /// <summary>
-        /// バイトのコピー処理
-        /// </summary>
-        /// <param name="src">コピー元</param>
-        /// <param name="dest">コピー先</param>
-        public static void CopyTo(Stream src, Stream dest)
-        {
-            byte[] bytes = new byte[4096];
-
-            int cnt;
-
-            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
-            {
-                dest.Write(bytes, 0, cnt);
-            }
-        }
-
-        #region 解凍処理
-        /// <summary>
-        /// 解凍処理
-        /// </summary>
-        /// <param name="file_path">ファイルパス .sql.gz</param>
-        /// <returns>解凍後取り出せた文字列列</returns>
-        public string Decompress(string file_path)
-        {
-            //展開する書庫のパス
-            string gzipFile = file_path;
-
-            //展開する書庫のFileStreamを作成する
-            using (var gzipFileStrm = new System.IO.FileStream(
-                gzipFile, System.IO.FileMode.Open, System.IO.FileAccess.Read))
-            {
-                //圧縮解除モードのGZipStreamを作成する
-                using (var gzipStrm =
-                    new System.IO.Compression.GZipStream(gzipFileStrm,
-                        System.IO.Compression.CompressionMode.Decompress))
-                {
-                    using (var mso = new MemoryStream())
-                    {
-                        // メモリストリームへコピー
-                        CopyTo(gzipStrm, mso);
-
-                        // テキストへ変換
-                        return Encoding.UTF8.GetString(mso.ToArray());
-                    }
-                }
-            }            
         }
         #endregion
 
@@ -148,7 +99,7 @@ namespace MovingWordpress.ViewModels
                 // ダイアログを表示する
                 if (dialog.ShowDialog() == true)
                 {
-                    var query = Decompress(dialog.FileName);
+                    var query = MovingWordpressUtilities.Decompress(dialog.FileName);
 
                     // 取得したクエリを分解しINSERT分のみ取得
                     var query_contents = FileAnalyzerM.GetQueryParameters(query);
@@ -185,9 +136,83 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                // ブログの解析オブジェクト
                 this.Analizer = new WpBlogAnalizerM();
 
+                // 形態素解析
                 this.Analizer.UseMecab(this.BlogContentsManager.GetAllText());
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region コンテンツの読み込み処理
+        /// <summary>
+        /// コンテンツの読み込み処理
+        /// </summary>
+        public void LoadContents()
+        {
+            try
+            {
+                this.BlogContentsManager.LoadContents();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region コンテンツの保存処理
+        /// <summary>
+        /// コンテンツの保存処理
+        /// </summary>
+        public void SaveContents()
+        {
+            try
+            {
+                this.BlogContentsManager.SaveContents();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region 頻出単語のロード処理
+        /// <summary>
+        /// 頻出単語のロード処理
+        /// </summary>
+        public void LoadRank()
+        {
+            try
+            {
+                this.Analizer.LoadRank();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region 頻出単語の保存処理
+        /// <summary>
+        /// 頻出単語の保存処理
+        /// </summary>
+        public void SaveRank()
+        {
+            try
+            {
+                this.Analizer.SaveRank();
             }
             catch (Exception e)
             {

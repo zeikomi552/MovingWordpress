@@ -58,5 +58,57 @@ namespace MovingWordpress.Common
             return command;
         }
         #endregion
+
+        #region バイトのコピー処理
+        /// <summary>
+        /// バイトのコピー処理
+        /// </summary>
+        /// <param name="src">コピー元</param>
+        /// <param name="dest">コピー先</param>
+        public static void CopyTo(Stream src, Stream dest)
+        {
+            byte[] bytes = new byte[4096];
+
+            int cnt;
+
+            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0)
+            {
+                dest.Write(bytes, 0, cnt);
+            }
+        }
+        #endregion
+
+        #region 解凍処理
+        /// <summary>
+        /// 解凍処理
+        /// </summary>
+        /// <param name="file_path">ファイルパス .sql.gz</param>
+        /// <returns>解凍後取り出せた文字列列</returns>
+        public static string Decompress(string file_path)
+        {
+            //展開する書庫のパス
+            string gzipFile = file_path;
+
+            //展開する書庫のFileStreamを作成する
+            using (var gzipFileStrm = new System.IO.FileStream(
+                gzipFile, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+            {
+                //圧縮解除モードのGZipStreamを作成する
+                using (var gzipStrm =
+                    new System.IO.Compression.GZipStream(gzipFileStrm,
+                        System.IO.Compression.CompressionMode.Decompress))
+                {
+                    using (var mso = new MemoryStream())
+                    {
+                        // メモリストリームへコピー
+                        CopyTo(gzipStrm, mso);
+
+                        // テキストへ変換
+                        return Encoding.UTF8.GetString(mso.ToArray());
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MeCab;
+using Microsoft.Win32;
 using MVVMCore.BaseClass;
 using MVVMCore.Common.Utilities;
 using System;
@@ -63,7 +64,7 @@ namespace MovingWordpress.Models
 		#endregion
 
 
-
+		#region MeCabを使用した処理
 		/// <summary>
 		/// MeCabを使用した処理
 		/// </summary>
@@ -80,14 +81,6 @@ namespace MovingWordpress.Models
 				if (0 < node.CharType)
 				{
 					this.MeCabItems.Items.Add(node);
-
-					//// Featureの内容を分解（品詞を限定する）
-					//var tmp = node.Feature.Split(",");
-
-					//if (tmp.ElementAt(0).Equals("名詞") && tmp.ElementAt(1).Equals("一般"))
-					//{
-					//	noun.Add(node.Surface);
-					//}
 				}
 			}
 
@@ -97,9 +90,47 @@ namespace MovingWordpress.Models
 							.OrderByDescending(x => x.Count).ToList<MecabRankM>();
 
 			this.RankItems.Items = new ObservableCollection<MecabRankM>(result);
-
-
 		}
+		#endregion
 
+		#region 頻出単語の保存処理
+		/// <summary>
+		/// 頻出単語の保存処理
+		/// </summary>
+		public void SaveRank()
+		{
+			// ダイアログのインスタンスを生成
+			var dialog = new SaveFileDialog();
+
+			// ファイルの種類を設定
+			dialog.Filter = "過去記事データ (*.mwrnk)|*.mwrnk";
+
+			// ダイアログを表示する
+			if (dialog.ShowDialog() == true)
+			{
+				XMLUtil.Seialize<ModelList<MecabRankM>>(dialog.FileName, this.RankItems);
+			}
+		}
+		#endregion
+
+		#region 頻出単語のロード処理
+		/// <summary>
+		/// 頻出単語のロード処理
+		/// </summary>
+		public void LoadRank()
+		{
+			// ダイアログのインスタンスを生成
+			var dialog = new OpenFileDialog();
+
+			// ファイルの種類を設定
+			dialog.Filter = "過去記事データ (*.mwrnk)|*.mwrnk";
+
+			// ダイアログを表示する
+			if (dialog.ShowDialog() == true)
+			{
+				this.RankItems = XMLUtil.Deserialize<ModelList<MecabRankM>>(dialog.FileName);
+			}
+		}
+		#endregion
 	}
 }

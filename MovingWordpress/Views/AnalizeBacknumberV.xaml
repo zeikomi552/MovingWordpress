@@ -68,16 +68,39 @@
                 </Grid.RowDefinitions>
 
                 <GroupBox Grid.Row="1" Header="過去記事">
-                    <DataGrid IsReadOnly="True" Language="ja-jp" AutoGenerateColumns="False"
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid IsReadOnly="True" Language="ja-jp" AutoGenerateColumns="False"
                           ItemsSource="{Binding BlogContentsManager.BlogContents.Items}"
                           SelectedItem="{Binding BlogContentsManager.BlogContents.SelectedItem}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="投稿日" Binding="{Binding Post_date}"/>
-                            <DataGridTextColumn Header="ステータス" Binding="{Binding Post_status}"/>
-                            <DataGridTextColumn Width="200" Header="タイトル" Binding="{Binding Post_title}"/>
-                            <DataGridTextColumn Width="100" Header="ポスト名" Binding="{Binding Post_name}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="投稿日" Binding="{Binding Post_date}"/>
+                                <DataGridTextColumn Header="ステータス" Binding="{Binding Post_status}"/>
+                                <DataGridTextColumn Width="200" Header="タイトル" Binding="{Binding Post_title}"/>
+                                <DataGridTextColumn Width="100" Header="ポスト名" Binding="{Binding Post_name}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <Button Margin="5" Width="100" Content="保存">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:CallMethodAction MethodName="SaveContents" TargetObject="{Binding}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+                            <Button Margin="5" Width="100" Content="読み込み">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:CallMethodAction MethodName="LoadContents" TargetObject="{Binding}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
                 </GroupBox>
 
                 <GroupBox Grid.Row="2" Header="記事">
@@ -87,8 +110,30 @@
             </Grid>
 
             <GroupBox Grid.Column="1" Header="形態素解析">
-                <DataGrid IsReadOnly="True" ItemsSource="{Binding Analizer.RankItems.Items, Mode=OneWay}">
-                </DataGrid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <DataGrid IsReadOnly="True" ItemsSource="{Binding Analizer.RankItems.Items, Mode=OneWay}"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Button Margin="5" Width="100" Content="保存">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Click">
+                                    <b:CallMethodAction MethodName="SaveRank" TargetObject="{Binding}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Button>
+                        <Button Margin="5" Width="100" Content="読み込み">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Click">
+                                    <b:CallMethodAction MethodName="LoadRank" TargetObject="{Binding}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
             </GroupBox>
         </Grid>
     </Grid>
