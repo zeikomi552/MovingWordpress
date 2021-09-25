@@ -34,9 +34,9 @@
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
                     <StackPanel Orientation="Vertical">
-                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-upload.png" />
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-backup-load.png" />
                         <Viewbox>
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="過去記事取込"/>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="記事取込"/>
                         </Viewbox>
                     </StackPanel>
                 </Button>
@@ -47,7 +47,7 @@
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
                     <StackPanel Orientation="Vertical">
-                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-upload.png" />
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-robot.png" />
                         <Viewbox>
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="形態素解析"/>
                         </Viewbox>

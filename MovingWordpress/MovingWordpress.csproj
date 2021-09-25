@@ -20,12 +20,14 @@ SSHに対応したブログサイトを想定しています。
     <None Remove="Common\Icons\app-icon.ico" />
     <None Remove="Common\Icons\app.ico" />
     <None Remove="Common\Icons\icon-after-wordpress.png" />
+    <None Remove="Common\Icons\icon-backup-load.png" />
     <None Remove="Common\Icons\icon-before-wordpress.png" />
     <None Remove="Common\Icons\Icon-clearn.png" />
     <None Remove="Common\Icons\Icon-compress.png" />
     <None Remove="Common\Icons\Icon-depress.png" />
     <None Remove="Common\Icons\icon-download.png" />
     <None Remove="Common\Icons\icon-moving.png" />
+    <None Remove="Common\Icons\icon-robot.png" />
     <None Remove="Common\Icons\icon-search.png" />
     <None Remove="Common\Icons\icon-upload.png" />
     <None Remove="Common\Themes\SplushScreen.png" />
@@ -48,12 +50,14 @@ SSHに対応したブログサイトを想定しています。
   <ItemGroup>
     <Resource Include="Common\Icons\app.ico" />
     <Resource Include="Common\Icons\icon-after-wordpress.png" />
+    <Resource Include="Common\Icons\icon-backup-load.png" />
     <Resource Include="Common\Icons\icon-before-wordpress.png" />
     <Resource Include="Common\Icons\Icon-clearn.png" />
     <Resource Include="Common\Icons\Icon-compress.png" />
     <Resource Include="Common\Icons\Icon-depress.png" />
     <Resource Include="Common\Icons\icon-download.png" />
     <Resource Include="Common\Icons\icon-moving.png" />
+    <Resource Include="Common\Icons\icon-robot.png" />
     <Resource Include="Common\Icons\icon-search.png" />
     <Resource Include="Common\Icons\icon-upload.png" />
   </ItemGroup>

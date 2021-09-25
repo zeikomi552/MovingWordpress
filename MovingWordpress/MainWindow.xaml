@@ -77,9 +77,9 @@
                     </b:Interaction.Triggers>
                     <Button.Content>
                         <StackPanel Orientation="Vertical">
-                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-compress.png" />
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
                             <Viewbox>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="過去記事分析"/>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="記事分析"/>
                             </Viewbox>
                         </StackPanel>
                     </Button.Content>
