@@ -8,69 +8,88 @@
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.AnalizeBacknumberV"
         mc:Ignorable="d"
         Title="過去記事分析" Height="450" Width="800">
+    <Window.DataContext>
+        <ViewModels:AnalizeBacknumberVM/>
+    </Window.DataContext>
     <b:Interaction.Triggers>
         <b:EventTrigger>
             <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
         </b:EventTrigger>
     </b:Interaction.Triggers>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <GroupBox Header="アクションアイテム">
+            <StackPanel Orientation="Horizontal">
+                <Button Width="100" Height="100" Margin="5">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="Click">
+                            <b:CallMethodAction MethodName="LoadBackup" TargetObject="{Binding}"/>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                    <StackPanel Orientation="Vertical">
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-upload.png" />
+                        <Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="過去記事取込"/>
+                        </Viewbox>
+                    </StackPanel>
+                </Button>
+                <Button Width="100" Height="100" Margin="5" Cursor="Hand">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="Click">
+                            <b:CallMethodAction MethodName="AnalizeContents" TargetObject="{Binding}"/>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                    <StackPanel Orientation="Vertical">
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-upload.png" />
+                        <Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="形態素解析"/>
+                        </Viewbox>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </GroupBox>
 
-        <Grid.DataContext>
-            <ViewModels:AnalizeBacknumberVM/>
-        </Grid.DataContext>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            
-            <GroupBox Header="設定">
-                <StackPanel Orientation="Horizontal">
-                    <Button Margin="5" Content="過去記事取込">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="LoadBackup" TargetObject="{Binding}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                    </Button>
-                    <Button Margin="5" Content="形態素解析">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="AnalizeContents" TargetObject="{Binding}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                    </Button>
-                </StackPanel>
-            </GroupBox>
 
-            <GroupBox Grid.Row="1" Header="過去記事">
-                <DataGrid IsReadOnly="True" Language="ja-jp" AutoGenerateColumns="False"
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <GroupBox Grid.Row="1" Header="過去記事">
+                    <DataGrid IsReadOnly="True" Language="ja-jp" AutoGenerateColumns="False"
                           ItemsSource="{Binding BlogContentsManager.BlogContents.Items}"
                           SelectedItem="{Binding BlogContentsManager.BlogContents.SelectedItem}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="投稿日" Binding="{Binding Post_date}"/>
-                        <DataGridTextColumn Header="ステータス" Binding="{Binding Post_status}"/>
-                        <DataGridTextColumn Width="200" Header="タイトル" Binding="{Binding Post_title}"/>
-                        <DataGridTextColumn Width="100" Header="ポスト名" Binding="{Binding Post_name}"/>
-                    </DataGrid.Columns>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="投稿日" Binding="{Binding Post_date}"/>
+                            <DataGridTextColumn Header="ステータス" Binding="{Binding Post_status}"/>
+                            <DataGridTextColumn Width="200" Header="タイトル" Binding="{Binding Post_title}"/>
+                            <DataGridTextColumn Width="100" Header="ポスト名" Binding="{Binding Post_name}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="2" Header="記事">
+                    <TextBox IsReadOnly="True" 
+                     Text="{Binding BlogContentsManager.BlogContents.SelectedItem.Post_content_Except, Mode=OneWay}" Cursor="IBeam"/>
+                </GroupBox>
+            </Grid>
+
+            <GroupBox Grid.Column="1" Header="形態素解析">
+                <DataGrid IsReadOnly="True" ItemsSource="{Binding Analizer.RankItems.Items, Mode=OneWay}">
                 </DataGrid>
             </GroupBox>
-            
-            <GroupBox Grid.Row="2" Header="記事">
-                <TextBox IsReadOnly="True" 
-                     Text="{Binding BlogContentsManager.BlogContents.SelectedItem.Post_content_Except, Mode=OneWay}" Cursor="IBeam"/>
-            </GroupBox>
         </Grid>
-
-        <GroupBox Grid.Column="1" Header="形態素解析">
-            <DataGrid ItemsSource="{Binding Analizer.RankItems.Items}">
-            </DataGrid>
-        </GroupBox>
     </Grid>
 </Window>

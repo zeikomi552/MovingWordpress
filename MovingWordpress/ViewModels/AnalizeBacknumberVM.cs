@@ -177,6 +177,10 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region コンテンツの形態素解析処理
+        /// <summary>
+        /// コンテンツの形態素解析処理
+        /// </summary>
         public void AnalizeContents()
         {
             try
@@ -191,5 +195,6 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
     }
 }
