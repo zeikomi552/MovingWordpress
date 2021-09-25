@@ -31,13 +31,22 @@
             </Grid.RowDefinitions>
             
             <GroupBox Header="設定">
-                <Button Content="過去記事取込">
-                    <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="Click">
-                            <b:CallMethodAction MethodName="LoadBackup" TargetObject="{Binding}"/>
-                        </b:EventTrigger>
-                    </b:Interaction.Triggers>
-                </Button>
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="5" Content="過去記事取込">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="LoadBackup" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </Button>
+                    <Button Margin="5" Content="形態素解析">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="AnalizeContents" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </Button>
+                </StackPanel>
             </GroupBox>
 
             <GroupBox Grid.Row="1" Header="過去記事">
@@ -58,5 +67,10 @@
                      Text="{Binding BlogContentsManager.BlogContents.SelectedItem.Post_content_Except, Mode=OneWay}" Cursor="IBeam"/>
             </GroupBox>
         </Grid>
+
+        <GroupBox Grid.Column="1" Header="形態素解析">
+            <DataGrid ItemsSource="{Binding Analizer.RankItems.Items}">
+            </DataGrid>
+        </GroupBox>
     </Grid>
 </Window>

@@ -39,6 +39,32 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region ブログ解析オブジェクト[Analizer]プロパティ
+        /// <summary>
+        /// ブログ解析オブジェクト[Analizer]プロパティ用変数
+        /// </summary>
+        WpBlogAnalizerM _Analizer = new WpBlogAnalizerM();
+        /// <summary>
+        /// ブログ解析オブジェクト[Analizer]プロパティ
+        /// </summary>
+        public WpBlogAnalizerM Analizer
+        {
+            get
+            {
+                return _Analizer;
+            }
+            set
+            {
+                if (_Analizer == null || !_Analizer.Equals(value))
+                {
+                    _Analizer = value;
+                    NotifyPropertyChanged("Analizer");
+                }
+            }
+        }
+        #endregion
+
+
 
         /// <summary>
         /// 初期化処理
@@ -106,6 +132,10 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region バックアップファイルの読み込み処理
+        /// <summary>
+        /// バックアップファイルの読み込み処理
+        /// </summary>
         public void LoadBackup()
         {
             try
@@ -138,6 +168,22 @@ namespace MovingWordpress.ViewModels
                         }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        public void AnalizeContents()
+        {
+            try
+            {
+                this.Analizer = new WpBlogAnalizerM();
+
+                this.Analizer.UseMecab(this.BlogContentsManager.GetAllText());
             }
             catch (Exception e)
             {

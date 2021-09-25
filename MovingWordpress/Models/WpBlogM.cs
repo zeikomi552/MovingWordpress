@@ -46,5 +46,23 @@ namespace MovingWordpress.Models
         }
 		#endregion
 
+		#region 全テキストの返却
+		/// <summary>
+		/// 全テキストの返却
+		/// </summary>
+		/// <returns>全テキスト</returns>
+		public string GetAllText()
+		{
+			StringBuilder text = new StringBuilder();
+
+			// コンテンツデータを連結していく
+			foreach (var tmp in this.BlogContents.Items)
+			{
+				text.AppendLine(tmp.Post_content_Except);
+			}
+
+			return text.ToString();
+		}
+		#endregion
 	}
 }
