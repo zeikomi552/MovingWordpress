@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace MovingWordpress.Views
     /// <summary>
     /// AnalizeBacknumberV.xaml の相互作用ロジック
     /// </summary>
-    public partial class AnalizeBacknumberV : Window
+    public partial class AnalizeBacknumberV : MetroWindow
     {
         public AnalizeBacknumberV()
         {
