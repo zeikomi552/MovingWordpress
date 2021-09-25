@@ -44,13 +44,26 @@
                 <Button Width="100" Height="100" Margin="5" Cursor="Hand">
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="Click">
+                            <b:CallMethodAction MethodName="ContentAnalize" TargetObject="{Binding}"/>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                    <StackPanel Orientation="Vertical">
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-robot.png" />
+                        <Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="個別解析"/>
+                        </Viewbox>
+                    </StackPanel>
+                </Button>
+                <Button Width="100" Height="100" Margin="5" Cursor="Hand">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="Click">
                             <b:CallMethodAction MethodName="AnalizeContents" TargetObject="{Binding}"/>
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
                     <StackPanel Orientation="Vertical">
                         <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-robot.png" />
                         <Viewbox>
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="形態素解析"/>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="全体解析"/>
                         </Viewbox>
                     </StackPanel>
                 </Button>

@@ -8,36 +8,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace MovingWordpress.Models
 {
     public class WpBlogAnalizerM : ModelBase
 	{
-		#region MeCabの解析結果[MeCabItems]プロパティ
-		/// <summary>
-		/// MeCabの解析結果[MeCabItems]プロパティ用変数
-		/// </summary>
-		ModelList<MeCab.MeCabNode> _MeCabItems = new ModelList<MeCab.MeCabNode>();
-		/// <summary>
-		/// MeCabの解析結果[MeCabItems]プロパティ
-		/// </summary>
-		public ModelList<MeCab.MeCabNode> MeCabItems
-		{
-			get
-			{
-				return _MeCabItems;
-			}
-			set
-			{
-				if (_MeCabItems == null || !_MeCabItems.Equals(value))
-				{
-					_MeCabItems = value;
-					NotifyPropertyChanged("MeCabItems");
-				}
-			}
-		}
-		#endregion
-
 		#region 出現ランキング情報[RankItems]プロパティ
 		/// <summary>
 		/// 出現ランキング情報[RankItems]プロパティ用変数
@@ -63,6 +39,7 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
+		#region 頻出単語ランキングのクローン
 		/// <summary>
 		/// 頻出単語ランキングのクローン
 		/// </summary>
@@ -78,7 +55,7 @@ namespace MovingWordpress.Models
 
 			return ret;
 		}
-
+		#endregion
 
 		#region MeCabを使用した処理
 		/// <summary>
@@ -86,9 +63,10 @@ namespace MovingWordpress.Models
 		/// </summary>
 		public void UseMecab(string text)
 		{
+			ModelList<MeCab.MeCabNode> mecab = new ModelList<MeCabNode>();
 			MeCabParam mp = new MeCabParam();
 			var tagger = MeCabTagger.Create();
-			this.MeCabItems.Items.Clear();
+			mecab.Items.Clear();
 			List<string> noun = new List<string>();
 
 			// 記事毎の内容をMeCabで分析
@@ -96,11 +74,11 @@ namespace MovingWordpress.Models
 			{
 				if (0 < node.CharType)
 				{
-					this.MeCabItems.Items.Add(node);
+					mecab.Items.Add(node);
 				}
 			}
 
-			var result = (from x in this.MeCabItems.Items
+			var result = (from x in mecab.Items
 						  group x by new { x.Surface, x.Feature } into g
 						  select new MecabRankM (){ Surface = g.Key.Surface, Feature = g.Key.Feature, Count = g.Count() })
 							.OrderByDescending(x => x.Count).ToList<MecabRankM>();

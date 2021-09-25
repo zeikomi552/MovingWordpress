@@ -228,7 +228,7 @@ namespace MovingWordpress.ViewModels
         /// <summary>
         /// 個別の記事を形態素解析にかける
         /// </summary>
-        private void ContentAnalize()
+        public void ContentAnalize()
         {
             Task.Run(() =>
             {
@@ -276,9 +276,6 @@ namespace MovingWordpress.ViewModels
             {
                 this.BlogContentsManager.LoadContents();
                 NotifyPropertyChanged("DisplayAnalizer");
-
-                // 各記事を形態素解析にかける
-                ContentAnalize();
             }
             catch (Exception e)
             {

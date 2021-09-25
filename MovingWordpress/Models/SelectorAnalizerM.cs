@@ -20,7 +20,6 @@ namespace MovingWordpress.Models
         /// <summary>
         /// ブログ解析オブジェクト[Analizer]プロパティ
         /// </summary>
-        [XmlIgnoreAttribute]
         public WpBlogAnalizerM Analizer
         {
             get
