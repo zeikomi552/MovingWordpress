@@ -347,5 +347,21 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        public void CreateBackNumber()
+        {
+            StringBuilder text = new StringBuilder();
+
+            var sort_contents = this.BlogContentsManager.BlogContents.Items.OrderBy(x => x.Post_title);
+
+            foreach (var tmp in sort_contents)
+            {
+                if(tmp.Post_status.Equals("publish"))
+                {
+                    text.AppendLine($"- [{tmp.Post_title}]({tmp.Guid})");
+                }
+            }
+
+            string md = text.ToString();
+        }
     }
 }

@@ -8,7 +8,7 @@
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters" x:Class="MovingWordpress.Views.AnalizeBacknumberV"
         mc:Ignorable="d"
-        Title="過去記事分析" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
+        Title="過去記事分析 - 形態素解析" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
     <mah:MetroWindow.Resources>
         <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
         <ViewModels:AnalizeBacknumberVM x:Key="vm"/>
@@ -24,10 +24,14 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid>
+        <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="過去記事分析 - 形態素解析" FontSize="30"/>
+        </Border>
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -76,10 +80,25 @@
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="サブアクションアイテム" Grid.Column="1">
-                <StackPanel Orientation="Horizontal"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Width="100" Height="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="CreateBackNumber" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-robot.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="バックナンバー作成"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+
+                </StackPanel>
             </GroupBox>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
