@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using MovingWordpress.Common;
 using MovingWordpress.Models;
+using MovingWordpress.Views;
 using MVVMCore.BaseClass;
 using MVVMCore.Common.Utilities;
 using System;
@@ -497,6 +498,7 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region 記事内容を結合して出力
         /// <summary>
         /// 記事内容を結合して出力
         /// </summary>
@@ -522,6 +524,28 @@ namespace MovingWordpress.ViewModels
                     File.WriteAllText(dialog.FileName, text.ToString());
 
                     ShowMessage.ShowNoticeOK("出力しました。\r\nKH Coderを用いて形態素解析をかけると面白いかもしれません。", "通知");
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        public void AnalizeNewArticle()
+        {
+            try
+            {
+                var wnd = new AnalizeNewContentV();
+                var vm = wnd.DataContext as AnalizeNewContentVM;
+
+                vm.SelectorAnalizer = this.SelectorAnalizer;
+
+                if (wnd.ShowDialog() == true)
+                {
+
                 }
             }
             catch (Exception e)

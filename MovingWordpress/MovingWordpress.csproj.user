@@ -5,12 +5,18 @@
     <Compile Update="Views\AnalizeBacknumberV.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\AnalizeNewContentV.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\TwitterAPIV.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\AnalizeBacknumberV.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\AnalizeNewContentV.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\TwitterAPIV.xaml">
