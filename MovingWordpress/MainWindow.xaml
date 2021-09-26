@@ -88,7 +88,7 @@
                 <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="Click">
-                            <b:CallMethodAction MethodName="AnalizeBacknumberV" TargetObject="{Binding}"/>
+                            <b:CallMethodAction TargetObject="{Binding}"/>
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
                     <Button.Content>
