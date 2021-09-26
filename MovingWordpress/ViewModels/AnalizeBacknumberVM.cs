@@ -452,6 +452,9 @@ namespace MovingWordpress.ViewModels
                         SaveExcelAll(workbook);
                         SaveExcelContents(workbook);
                         workbook.SaveAs(dialog.FileName);
+
+                        ShowMessage.ShowNoticeOK("レポート出力が完了しました。", "通知");
+
                     }
                 }
             }
@@ -484,5 +487,39 @@ namespace MovingWordpress.ViewModels
             string md = text.ToString();
         }
         #endregion
+
+        /// <summary>
+        /// 記事内容を結合して出力
+        /// </summary>
+        public void CombinePage()
+        {
+            try
+            {
+                // ダイアログのインスタンスを生成
+                var dialog = new SaveFileDialog();
+
+                // ファイルの種類を設定
+                dialog.Filter = "テキストファイル(*.txt)|*.txt";
+
+                // ダイアログを表示する
+                if (dialog.ShowDialog() == true)
+                {
+                    StringBuilder text = new StringBuilder();
+                    foreach (var article in this.BlogContentsManager.BlogContents.Items)
+                    {
+                        text.AppendLine(article.Post_content_Except);
+                    }
+
+                    File.WriteAllText(dialog.FileName, text.ToString());
+
+                    ShowMessage.ShowNoticeOK("出力しました。\r\nKH Coderを用いて形態素解析をかけると面白いかもしれません。", "通知");
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
     }
 }

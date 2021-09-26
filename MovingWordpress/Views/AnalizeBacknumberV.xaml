@@ -89,6 +89,23 @@
                         Width="100" Height="100" Margin="5" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="CombinePage" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="50" Height="50" VerticalAlignment="Center" Source="/Common/Icons/icon-save-file.png" />
+                            <Viewbox>
+                                <StackPanel>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="記事内容"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="まとめて出力"/>
+                                </StackPanel>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
                                 <b:CallMethodAction MethodName="SaveExcel" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
