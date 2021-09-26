@@ -85,7 +85,22 @@
                     </Button.Content>
 
                 </Button>
+                <Button Margin="5" Height="100" Width="100" Cursor="Hand">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="Click">
+                            <b:CallMethodAction MethodName="AnalizeBacknumberV" TargetObject="{Binding}"/>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                    <Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="記事分析"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button.Content>
 
+                </Button>
             </WrapPanel>
         </GroupBox>
     </Grid>

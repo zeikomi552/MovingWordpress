@@ -32,6 +32,7 @@ SSHに対応したブログサイトを想定しています。
     <None Remove="Common\Icons\icon-robot.png" />
     <None Remove="Common\Icons\icon-save-file.png" />
     <None Remove="Common\Icons\icon-search.png" />
+    <None Remove="Common\Icons\icon-twitter.png" />
     <None Remove="Common\Icons\icon-upload.png" />
     <None Remove="Common\Themes\SplushScreen.png" />
   </ItemGroup>
@@ -68,6 +69,7 @@ SSHに対応したブログサイトを想定しています。
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Common\Icons\icon-search.png" />
+    <Resource Include="Common\Icons\icon-twitter.png" />
     <Resource Include="Common\Icons\icon-upload.png" />
   </ItemGroup>
 
