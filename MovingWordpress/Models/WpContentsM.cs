@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 namespace MovingWordpress.Models
 {
     public class WpContentsM : ModelBase
-	{
+    {
         #region Insert文の1要素分の挿入句の全文[FullText]プロパティ
         /// <summary>
         /// Insert文の1要素分の挿入句の全文[FullText]プロパティ用変数
@@ -594,10 +594,11 @@ namespace MovingWordpress.Models
         {
             get
             {
-                return FileAnalyzerM.ExceptHtmlTags(this.Post_content).Replace("。","。\r\n");
+                return FileAnalyzerM.ExceptHtmlTags(this.Post_content).Replace("。", "。\r\n");
             }
         }
         #endregion
+
 
 
         #region 選択要素を含むアナライザ[SelectorAnalizer]プロパティ

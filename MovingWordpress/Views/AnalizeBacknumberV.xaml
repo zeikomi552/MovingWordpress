@@ -148,6 +148,7 @@
                                 <DataGridTextColumn Header="ステータス" Binding="{Binding Post_status}"/>
                                 <DataGridTextColumn Width="200" Header="タイトル" Binding="{Binding Post_title}"/>
                                 <DataGridTextColumn Width="100" Header="ポスト名" Binding="{Binding Post_name}"/>
+                                <DataGridTextColumn Width="100" Header="推奨タグ" Binding="{Binding SelectorAnalizer.TagRecomend, Mode=OneWay}"/>
                             </DataGrid.Columns>
                         </DataGrid>
 

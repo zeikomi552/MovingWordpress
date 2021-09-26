@@ -131,6 +131,37 @@ namespace MovingWordpress.Models
         }
         #endregion
 
+        #region 推奨タグ
+        /// <summary>
+        /// 推奨タグ
+        /// </summary>
+        [XmlIgnoreAttribute]
+        public string TagRecomend
+        {
+            get
+            {
+                StringBuilder nouns = new StringBuilder();
+
+                int count = 0;  // カウント
+
+                // 頻出名詞トップ10を取得しセットする
+                foreach (var tmp in this.Analizer.RankItems.Items)
+                {
+                    if (tmp.PartsOfSpeech.Equals("名詞") && tmp.PartsOfSpeech2.Equals("一般") && count < 10)
+                    {
+                        // 一応区切り文字
+                        if (count > 0) { nouns.Append(","); }
+
+                        nouns.Append(tmp.Surface);  // 推奨名詞のセット
+                        count++;
+                    }
+                }
+
+                return nouns.ToString();
+            }
+        }
+        #endregion
+
         #region 品詞の選択変更
         /// <summary>
         /// 品詞の選択変更
@@ -186,6 +217,9 @@ namespace MovingWordpress.Models
                        select x.PartsOfSpeech).Distinct().ToList<string>();
 
             this.PartsOfSpeechSelector.Items = new ObservableCollection<string>(tmp);
+
+            NotifyPropertyChanged("TagRecomend");
+
         }
 
     }
