@@ -131,33 +131,114 @@ namespace MovingWordpress.Models
         }
         #endregion
 
-        #region 推奨タグ
+        #region 推奨カテゴリ[RecomendCategory]プロパティ
         /// <summary>
-        /// 推奨タグ
+        /// 推奨カテゴリ[RecomendCategory]プロパティ用変数
         /// </summary>
-        [XmlIgnoreAttribute]
-        public string TagRecomend
+        string _RecomendCategory = string.Empty;
+        /// <summary>
+        /// 推奨カテゴリ[RecomendCategory]プロパティ
+        /// </summary>
+        public string RecomendCategory
         {
             get
             {
-                StringBuilder nouns = new StringBuilder();
-
-                int count = 0;  // カウント
-
-                // 頻出名詞トップ10を取得しセットする
-                foreach (var tmp in this.Analizer.RankItems.Items)
+                return _RecomendCategory;
+            }
+            set
+            {
+                if (_RecomendCategory == null || !_RecomendCategory.Equals(value))
                 {
-                    if (tmp.PartsOfSpeech.Equals("名詞") && tmp.PartsOfSpeech2.Equals("一般") && count < 10)
-                    {
-                        // 一応区切り文字
-                        if (count > 0) { nouns.Append(","); }
-
-                        nouns.Append(tmp.Surface);  // 推奨名詞のセット
-                        count++;
-                    }
+                    _RecomendCategory = value;
+                    NotifyPropertyChanged("RecomendCategory");
                 }
+            }
+        }
+        #endregion
 
-                return nouns.ToString();
+        #region 推奨タグ[ReccomendTags]プロパティ
+        /// <summary>
+        /// 推奨タグ[ReccomendTags]プロパティ用変数
+        /// </summary>
+        string _ReccomendTags = string.Empty;
+        /// <summary>
+        /// 推奨タグ[ReccomendTags]プロパティ
+        /// </summary>
+        public string ReccomendTags
+        {
+            get
+            {
+                return _ReccomendTags;
+            }
+            set
+            {
+                if (_ReccomendTags == null || !_ReccomendTags.Equals(value))
+                {
+                    _ReccomendTags = value;
+                    NotifyPropertyChanged("ReccomendTags");
+                }
+            }
+        }
+        #endregion
+
+        #region 推奨タグのセット処理
+        /// <summary>
+        /// 推奨タグのセット処理
+        /// </summary>
+        public void SetTagRecommend()
+        {
+            StringBuilder nouns = new StringBuilder();
+
+            int count = 0;  // カウント
+
+            // 頻出名詞トップ10を取得しセットする
+            foreach (var tmp in this.Analizer.RankItems.Items)
+            {
+                if (tmp.PartsOfSpeech.Equals("名詞") && tmp.PartsOfSpeech2.Equals("一般") && count < 10)
+                {
+                    // 一応区切り文字
+                    if (count > 0) { nouns.Append(","); }
+
+                    nouns.Append(tmp.Surface);  // 推奨名詞のセット
+                    count++;
+                }
+            }
+
+            this.ReccomendTags = nouns.ToString();
+        }
+        #endregion
+
+        #region 推奨カテゴリのセット処理
+        /// <summary>
+        /// 推奨カテゴリのセット処理
+        /// </summary>
+        /// <param name="analizer">記事全体のアナライザ</param>
+        public void SetRecommendCategory(SelectorAnalizerM analizer)
+        {
+            var tags = from x in this.Analizer.RankItems.Items
+                       where x.PartsOfSpeech.Equals("名詞") && x.PartsOfSpeech2.Equals("一般")
+                       select x;
+
+            var cates = from x in analizer.Analizer.RankItems.Items
+                        where x.PartsOfSpeech.Equals("名詞") && x.PartsOfSpeech2.Equals("一般")
+                        select x;
+
+            foreach (var tag in tags)
+            {
+                int index = 0;
+                foreach (var cate in cates)
+                {
+                    if (index > 20) break;  // カテゴリの上位20を超えたら推奨カテゴリとはしない
+
+                    // 上位20位以内のカテゴリと合致するかどうかを確認する
+                    if (tag.Surface.Equals(cate.Surface))
+                    {
+                        this.RecomendCategory = tag.Surface;
+                        return;
+                    }
+
+                    index++;
+                }
             }
         }
         #endregion
@@ -203,10 +284,10 @@ namespace MovingWordpress.Models
         }
         #endregion
 
+        #region MeCabの結果をセットする
         /// <summary>
         /// MeCabの結果をセットする
         /// </summary>
-        /// <param name="result">結果データ</param>
         public void SetAnalizeResult(WpBlogAnalizerM result)
         {
             // 解析オブジェクトのセット
@@ -218,9 +299,10 @@ namespace MovingWordpress.Models
 
             this.PartsOfSpeechSelector.Items = new ObservableCollection<string>(tmp);
 
-            NotifyPropertyChanged("TagRecomend");
-
+            // 推奨タグのセット
+            SetTagRecommend();
         }
+        #endregion
 
     }
 }

@@ -228,6 +228,15 @@ namespace MovingWordpress.ViewModels
                            // 解析オブジェクトのセット
                            this.SelectorAnalizer.SetAnalizeResult(an);
 
+                           var category_recommend = from x in this.SelectorAnalizer.Analizer.RankItems.Items
+                                                    where x.PartsOfSpeech.Equals("名詞") && x.PartsOfSpeech2.Equals("一般")
+                                                    select x;
+
+                           foreach (var content in this.BlogContentsManager.BlogContents.Items)
+                           {
+                               content.SelectorAnalizer.SetRecommendCategory(this.SelectorAnalizer);
+                           }
+
                            // 解析終了
                            this.IsExecuteAnaize = false;
                        }));
@@ -252,8 +261,8 @@ namespace MovingWordpress.ViewModels
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
                    new Action(() =>
                    {
-                                           // 解析開始
-                                           this.IsExecuteContentAnaize = true;
+                        // 解析開始
+                        this.IsExecuteContentAnaize = true;
                    }));
 
                 // 記事の数だけ形態素解析にかける
