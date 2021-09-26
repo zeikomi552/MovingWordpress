@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using ClosedXML.Excel;
+using Microsoft.Win32;
 using MovingWordpress.Common;
 using MovingWordpress.Models;
 using MVVMCore.BaseClass;
@@ -88,6 +89,7 @@ namespace MovingWordpress.ViewModels
                 {
                     _IsExecuteAnaize = value;
                     NotifyPropertyChanged("IsExecuteAnaize");
+                    NotifyPropertyChanged("IsExecute");
                 }
             }
         }
@@ -113,7 +115,22 @@ namespace MovingWordpress.ViewModels
                 {
                     _IsExecuteContentAnaize = value;
                     NotifyPropertyChanged("IsExecuteContentAnaize");
+                    NotifyPropertyChanged("IsExecute");
+
                 }
+            }
+        }
+        #endregion
+
+        #region 実行中フラグ
+        /// <summary>
+        /// 実行中フラグ
+        /// </summary>
+        public bool IsExecute
+        {
+            get
+            {
+                return this.IsExecuteAnaize || this.IsExecuteContentAnaize;
             }
         }
         #endregion
@@ -347,6 +364,109 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region 全記事分の分析結果をエクセルに出力する
+        /// <summary>
+        /// 全記事分の分析結果をエクセルに出力する
+        /// </summary>
+        /// <param name="workbook">ワークブック</param>
+        private void SaveExcelAll(XLWorkbook workbook)
+        {
+            var worksheet = workbook.Worksheets.Add("全体");
+
+            worksheet.Cell("A1").Value = "出現回数";
+            worksheet.Cell("B1").Value = "単語";
+            worksheet.Cell("C1").Value = "形態素解析結果";
+            worksheet.Cell("D1").Value = "品詞";
+            worksheet.Cell("E1").Value = "品詞2";
+            worksheet.Cell("F1").Value = "URL";
+
+            int row = 2;
+
+            foreach (var tmp in this.SelectorAnalizer.Analizer.RankItems.Items)
+            {
+                worksheet.Cell($"A{row}").Value = tmp.Count;
+                worksheet.Cell($"B{row}").Value = tmp.Surface;
+                worksheet.Cell($"C{row}").Value = tmp.Feature;
+                worksheet.Cell($"D{row}").Value = tmp.PartsOfSpeech;
+                worksheet.Cell($"E{row}").Value = tmp.PartsOfSpeech2;
+                row++;
+            }
+        }
+        #endregion
+
+        #region 個別の記事の分析結果をエクセルに出力する
+        /// <summary>
+        /// 個別の記事の分析結果をエクセルに出力する
+        /// </summary>
+        /// <param name="workbook">ワークブック</param>
+        private void SaveExcelContents(XLWorkbook workbook)
+        {
+            var worksheet = workbook.Worksheets.Add("個別");
+
+            worksheet.Cell("A1").Value = "記事タイトル";
+            worksheet.Cell("B1").Value = "出現回数";
+            worksheet.Cell("C1").Value = "単語";
+            worksheet.Cell("D1").Value = "形態素解析結果";
+            worksheet.Cell("E1").Value = "品詞";
+            worksheet.Cell("F1").Value = "品詞2";
+            worksheet.Cell("G1").Value = "URL";
+
+            int row = 2;
+
+            foreach (var content in this.BlogContentsManager.BlogContents.Items)
+            {
+                foreach (var tmp in content.SelectorAnalizer.Analizer.RankItems.Items)
+                {
+                    worksheet.Cell($"A{row}").Value = content.Post_title;
+                    worksheet.Cell($"B{row}").Value = tmp.Count;
+                    worksheet.Cell($"C{row}").Value = tmp.Surface;
+                    worksheet.Cell($"D{row}").Value = tmp.Feature;
+                    worksheet.Cell($"E{row}").Value = tmp.PartsOfSpeech;
+                    worksheet.Cell($"F{row}").Value = tmp.PartsOfSpeech2;
+                    worksheet.Cell($"G{row}").Value = content.Guid;
+                    row++;
+                }
+            }
+        }
+        #endregion
+
+        #region エクセル出力
+        /// <summary>
+        /// エクセル出力
+        /// </summary>
+        public void SaveExcel()
+        {
+            try
+            {
+                // ダイアログのインスタンスを生成
+                var dialog = new SaveFileDialog();
+
+                // ファイルの種類を設定
+                dialog.Filter = "エクセルファイル(*.xlsx)|*.xlsx";
+
+                // ダイアログを表示する
+                if (dialog.ShowDialog() == true)
+                {
+                    using (var workbook = new XLWorkbook())
+                    {
+                        SaveExcelAll(workbook);
+                        SaveExcelContents(workbook);
+                        workbook.SaveAs(dialog.FileName);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region バックナンバー作成
+        /// <summary>
+        /// バックナンバー作成
+        /// </summary>
         public void CreateBackNumber()
         {
             StringBuilder text = new StringBuilder();
@@ -363,5 +483,6 @@ namespace MovingWordpress.ViewModels
 
             string md = text.ToString();
         }
+        #endregion
     }
 }

@@ -26,6 +26,7 @@ SSHに対応したブログサイトを想定しています。
     <None Remove="Common\Icons\Icon-compress.png" />
     <None Remove="Common\Icons\Icon-depress.png" />
     <None Remove="Common\Icons\icon-download.png" />
+    <None Remove="Common\Icons\icon-excel.png" />
     <None Remove="Common\Icons\icon-load-file.png" />
     <None Remove="Common\Icons\icon-moving.png" />
     <None Remove="Common\Icons\icon-robot.png" />
@@ -36,6 +37,7 @@ SSHに対応したブログサイトを想定しています。
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.95.4" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="MahApps.Metro" Version="2.4.7" />
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.7" />
@@ -58,6 +60,7 @@ SSHに対応したブログサイトを想定しています。
     <Resource Include="Common\Icons\Icon-compress.png" />
     <Resource Include="Common\Icons\Icon-depress.png" />
     <Resource Include="Common\Icons\icon-download.png" />
+    <Resource Include="Common\Icons\icon-excel.png" />
     <Resource Include="Common\Icons\icon-load-file.png" />
     <Resource Include="Common\Icons\icon-moving.png" />
     <Resource Include="Common\Icons\icon-robot.png" />
