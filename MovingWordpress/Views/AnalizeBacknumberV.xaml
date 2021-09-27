@@ -81,6 +81,34 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
+                    <Button Margin="5" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="SaveContents" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-save-file.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="解析保存"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+                    <Button Margin="5" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="LoadContents" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-load-file.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="解析読み込み"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="サブアクションアイテム" Grid.Column="1">
@@ -231,24 +259,6 @@
                                 <DataGridTextColumn Header="品詞タイプ2" Binding="{Binding PartsOfSpeech2}"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
-                                Margin="5" Width="100" Content="保存" Cursor="Hand">
-                                <b:Interaction.Triggers>
-                                    <b:EventTrigger EventName="Click">
-                                        <b:CallMethodAction MethodName="SaveContents" TargetObject="{Binding}"/>
-                                    </b:EventTrigger>
-                                </b:Interaction.Triggers>
-                            </Button>
-                            <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
-                                Margin="5" Width="100" Content="読み込み">
-                                <b:Interaction.Triggers>
-                                    <b:EventTrigger EventName="Click">
-                                        <b:CallMethodAction MethodName="LoadContents" TargetObject="{Binding}"/>
-                                    </b:EventTrigger>
-                                </b:Interaction.Triggers>
-                            </Button>
-                        </StackPanel>
                     </Grid>
                 </GroupBox>
 
@@ -292,24 +302,6 @@
                                 <DataGridTextColumn Header="品詞タイプ2" Binding="{Binding PartsOfSpeech2}"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
-                                Margin="5" Width="100" Content="保存">
-                                <b:Interaction.Triggers>
-                                    <b:EventTrigger EventName="Click">
-                                        <b:CallMethodAction MethodName="SaveRank" TargetObject="{Binding}"/>
-                                    </b:EventTrigger>
-                                </b:Interaction.Triggers>
-                            </Button>
-                            <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
-                                Margin="5" Width="100" Content="読み込み" Cursor="Hand">
-                                <b:Interaction.Triggers>
-                                    <b:EventTrigger EventName="Click">
-                                        <b:CallMethodAction MethodName="LoadRank" TargetObject="{Binding}"/>
-                                    </b:EventTrigger>
-                                </b:Interaction.Triggers>
-                            </Button>
-                        </StackPanel>
                     </Grid>
                 </GroupBox>
 

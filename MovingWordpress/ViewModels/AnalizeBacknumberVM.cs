@@ -301,7 +301,13 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.BlogContentsManager.LoadContents();
+                TagCateM tag = new TagCateM();
+
+                var tmp = tag.Load();
+                this.BlogContentsManager.BlogContents = tmp.BlogContents;   // 個別記事の情報を取得
+                this.SelectorAnalizer.Analizer.RankItems = tmp.AllContents; // 全記事の情報を取得
+
+
                 NotifyPropertyChanged("DisplayAnalizer");
             }
             catch (Exception e)
@@ -320,51 +326,19 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                this.BlogContentsManager.SaveContents();
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e.Message);
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-        #endregion
+                // 各記事のカテゴリ・タグ情報の取り出し
+                var blog_contents = this.BlogContentsManager.BlogContents;
 
-        #region 頻出単語のロード処理
-        /// <summary>
-        /// 頻出単語のロード処理
-        /// </summary>
-        public void LoadRank()
-        {
-            try
-            {
-                // 解析オブジェクトのロード
-                this.SelectorAnalizer.Analizer.LoadRank();
+                // 全記事のカテゴリ・タグ情報の取り出し
+                var all_contents = this.SelectorAnalizer.Analizer.RankItems;
 
+                TagCateM tag = new TagCateM()
+                {
+                    BlogContents = blog_contents,
+                    AllContents = all_contents
+                };
 
-                var tmp = (from x in this.SelectorAnalizer.Analizer.RankItems.Items
-                           select x.PartsOfSpeech).Distinct().ToList<string>();
-
-                this.SelectorAnalizer.PartsOfSpeechSelector.Items = new ObservableCollection<string>(tmp);
-                NotifyPropertyChanged("DisplayAnalizer");
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e.Message);
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
-        }
-        #endregion
-
-        #region 頻出単語の保存処理
-        /// <summary>
-        /// 頻出単語の保存処理
-        /// </summary>
-        public void SaveRank()
-        {
-            try
-            {
-                this.SelectorAnalizer.Analizer.SaveRank();
+                tag.Save(tag);
             }
             catch (Exception e)
             {

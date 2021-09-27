@@ -86,45 +86,5 @@ namespace MovingWordpress.Models
 			this.RankItems.Items = new ObservableCollection<MecabRankM>(result);
 		}
 		#endregion
-
-		#region 頻出単語の保存処理
-		/// <summary>
-		/// 頻出単語の保存処理
-		/// </summary>
-		public void SaveRank()
-		{
-			// ダイアログのインスタンスを生成
-			var dialog = new SaveFileDialog();
-
-			// ファイルの種類を設定
-			dialog.Filter = "過去記事データ (*.mwrnk)|*.mwrnk";
-
-			// ダイアログを表示する
-			if (dialog.ShowDialog() == true)
-			{
-				XMLUtil.Seialize<ModelList<MecabRankM>>(dialog.FileName, this.RankItems);
-			}
-		}
-		#endregion
-
-		#region 頻出単語のロード処理
-		/// <summary>
-		/// 頻出単語のロード処理
-		/// </summary>
-		public void LoadRank()
-		{
-			// ダイアログのインスタンスを生成
-			var dialog = new OpenFileDialog();
-
-			// ファイルの種類を設定
-			dialog.Filter = "過去記事データ (*.mwrnk)|*.mwrnk";
-
-			// ダイアログを表示する
-			if (dialog.ShowDialog() == true)
-			{
-				this.RankItems = XMLUtil.Deserialize<ModelList<MecabRankM>>(dialog.FileName);
-			}
-		}
-		#endregion
 	}
 }
