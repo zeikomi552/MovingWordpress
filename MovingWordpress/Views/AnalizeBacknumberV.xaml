@@ -8,7 +8,7 @@
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters" x:Class="MovingWordpress.Views.AnalizeBacknumberV"
         mc:Ignorable="d"
-        Title="過去記事分析 - 形態素解析" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
+        Title="過去記事分析 - タグカテくん" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
     <mah:MetroWindow.Resources>
         <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
@@ -30,7 +30,7 @@
         </Grid.RowDefinitions>
 
         <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
-            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="過去記事分析 - 形態素解析" FontSize="30"/>
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="過去記事分析 - タグカテくん" FontSize="30"/>
         </Border>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:MovingWordpress.Views"
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.AnalizeNewContentV"
         mc:Ignorable="d"
-        Title="AnalizeNewContentV" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="新記事分析 - タグカテくん" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
     <mah:MetroWindow.Resources>
         <ViewModels:AnalizeNewContentVM x:Key="vm"/>
     </mah:MetroWindow.Resources>
