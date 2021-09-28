@@ -8,6 +8,9 @@
     <Compile Update="Views\AnalizeNewContentV.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\OutputTypeV.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\TwitterAPIV.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -17,6 +20,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\AnalizeNewContentV.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\OutputTypeV.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\TwitterAPIV.xaml">
