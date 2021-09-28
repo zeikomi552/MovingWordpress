@@ -96,15 +96,37 @@ namespace MovingWordpress.Models
 				return Path.Combine(conf_dir, this.ConfigFileName);
 			}
 		}
-        #endregion
+		#endregion
 
-        #region 設定ファイルファイルの保存処理
-        /// <summary>
-        /// 設定ファイルファイルの保存処理
-        /// </summary>
-        /// <param name="file_path">ファイルパス</param>
-        /// <param name="setting">設定データ</param>
-        public void Save<T>(string file_path, T setting)
+		#region Configディレクトリパス
+		/// <summary>
+		/// Configディレクトリパス
+		/// </summary>
+		public string ConfigDirPath
+        {
+            get
+            {
+				// Configフォルダのパス取得
+				string conf_dir = Path.Combine(GetApplicationFolder(), this.ConfigDir);
+				// 存在確認
+				if (!Directory.Exists(conf_dir))
+				{
+					// 存在しない場合は作成
+					DirectoryUtil.CreateDirectory(conf_dir);
+				}
+
+				return conf_dir;
+			}
+		}
+		#endregion
+
+		#region 設定ファイルファイルの保存処理
+		/// <summary>
+		/// 設定ファイルファイルの保存処理
+		/// </summary>
+		/// <param name="file_path">ファイルパス</param>
+		/// <param name="setting">設定データ</param>
+		public void Save<T>(string file_path, T setting)
         {
             XMLUtil.Seialize<T>(this.ConfigFilePath, setting);
         }

@@ -40,7 +40,7 @@
             <GroupBox Header="アクションアイテム" Grid.ColumnSpan="2">
                 <StackPanel Orientation="Horizontal">
                     <Button Width="100" Height="100" Margin="5"
-                            IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}">
+                            IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
                                 <b:CallMethodAction MethodName="LoadBackup" TargetObject="{Binding}"/>

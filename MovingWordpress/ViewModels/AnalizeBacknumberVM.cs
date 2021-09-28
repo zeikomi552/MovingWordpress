@@ -164,34 +164,12 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // ダイアログのインスタンスを生成
-                var dialog = new OpenFileDialog();
+                // データベースのバックアップファイルのロード
+                var tmp = FileAnalyzerM.LoadContents();
 
-                // ファイルの種類を設定
-                dialog.Filter = "データベースバックアップファイル (*.sql.gz)|*.sql.gz";
-                // ダイアログを表示する
-                if (dialog.ShowDialog() == true)
-                {
-                    var query = MovingWordpressUtilities.Decompress(dialog.FileName);
-
-                    // 取得したクエリを分解しINSERT分のみ取得
-                    var query_contents = FileAnalyzerM.GetQueryParameters(query);
-
-                    // クエリ要素を回す
-                    foreach (var tmp in query_contents)
-                    {
-                        // 記事情報の抜き出し
-                        var wp_content = FileAnalyzerM.DivParameters(tmp);
-
-                        // revisionやautosaveが含まれている場合は履歴なので無視
-                        // コンテンツに文字列が含まれてない場合は無視
-                        // タイトルがない場合は無視
-                        if (wp_content.Post_type.Equals("post"))
-                        {
-                            this.BlogContentsManager.Add(wp_content);
-                        }
-                    }
-                }
+                // コンテンツのセット
+                this.BlogContentsManager.BlogContents.Items
+                    = new ObservableCollection<WpContentsM>(tmp);
             }
             catch (Exception e)
             {

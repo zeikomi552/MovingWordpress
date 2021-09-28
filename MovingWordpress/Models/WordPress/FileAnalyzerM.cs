@@ -1,4 +1,6 @@
-﻿using MVVMCore.BaseClass;
+﻿using Microsoft.Win32;
+using MovingWordpress.Common;
+using MVVMCore.BaseClass;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +12,63 @@ namespace MovingWordpress.Models
 {
     public class FileAnalyzerM : ModelBase
     {
+        #region コンテンツのロード処理
+        /// <summary>
+        /// コンテンツのロード処理
+        /// </summary>
+        /// <returns>コンテンツ</returns>
+        public static List<WpContentsM> LoadContents()
+        {
+            // ダイアログのインスタンスを生成
+            var dialog = new OpenFileDialog();
+
+            List<WpContentsM> ret = new List<WpContentsM>();
+
+            // ファイルの種類を設定
+            dialog.Filter = "データベースバックアップファイル (*.sql.gz)|*.sql.gz";
+            // ダイアログを表示する
+            if (dialog.ShowDialog() == true)
+            {
+                ret = LoadContents(dialog.FileName);
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// コンテンツのロード処理
+        /// </summary>
+        /// <param name="file_path">ファイルパス</param>
+        /// <returns>コンテンツ</returns>
+        public static List<WpContentsM> LoadContents(string file_path)
+        {
+            var query = MovingWordpressUtilities.Decompress(file_path);
+
+            // 取得したクエリを分解しINSERT分のみ取得
+            var query_contents = FileAnalyzerM.GetQueryParameters(query);
+
+            List<WpContentsM> ret = new List<WpContentsM>();
+
+            // クエリ要素を回す
+            foreach (var tmp in query_contents)
+            {
+                // 記事情報の抜き出し
+                var wp_content = FileAnalyzerM.DivParameters(tmp);
+
+                // revisionやautosaveが含まれている場合は履歴なので無視
+                // コンテンツに文字列が含まれてない場合は無視
+                // タイトルがない場合は無視
+                if (wp_content.Post_type.Equals("post"))
+                {
+                    ret.Add(wp_content);
+                }
+            }
+
+            return ret;
+        }
+        #endregion
+
+        #region wp_contentsへのINSERT文のパラメータをクエリから抜き出す
         /// <summary>
         /// wp_contentsへのINSERT文のパラメータをクエリから抜き出す
         /// </summary>
@@ -56,7 +115,7 @@ namespace MovingWordpress.Models
 
             return contents;
         }
-
+        #endregion
 
         #region パラメータの分解処理
         /// <summary>

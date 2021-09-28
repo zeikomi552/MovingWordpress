@@ -116,7 +116,7 @@ namespace MovingWordpress.Models
 			if (dialog.ShowDialog() == true)
 			{
 				// バックアップの保存
-				return XMLUtil.Deserialize<TagCateM>(dialog.FileName);
+				return Load(dialog.FileName);
 			}
 			else
 			{
@@ -125,5 +125,16 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
+		#region ロード処理
+		/// <summary>
+		/// ロード処理
+		/// </summary>
+		/// <param name="file_path">ファイルパス</param>
+		/// <returns>読み込み結果</returns>
+		public TagCateM Load(string file_path)
+		{
+			return XMLUtil.Deserialize<TagCateM>(file_path);
+		}
+		#endregion
 	}
 }

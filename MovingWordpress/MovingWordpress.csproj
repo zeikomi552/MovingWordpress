@@ -39,6 +39,7 @@ SSHに対応したブログサイトを想定しています。
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="CoreTweet" Version="1.0.0.483" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="MahApps.Metro" Version="2.4.7" />
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.7" />
