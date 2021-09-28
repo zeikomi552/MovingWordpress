@@ -153,11 +153,11 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region ファイルを開く処理
+        #region バックアップファイルを開く処理
         /// <summary>
-        /// ファイルを開く処理
+        /// バックアップファイルを開く処理
         /// </summary>
-        public void OpenFile()
+        public void LoadBackup()
         {
             try
             {
@@ -171,9 +171,16 @@ namespace MovingWordpress.ViewModels
                 // ダイアログを表示する
                 if (dialog.ShowDialog() == true)
                 {
+                    // 拡張子の取得
                     string ext = Path.GetExtension(dialog.FileName).ToLower();
 
-                    if (ext.Equals(".gz"))
+                    if (ext.Equals(".wmcate"))
+                    {
+                        TagCateM tag = new TagCateM();
+                        var tmp = tag.Load(dialog.FileName);    // ファイルのロード
+                        this.WordpressContents.Items = tmp.BlogContents.Items;   // 個別記事の情報を取得
+                    }
+                    else
                     {
                         // データベースのバックアップファイルのロード
                         var tmp = FileAnalyzerM.LoadContents(dialog.FileName);
@@ -182,16 +189,25 @@ namespace MovingWordpress.ViewModels
                         this.WordpressContents.Items
                             = new ObservableCollection<WpContentsM>(tmp);
                     }
-                    else
-                    {
-                        TagCateM tag = new TagCateM();
-                        var tmp = tag.Load(dialog.FileName);
-                        this.WordpressContents.Items = tmp.BlogContents.Items;   // 個別記事の情報を取得
-                    }
                 }
+            }
+            catch (Exception e)
+            {
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
 
-
-
+        #region 設定値の保存処理
+        /// <summary>
+        /// 設定値の保存処理
+        /// </summary>
+        public void SaveSetting()
+        {
+            try
+            {
+                // コンフィグファイルのロード
+                this.TwitterConfig.Save();
             }
             catch (Exception e)
             {
@@ -212,7 +228,7 @@ namespace MovingWordpress.ViewModels
                     && this.WordpressContents.SelectedItem != null)
                 {
                     string title = this.WordpressContents.SelectedItem.Post_title;
-                    string url = "https://www.premium-tsubu-hero.net/" + this.WordpressContents.SelectedItem.Post_name;
+                    string url = this.WordpressContents.SelectedItem.Guid;
 
                     this.Message = this.TweetContent.CreateTweetMessage(url, title);
                 }
