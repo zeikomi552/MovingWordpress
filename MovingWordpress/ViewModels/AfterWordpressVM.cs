@@ -149,9 +149,16 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                StringBuilder message = new StringBuilder();
-                ExecuteCommandList(@"CommandFiles\after_decompress.mw", "荷ほどき", message);
-
+                // リモートディレクトリの設定がおこなわれているかを確認
+                if (string.IsNullOrWhiteSpace(this.SSHConnection.FolderSetting.RemoteDirectory))
+                {
+                    ShowMessage.ShowNoticeOK("リモートパスの設定が行われていません。", "通知");
+                }
+                else
+                {
+                    StringBuilder message = new StringBuilder();
+                    ExecuteCommandList(@"CommandFiles\after_decompress.mw", "荷ほどき", message);
+                }
             }
             catch (Exception e)
             {

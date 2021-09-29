@@ -36,7 +36,7 @@
         <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
             <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="引っ越し画面" FontSize="30"/>
         </Border>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Cursor="Hand">
             <GroupBox Margin="5,5,0,5" Header="メインアクションアイテム">
                 <StackPanel Margin="5" Orientation="Horizontal" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}}">
                     <Button Margin="5" Width="100" Height="100" HorizontalAlignment="Left" Cursor="Hand">
