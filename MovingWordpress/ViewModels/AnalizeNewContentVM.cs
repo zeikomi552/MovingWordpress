@@ -62,8 +62,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
-
         #region 記事[Article]プロパティ
         /// <summary>
         /// 記事[Article]プロパティ用変数

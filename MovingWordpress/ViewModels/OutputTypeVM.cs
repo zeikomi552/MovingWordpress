@@ -11,6 +11,18 @@ namespace MovingWordpress.ViewModels
 {
     public class OutputTypeVM : ViewModelBase
     {
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		public OutputTypeVM()
+		{
+			this.TypeItems = new ModelList<OutputTypeElementM>();
+			this.TypeItems.Items.Add(new OutputTypeElementM() { OutputType = OutputTypeElementM.OutputTypeEnum.DateAsc, DisplayType = "日付順", });
+			this.TypeItems.Items.Add(new OutputTypeElementM() { OutputType = OutputTypeElementM.OutputTypeEnum.DateDesc, DisplayType = "日付逆順", });
+			this.TypeItems.Items.Add(new OutputTypeElementM() { OutputType = OutputTypeElementM.OutputTypeEnum.NameAsc, DisplayType = "名前順", });
+			this.TypeItems.Items.Add(new OutputTypeElementM() { OutputType = OutputTypeElementM.OutputTypeEnum.NameDesc, DisplayType = "名前逆順", });
+		}
+
 		#region タイトル[Title]プロパティ
 		/// <summary>
 		/// タイトル[Title]プロパティ用変数

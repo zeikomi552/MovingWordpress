@@ -9,7 +9,7 @@
         xmlns:local="clr-namespace:MovingWordpress.Views"
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.OutputTypeV"
         mc:Ignorable="d" hlp:DialogResultHelper.DialogResult="{Binding DialogResult}"
-        Title="{Binding Title}" Height="450" Width="800">
+        Title="{Binding Title}" Height="200" Width="300" WindowStyle="None" WindowStartupLocation="CenterScreen">
     <mah:MetroWindow.DataContext>
         <ViewModels:OutputTypeVM/>
     </mah:MetroWindow.DataContext>
@@ -23,12 +23,17 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <ComboBox ItemsSource="{Binding TypeItems.Items}"
+        <StackPanel Orientation="Horizontal">
+            
+            <TextBlock Margin="5" VerticalAlignment="Center" Text="ソート順"/>
+            <ComboBox Margin="5" VerticalAlignment="Center" Width="200" ItemsSource="{Binding TypeItems.Items}"
                   SelectedItem="{Binding TypeItems.SelectedItem}"
+                  SelectedValue="OutputType"
                   DisplayMemberPath="DisplayType">
-        </ComboBox>
+            </ComboBox>
+        </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="1">
-            <Button Margin="5" Width="100" Content="OK">
+            <Button Margin="5" Width="100" Content="OK" Cursor="Hand">
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="Click">
                         <b:CallMethodAction MethodName="OnOK" TargetObject="{Binding}"/>

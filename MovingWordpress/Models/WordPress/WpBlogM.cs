@@ -67,41 +67,70 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
-		#region バックナンバー作成
+
+
+		#region バックナンバーの出力処理
 		/// <summary>
-		/// バックナンバー作成
+		/// バックナンバーの出力処理
 		/// </summary>
-		public void CreateBackNumber()
+		/// <param name="file_path">出力ファイルパス</param>
+		/// <param name="type">出力タイプ</param>
+		public void OutputBackNumber(string file_path, OutputTypeElementM.OutputTypeEnum type)
 		{
 
-			// ダイアログのインスタンスを生成
-			var dialog = new SaveFileDialog();
-
-			// ファイルの種類を設定
-			dialog.Filter = "マークダウン (*.md)|*.md";
-			dialog.FileName = $"バックナンバー-{DateTime.Today.ToString("yyyyMMdd")}";
-
-			// ダイアログを表示する
-			if (dialog.ShowDialog() == true)
+			string text = string.Empty;
+			switch (type)
 			{
-				string text = CreateBackNumberForMonth();
-				// バックアップの保存
-				File.WriteAllText(dialog.FileName, text);
+				// 日付で昇順に並べる
+				case OutputTypeElementM.OutputTypeEnum.DateAsc:
+					{
+						// バックナンバー記事を日付で作成
+						text = this.CreateBackNumberForMonth(true);
+						break;
+					}
+				// 日付で降順に並べる
+				case OutputTypeElementM.OutputTypeEnum.DateDesc:
+					{
+						// バックナンバー記事を日付で作成
+						text = this.CreateBackNumberForMonth(false);
+						break;
+					}
+				// 名前で昇順に並べる
+				case OutputTypeElementM.OutputTypeEnum.NameAsc:
+					{
+						// バックナンバー記事を名前で作成
+						text = this.CreateBackNumberForTitle(true);
+						break;
+					}
+				// 名前で降順に並べる
+				case OutputTypeElementM.OutputTypeEnum.NameDesc:
+				default:
+					{
+						// バックナンバー記事を名前で作成
+						text = this.CreateBackNumberForTitle(true);
+						break;
+
+					}
 			}
 
+			// バックアップの保存
+			File.WriteAllText(file_path, text);
 		}
 		#endregion
+
 
 		#region タイトル順に並べて出力
 		/// <summary>
 		/// タイトル順に並べて出力
 		/// </summary>
 		/// <returns>タイトル順のバックナンバー</returns>
-		public string CreateBackNumberForTitle()
+		public string CreateBackNumberForTitle(bool desc = false)
 		{
 			StringBuilder text = new StringBuilder();
 
-			var sort_contents = this.BlogContents.Items.OrderBy(x => x.Post_title);
+			var sort_contents = desc ?
+				this.BlogContents.Items.OrderByDescending(x => x.Post_title)
+				: this.BlogContents.Items.OrderBy(x => x.Post_title);
 
 			text.AppendLine($"## バックナンバー(タイトル順)");
 			text.Append($"{DateTime.Today.ToString("yyyy年MM月dd日")} 作成");
@@ -119,11 +148,19 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
-		public string CreateBackNumberForMonth()
+		#region 日付順に並べてバックナンバーを作成する
+		/// <summary>
+		/// 日付順に並べてバックナンバーを作成する
+		/// </summary>
+		/// <param name="desc">true:昇順 false:降順</param>
+		/// <returns>バックナンバー記事</returns>
+		public string CreateBackNumberForMonth(bool desc = false)
 		{
 			StringBuilder text = new StringBuilder();
 
-			var sort_contents = this.BlogContents.Items.OrderBy(x => x.Post_date);
+			var sort_contents = desc ? 
+				this.BlogContents.Items.OrderByDescending(x => x.Post_date)
+				: this.BlogContents.Items.OrderBy(x => x.Post_date);
 
 			text.AppendLine($"## バックナンバー(日付順)");
 			text.Append($"{DateTime.Today.ToString("yyyy年MM月dd日")} 作成");
@@ -150,5 +187,6 @@ namespace MovingWordpress.Models
 
 			return text.ToString();
 		}
+		#endregion
 	}
 }

@@ -438,8 +438,29 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // バックナンバー記事の作成
-                this.BlogContentsManager.CreateBackNumber();
+                var wnd = new OutputTypeV();
+                if (wnd.ShowDialog() == true)
+                {
+                    var vm = wnd.DataContext as OutputTypeVM;
+                    var sel = vm.TypeItems.SelectedItem;
+                    if (sel != null)
+                    {
+                        // ダイアログのインスタンスを生成
+                        var dialog = new SaveFileDialog();
+
+                        // ファイルの種類を設定
+                        dialog.Filter = "マークダウン (*.md)|*.md";
+                        dialog.FileName = $"バックナンバー-{DateTime.Today.ToString("yyyyMMdd")}";
+
+                        // ダイアログを表示する
+                        if (dialog.ShowDialog() == true)
+                        {
+                            // ファイルの出力処理
+                            this.BlogContentsManager.OutputBackNumber(dialog.FileName, vm.TypeItems.SelectedItem.OutputType);
+                        }
+                    }
+                }
+
             }
             catch (Exception e)
             {
@@ -485,6 +506,10 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region 新記事分析
+        /// <summary>
+        /// 新記事分析
+        /// </summary>
         public void AnalizeNewArticle()
         {
             try
@@ -505,5 +530,6 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
     }
 }

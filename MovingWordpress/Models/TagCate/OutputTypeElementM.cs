@@ -7,17 +7,25 @@ using System.Threading.Tasks;
 
 namespace MovingWordpress.Models
 {
-    public class OutputTypeElementM : ModelBase
-    {
+	public class OutputTypeElementM : ModelBase
+	{
+		public enum OutputTypeEnum
+		{ 
+			NameAsc,
+			NameDesc,
+			DateAsc,
+			DateDesc
+		}
+
 		#region 出力タイプ[OutputType]プロパティ
 		/// <summary>
 		/// 出力タイプ[OutputType]プロパティ用変数
 		/// </summary>
-		string _OutputType = string.Empty;
+		OutputTypeEnum _OutputType = OutputTypeEnum.DateAsc;
 		/// <summary>
 		/// 出力タイプ[OutputType]プロパティ
 		/// </summary>
-		public string OutputType
+		public OutputTypeEnum OutputType
 		{
 			get
 			{
@@ -25,7 +33,7 @@ namespace MovingWordpress.Models
 			}
 			set
 			{
-				if (_OutputType == null || !_OutputType.Equals(value))
+				if (!_OutputType.Equals(value))
 				{
 					_OutputType = value;
 					NotifyPropertyChanged("OutputType");
@@ -58,7 +66,5 @@ namespace MovingWordpress.Models
 			}
 		}
 		#endregion
-
-
 	}
 }
