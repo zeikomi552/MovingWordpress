@@ -32,7 +32,11 @@
         <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
             <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitterボット" FontSize="30"/>
         </Border>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <GroupBox Margin="5,5,0,5" Header="メインアクションアイテム">
                 <StackPanel Orientation="Horizontal">
                     <Button Width="100" Height="100" Margin="5" Cursor="Hand">
@@ -75,7 +79,9 @@
                     </Button>
                 </StackPanel>
             </GroupBox>
-        </StackPanel>
+            <GroupBox Grid.Column="1" Margin="5,5,0,5" Header="サブアクションアイテム">
+            </GroupBox>
+        </Grid>
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
