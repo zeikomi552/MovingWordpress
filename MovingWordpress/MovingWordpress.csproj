@@ -29,6 +29,7 @@ SSHに対応したブログサイトを想定しています。
     <None Remove="Common\Icons\icon-excel.png" />
     <None Remove="Common\Icons\icon-load-file.png" />
     <None Remove="Common\Icons\icon-moving.png" />
+    <None Remove="Common\Icons\icon-random.png" />
     <None Remove="Common\Icons\icon-robot.png" />
     <None Remove="Common\Icons\icon-save-file.png" />
     <None Remove="Common\Icons\icon-search.png" />
@@ -65,6 +66,7 @@ SSHに対応したブログサイトを想定しています。
     <Resource Include="Common\Icons\icon-excel.png" />
     <Resource Include="Common\Icons\icon-load-file.png" />
     <Resource Include="Common\Icons\icon-moving.png" />
+    <Resource Include="Common\Icons\icon-random.png" />
     <Resource Include="Common\Icons\icon-robot.png" />
     <Resource Include="Common\Icons\icon-save-file.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

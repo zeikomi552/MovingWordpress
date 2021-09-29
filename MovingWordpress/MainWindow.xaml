@@ -95,7 +95,7 @@
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
                             <Viewbox>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="記事分析"/>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitter-Bot"/>
                             </Viewbox>
                         </StackPanel>
                     </Button.Content>
