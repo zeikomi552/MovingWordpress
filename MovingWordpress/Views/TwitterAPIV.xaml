@@ -4,10 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MovingWordpress.Views"
+        xmlns:hlp="clr-namespace:MovingWordpress.Common.Helpers"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters"
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.TwitterAPIV"
         mc:Ignorable="d"
         Title="Twitterボット" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+        <Converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+    </Window.Resources>
     <Window.DataContext>
         <ViewModels:TwitterAPIVM/>
     </Window.DataContext>
@@ -76,24 +82,58 @@
                     <GroupBox Margin="5" Header="キーセット">
                         <StackPanel Margin="5">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Width="100" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーキー"/>
+                                <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーキー"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerKey}"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerKey}"/>
+                                    <PasswordBox Width="300" hlp:PasswordBoxHelper.IsAttached="True"
+                                             hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.ConsumerKey}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam"
+                                             Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=consumer_key}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False"
+                                          x:Name="consumer_key" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Width="100" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーシークレット"/>
+                                <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーシークレット"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerSecretKey}"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_secret_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerSecretKey}"/>
+                                    <PasswordBox Width="300" hlp:PasswordBoxHelper.IsAttached="True"
+                                             hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.ConsumerSecretKey}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam"
+                                             Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=consumer_secret_key}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False"
+                                          x:Name="consumer_secret_key" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Width="100" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="アクセストークン"/>
+                                <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="アクセストークン"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessToken}"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=access_token}" 
+                                             Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessToken}"/>
+                                    <PasswordBox Background="White" Width="300" hlp:PasswordBoxHelper.IsAttached="True"
+                                             hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.AccessToken}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam"
+                                             Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=access_token}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False"
+                                          x:Name="access_token" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Width="100" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="アクセスシークレット"/>
+                                <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="アクセスシークレット"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessSecret}"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=access_secret}"
+                                             Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessSecret}"/>
+                                    <PasswordBox Width="300"
+                                             hlp:PasswordBoxHelper.IsAttached="True" hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.AccessSecret}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam"
+                                             Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=access_secret}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False"
+                                          x:Name="access_secret" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
