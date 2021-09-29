@@ -138,13 +138,20 @@ namespace MovingWordpress.ViewModels
         /// <summary>
         /// ツイート
         /// </summary>
-        /// <param name="message"></param>
         public void Tweet()
         {
             try
             {
-                // メッセージの送信処理
-                this.TwitterAPI.Tweet(this.Message);
+                // 送信文字列をチェック
+                if (!string.IsNullOrEmpty(this.Message))
+                {
+                    // メッセージの送信処理
+                    this.TwitterAPI.Tweet(this.Message);
+                }
+                else
+                {
+                    ShowMessage.ShowNoticeOK("送信データがありません", "通知");
+                }
             }
             catch (Exception e)
             {
@@ -242,6 +249,7 @@ namespace MovingWordpress.ViewModels
 
         Random _rand = new Random();
 
+        #region ランダム選択
         /// <summary>
         /// ランダム選択
         /// </summary>
@@ -249,6 +257,7 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                // nullチェック
                 if (this.WordpressContents.Items != null && this.WordpressContents.Items.Count > 0)
                 {
                     // カウントの取得
@@ -257,6 +266,7 @@ namespace MovingWordpress.ViewModels
                     // インデックスの取得
                     int index = _rand.Next(0, count - 1);
 
+                    // 記事を選択
                     this.WordpressContents.SelectedItem = this.WordpressContents.ElementAt(index);
                 }
             }
@@ -265,5 +275,6 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
     }
 }
