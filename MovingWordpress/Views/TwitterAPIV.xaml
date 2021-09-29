@@ -159,12 +159,12 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Width="100" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="ハッシュタグ"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TweetContent.HashTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Cursor="IBeam"/>
+                                <TextBox Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.TempleteM.HashTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Cursor="IBeam"/>
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Margin="5" Grid.Row="2" Header="メッセージ">
-                        <TextBox Text="{Binding TweetContent.Message, Mode=OneWay}" AcceptsReturn="True" Cursor="IBeam"/>
+                        <TextBox Text="{Binding TwitterConfig.TempleteM.Message, Mode=OneWay}" AcceptsReturn="True" Cursor="IBeam"/>
                     </GroupBox>
                     <StackPanel Grid.Row="3" Orientation="Horizontal">
                         <Button Margin="5" Width="100" Content="保存">

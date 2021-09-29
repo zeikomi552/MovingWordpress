@@ -40,31 +40,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region ツイート内容[TweetContent]プロパティ
-        /// <summary>
-        /// ツイート内容[TweetContent]プロパティ用変数
-        /// </summary>
-        TwitterContentM _TweetContent = new TwitterContentM();
-        /// <summary>
-        /// ツイート内容[TweetContent]プロパティ
-        /// </summary>
-        public TwitterContentM TweetContent
-        {
-            get
-            {
-                return _TweetContent;
-            }
-            set
-            {
-                if (_TweetContent == null || !_TweetContent.Equals(value))
-                {
-                    _TweetContent = value;
-                    NotifyPropertyChanged("TweetContent");
-                }
-            }
-        }
-        #endregion
-
         #region ブログ記事[WordpressContents]プロパティ
         /// <summary>
         /// ブログ記事[WordpressContents]プロパティ用変数
@@ -121,10 +96,12 @@ namespace MovingWordpress.ViewModels
             try
             {
                 // 送信文字列をチェック
-                if (!string.IsNullOrEmpty(this.TweetContent.Message))
+                if (!string.IsNullOrEmpty(this.TwitterConfig.TempleteM.Message)
+                    && this.WordpressContents.SelectedItem != null)
                 {
                     // メッセージの送信処理
-                    this.TwitterAPI.Tweet(this.TweetContent.Message);
+                    this.TwitterAPI.Tweet(this.TwitterConfig.TempleteM.Message);
+                    ShowMessage.ShowNoticeOK("送信しました。", "通知");
                 }
                 else
                 {
@@ -212,8 +189,8 @@ namespace MovingWordpress.ViewModels
                 if (this.WordpressContents != null
                     && this.WordpressContents.SelectedItem != null)
                 {
-                    this.TweetContent.Title = this.WordpressContents.SelectedItem.Post_title;
-                    this.TweetContent.URL = this.WordpressContents.SelectedItem.Guid;
+                    this.TwitterConfig.TempleteM.Title = this.WordpressContents.SelectedItem.Post_title;
+                    this.TwitterConfig.TempleteM.URL = this.WordpressContents.SelectedItem.Guid;
                 }
             }
             catch (Exception e)

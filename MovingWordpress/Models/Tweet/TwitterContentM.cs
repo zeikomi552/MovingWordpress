@@ -30,6 +30,7 @@ namespace MovingWordpress.Models
 		/// <summary>
 		/// タイトル[Title]プロパティ
 		/// </summary>
+		[System.Xml.Serialization.XmlIgnore]
 		public string Title
 		{
 			get
@@ -56,6 +57,7 @@ namespace MovingWordpress.Models
 		/// <summary>
 		/// URL[URL]プロパティ
 		/// </summary>
+		[System.Xml.Serialization.XmlIgnore]
 		public string URL
 		{
 			get
