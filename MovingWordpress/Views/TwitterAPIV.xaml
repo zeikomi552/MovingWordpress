@@ -7,7 +7,7 @@
         xmlns:hlp="clr-namespace:MovingWordpress.Common.Helpers"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters"
-        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" x:Class="MovingWordpress.Views.TwitterAPIV"
+        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" xmlns:Actions="clr-namespace:MovingWordpress.Common.Actions" x:Class="MovingWordpress.Views.TwitterAPIV"
         mc:Ignorable="d"
         Title="Twitterボット" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -67,12 +67,10 @@
                                 <b:CallMethodAction MethodName="Tweet" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="送信"/>
-                            </StackPanel>
-                        </Button.Content>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="送信"/>
+                        </StackPanel>
 
                     </Button>
                 </StackPanel>
@@ -187,6 +185,7 @@
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="SelectionChanged">
                                 <b:CallMethodAction MethodName="SelectionChanged" TargetObject="{Binding}"/>
+                                <Actions:DataGridTopRowAction/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                         <DataGrid.Columns>
