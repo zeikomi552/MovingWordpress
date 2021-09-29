@@ -164,7 +164,15 @@
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Margin="5" Grid.Row="2" Header="メッセージ">
-                        <TextBox Text="{Binding TwitterConfig.TempleteM.Message, Mode=OneWay}" AcceptsReturn="True" Cursor="IBeam"/>
+                        <TabControl>
+                            <TabItem Header="プレビュー">
+                                <TextBox Text="{Binding TwitterConfig.TempleteM.Message, Mode=OneWay}" AcceptsReturn="True" Cursor="IBeam"/>
+                            </TabItem>
+                            <TabItem Header="テンプレート">
+                                <TextBox Text="{Binding TwitterConfig.TempleteM.MessageTemplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         AcceptsReturn="True" Cursor="IBeam"/>
+                            </TabItem>
+                        </TabControl>
                     </GroupBox>
                     <StackPanel Grid.Row="3" Orientation="Horizontal">
                         <Button Margin="5" Width="100" Content="保存">

@@ -181,7 +181,15 @@ namespace MovingWordpress.ViewModels
                     {
                         TagCateM tag = new TagCateM();
                         var tmp = tag.Load(dialog.FileName);    // ファイルのロード
+
                         this.BlogContentsManager.BlogContents.Items = tmp.BlogContents.Items;   // 個別記事の情報を取得
+
+                        // 1件以上記事が存在する
+                        if (tmp.BlogContents.Items.Count > 0)
+                        {
+                            // 先頭記事を選択
+                            this.BlogContentsManager.BlogContents.SelectedItem = tmp.BlogContents.Items.First();
+                        }
                         this.SelectorAnalizer.Analizer.RankItems = tmp.AllContents; // 全記事の情報を取得
                     }
                     else

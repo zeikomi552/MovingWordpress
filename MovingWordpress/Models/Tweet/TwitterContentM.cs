@@ -22,6 +22,32 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
+		#region メッセージテンプレート[MessageTemplete]プロパティ
+		/// <summary>
+		/// メッセージテンプレート[MessageTemplete]プロパティ用変数
+		/// </summary>
+		string _MessageTemplete =　"{mw:title}\r\n{mw:hashtag}\r\n\r\n{mw:url}\r\n";
+		/// <summary>
+		/// メッセージテンプレート[MessageTemplete]プロパティ
+		/// </summary>
+		public string MessageTemplete
+		{
+			get
+			{
+				return _MessageTemplete;
+			}
+			set
+			{
+				if (_MessageTemplete == null || !_MessageTemplete.Equals(value))
+				{
+					_MessageTemplete = value;
+					NotifyPropertyChanged("MessageTemplete");
+					NotifyPropertyChanged("Message");
+				}
+			}
+		}
+		#endregion
+
 		#region タイトル[Title]プロパティ
 		/// <summary>
 		/// タイトル[Title]プロパティ用変数
@@ -110,7 +136,12 @@ namespace MovingWordpress.Models
 		/// <returns>ツイート</returns>
 		public string CreateTweetMessage()
 		{
-			return this.Title + "\n" + this.HashTags + "\n\n" + this.URL;
+			string msg = this.MessageTemplete
+				.Replace("{mw:title}", this.Title)
+				.Replace("{mw:hashtag}", this.HashTags)
+				.Replace("{mw:url}", this.URL);
+
+			return msg;
 		}
 		#endregion
 

@@ -95,6 +95,15 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                var config = this.TwitterConfig;
+
+                // コンフィグファイルのロード
+                config.Load();
+
+                // トークンの作成
+                this.TwitterAPI.CreateToken(config.KeysM.ConsumerKey,
+                    config.KeysM.ConsumerSecretKey, config.KeysM.AccessToken, config.KeysM.AccessSecret);
+
                 // 送信文字列をチェック
                 if (!string.IsNullOrEmpty(this.TwitterConfig.TempleteM.Message)
                     && this.WordpressContents.SelectedItem != null)
@@ -140,7 +149,14 @@ namespace MovingWordpress.ViewModels
                     {
                         TagCateM tag = new TagCateM();
                         var tmp = tag.Load(dialog.FileName);    // ファイルのロード
+
                         this.WordpressContents.Items = tmp.BlogContents.Items;   // 個別記事の情報を取得
+
+                        // 1件以上記事が存在する
+                        if (tmp.BlogContents.Items.Count > 0)
+                        {
+                            this.WordpressContents.SelectedItem = tmp.BlogContents.Items.First();   // 先頭記事を選択
+                        }
                     }
                     else
                     {
@@ -168,8 +184,9 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // コンフィグファイルのロード
+                // コンフィグファイルのセーブ
                 this.TwitterConfig.Save();
+                ShowMessage.ShowNoticeOK("設定を保存しました。", "通知");
             }
             catch (Exception e)
             {
