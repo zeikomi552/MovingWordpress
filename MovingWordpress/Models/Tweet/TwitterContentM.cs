@@ -11,23 +11,63 @@ namespace MovingWordpress.Models
 	{
 		#region メッセージ[Message]プロパティ
 		/// <summary>
-		/// メッセージ[Message]プロパティ用変数
-		/// </summary>
-		string _Message = string.Empty;
-		/// <summary>
 		/// メッセージ[Message]プロパティ
 		/// </summary>
 		public string Message
 		{
 			get
 			{
-				return _Message;
+				return CreateTweetMessage();
+			}
+		}
+		#endregion
+
+		#region タイトル[Title]プロパティ
+		/// <summary>
+		/// タイトル[Title]プロパティ用変数
+		/// </summary>
+		string _Title = string.Empty;
+		/// <summary>
+		/// タイトル[Title]プロパティ
+		/// </summary>
+		public string Title
+		{
+			get
+			{
+				return _Title;
 			}
 			set
 			{
-				if (_Message == null || !_Message.Equals(value))
+				if (_Title == null || !_Title.Equals(value))
 				{
-					_Message = value;
+					_Title = value;
+					NotifyPropertyChanged("Title");
+					NotifyPropertyChanged("Message");
+				}
+			}
+		}
+		#endregion
+
+		#region URL[URL]プロパティ
+		/// <summary>
+		/// URL[URL]プロパティ用変数
+		/// </summary>
+		string _URL = string.Empty;
+		/// <summary>
+		/// URL[URL]プロパティ
+		/// </summary>
+		public string URL
+		{
+			get
+			{
+				return _URL;
+			}
+			set
+			{
+				if (_URL == null || !_URL.Equals(value))
+				{
+					_URL = value;
+					NotifyPropertyChanged("URL");
 					NotifyPropertyChanged("Message");
 				}
 			}
@@ -54,22 +94,23 @@ namespace MovingWordpress.Models
 				{
 					_HashTags = value;
 					NotifyPropertyChanged("HashTags");
+					NotifyPropertyChanged("Message");
 				}
 			}
 		}
 		#endregion
 
+		#region ツイートの作成
 		/// <summary>
 		/// ツイートの作成
 		/// </summary>
-		/// <param name="url">URL</param>
 		/// <param name="title">タイトル</param>
 		/// <returns>ツイート</returns>
-		public string CreateTweetMessage(string url, string title)
+		public string CreateTweetMessage()
 		{
-			return title + "\n" + this.HashTags + "\n\n" + url;
+			return this.Title + "\n" + this.HashTags + "\n\n" + this.URL;
 		}
-
+		#endregion
 
 	}
 }

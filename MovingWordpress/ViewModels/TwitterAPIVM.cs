@@ -65,31 +65,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region メッセージ[Message]プロパティ
-        /// <summary>
-        /// メッセージ[Message]プロパティ用変数
-        /// </summary>
-        string _Message = string.Empty;
-        /// <summary>
-        /// メッセージ[Message]プロパティ
-        /// </summary>
-        public string Message
-        {
-            get
-            {
-                return _Message;
-            }
-            set
-            {
-                if (_Message == null || !_Message.Equals(value))
-                {
-                    _Message = value;
-                    NotifyPropertyChanged("Message");
-                }
-            }
-        }
-        #endregion
-
         #region ブログ記事[WordpressContents]プロパティ
         /// <summary>
         /// ブログ記事[WordpressContents]プロパティ用変数
@@ -121,14 +96,19 @@ namespace MovingWordpress.ViewModels
         /// </summary>
         public TwitterM TwitterAPI = new TwitterM();
 
+        /// <summary>
+        /// 初期化処理
+        /// </summary>
         public void Init()
         {
+            var config = this.TwitterConfig;
+
             // コンフィグファイルのロード
-            this.TwitterConfig.Load();
+            config.Load();
 
             // トークンの作成
-            this.TwitterAPI.CreateToken(this.TwitterConfig.KeysM.ConsumerKey,
-                this.TwitterConfig.KeysM.ConsumerSecretKey, this.TwitterConfig.KeysM.AccessToken, this.TwitterConfig.KeysM.AccessSecret);
+            this.TwitterAPI.CreateToken(config.KeysM.ConsumerKey,
+                config.KeysM.ConsumerSecretKey, config.KeysM.AccessToken, config.KeysM.AccessSecret);
         }
         #endregion
 
@@ -141,10 +121,10 @@ namespace MovingWordpress.ViewModels
             try
             {
                 // 送信文字列をチェック
-                if (!string.IsNullOrEmpty(this.Message))
+                if (!string.IsNullOrEmpty(this.TweetContent.Message))
                 {
                     // メッセージの送信処理
-                    this.TwitterAPI.Tweet(this.Message);
+                    this.TwitterAPI.Tweet(this.TweetContent.Message);
                 }
                 else
                 {
@@ -232,10 +212,8 @@ namespace MovingWordpress.ViewModels
                 if (this.WordpressContents != null
                     && this.WordpressContents.SelectedItem != null)
                 {
-                    string title = this.WordpressContents.SelectedItem.Post_title;
-                    string url = this.WordpressContents.SelectedItem.Guid;
-
-                    this.Message = this.TweetContent.CreateTweetMessage(url, title);
+                    this.TweetContent.Title = this.WordpressContents.SelectedItem.Post_title;
+                    this.TweetContent.URL = this.WordpressContents.SelectedItem.Guid;
                 }
             }
             catch (Exception e)
