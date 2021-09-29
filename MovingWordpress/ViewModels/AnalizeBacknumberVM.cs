@@ -164,16 +164,41 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // データベースのバックアップファイルのロード
-                var tmp = FileAnalyzerM.LoadContents();
+                // ダイアログのインスタンスを生成
+                var dialog = new OpenFileDialog();
 
-                // コンテンツのセット
-                this.BlogContentsManager.BlogContents.Items
-                    = new ObservableCollection<WpContentsM>(tmp);
+                List<WpContentsM> ret = new List<WpContentsM>();
+
+                // ファイルの種類を設定
+                dialog.Filter = "データベースまたはタグカテファイル (*.sql.gz;*.wmcate)|*.sql.gz;*.wmcate";
+                // ダイアログを表示する
+                if (dialog.ShowDialog() == true)
+                {
+                    // 拡張子の取得
+                    string ext = Path.GetExtension(dialog.FileName).ToLower();
+
+                    if (ext.Equals(".wmcate"))
+                    {
+                        TagCateM tag = new TagCateM();
+                        var tmp = tag.Load(dialog.FileName);    // ファイルのロード
+                        this.BlogContentsManager.BlogContents.Items = tmp.BlogContents.Items;   // 個別記事の情報を取得
+                        this.SelectorAnalizer.Analizer.RankItems = tmp.AllContents; // 全記事の情報を取得
+                    }
+                    else
+                    {
+                        // データベースのバックアップファイルのロード
+                        var tmp = FileAnalyzerM.LoadContents(dialog.FileName);
+
+                        // コンテンツのセット
+                        this.BlogContentsManager.BlogContents.Items
+                            = new ObservableCollection<WpContentsM>(tmp);
+
+                        this.SelectorAnalizer.Analizer.RankItems = new ModelList<MecabRankM>();
+                    }
+                }
             }
             catch (Exception e)
             {
-                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
@@ -270,31 +295,6 @@ namespace MovingWordpress.ViewModels
                    }));
             });
 
-        }
-        #endregion
-
-        #region コンテンツの読み込み処理
-        /// <summary>
-        /// コンテンツの読み込み処理
-        /// </summary>
-        public void LoadContents()
-        {
-            try
-            {
-                TagCateM tag = new TagCateM();
-
-                var tmp = tag.Load();
-                this.BlogContentsManager.BlogContents = tmp.BlogContents;   // 個別記事の情報を取得
-                this.SelectorAnalizer.Analizer.RankItems = tmp.AllContents; // 全記事の情報を取得
-
-
-                NotifyPropertyChanged("DisplayAnalizer");
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e.Message);
-                ShowMessage.ShowErrorOK(e.Message, "Error");
-            }
         }
         #endregion
 
