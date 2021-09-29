@@ -159,17 +159,20 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Width="100" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="ハッシュタグ"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TweetContent.HashTags}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Width="100" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="メッセージ"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="350" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TweetContent.Message}"/>
+                                <TextBox Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.TempleteM.HashTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Cursor="IBeam"/>
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Margin="5" Grid.Row="2" Header="メッセージ">
-                        <TextBox Text="{Binding Message}" AcceptsReturn="True"/>
+                        <TabControl>
+                            <TabItem Header="プレビュー">
+                                <TextBox Text="{Binding TwitterConfig.TempleteM.Message, Mode=OneWay}" AcceptsReturn="True" Cursor="IBeam"/>
+                            </TabItem>
+                            <TabItem Header="テンプレート">
+                                <TextBox Text="{Binding TwitterConfig.TempleteM.MessageTemplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         AcceptsReturn="True" Cursor="IBeam"/>
+                            </TabItem>
+                        </TabControl>
                     </GroupBox>
                     <StackPanel Grid.Row="3" Orientation="Horizontal">
                         <Button Margin="5" Width="100" Content="保存">

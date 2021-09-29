@@ -40,56 +40,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region ツイート内容[TweetContent]プロパティ
-        /// <summary>
-        /// ツイート内容[TweetContent]プロパティ用変数
-        /// </summary>
-        TwitterContentM _TweetContent = new TwitterContentM();
-        /// <summary>
-        /// ツイート内容[TweetContent]プロパティ
-        /// </summary>
-        public TwitterContentM TweetContent
-        {
-            get
-            {
-                return _TweetContent;
-            }
-            set
-            {
-                if (_TweetContent == null || !_TweetContent.Equals(value))
-                {
-                    _TweetContent = value;
-                    NotifyPropertyChanged("TweetContent");
-                }
-            }
-        }
-        #endregion
-
-        #region メッセージ[Message]プロパティ
-        /// <summary>
-        /// メッセージ[Message]プロパティ用変数
-        /// </summary>
-        string _Message = string.Empty;
-        /// <summary>
-        /// メッセージ[Message]プロパティ
-        /// </summary>
-        public string Message
-        {
-            get
-            {
-                return _Message;
-            }
-            set
-            {
-                if (_Message == null || !_Message.Equals(value))
-                {
-                    _Message = value;
-                    NotifyPropertyChanged("Message");
-                }
-            }
-        }
-        #endregion
-
         #region ブログ記事[WordpressContents]プロパティ
         /// <summary>
         /// ブログ記事[WordpressContents]プロパティ用変数
@@ -121,14 +71,19 @@ namespace MovingWordpress.ViewModels
         /// </summary>
         public TwitterM TwitterAPI = new TwitterM();
 
+        /// <summary>
+        /// 初期化処理
+        /// </summary>
         public void Init()
         {
+            var config = this.TwitterConfig;
+
             // コンフィグファイルのロード
-            this.TwitterConfig.Load();
+            config.Load();
 
             // トークンの作成
-            this.TwitterAPI.CreateToken(this.TwitterConfig.KeysM.ConsumerKey,
-                this.TwitterConfig.KeysM.ConsumerSecretKey, this.TwitterConfig.KeysM.AccessToken, this.TwitterConfig.KeysM.AccessSecret);
+            this.TwitterAPI.CreateToken(config.KeysM.ConsumerKey,
+                config.KeysM.ConsumerSecretKey, config.KeysM.AccessToken, config.KeysM.AccessSecret);
         }
         #endregion
 
@@ -140,11 +95,17 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
+                // トークンの作成
+                this.TwitterAPI.CreateToken(this.TwitterConfig.KeysM.ConsumerKey,
+                    this.TwitterConfig.KeysM.ConsumerSecretKey, this.TwitterConfig.KeysM.AccessToken, this.TwitterConfig.KeysM.AccessSecret);
+
                 // 送信文字列をチェック
-                if (!string.IsNullOrEmpty(this.Message))
+                if (!string.IsNullOrEmpty(this.TwitterConfig.TempleteM.Message)
+                    && this.WordpressContents.SelectedItem != null)
                 {
                     // メッセージの送信処理
-                    this.TwitterAPI.Tweet(this.Message);
+                    this.TwitterAPI.Tweet(this.TwitterConfig.TempleteM.Message);
+                    ShowMessage.ShowNoticeOK("送信しました。", "通知");
                 }
                 else
                 {
@@ -183,7 +144,14 @@ namespace MovingWordpress.ViewModels
                     {
                         TagCateM tag = new TagCateM();
                         var tmp = tag.Load(dialog.FileName);    // ファイルのロード
+
                         this.WordpressContents.Items = tmp.BlogContents.Items;   // 個別記事の情報を取得
+
+                        // 1件以上記事が存在する
+                        if (tmp.BlogContents.Items.Count > 0)
+                        {
+                            this.WordpressContents.SelectedItem = tmp.BlogContents.Items.First();   // 先頭記事を選択
+                        }
                     }
                     else
                     {
@@ -211,8 +179,9 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // コンフィグファイルのロード
+                // コンフィグファイルのセーブ
                 this.TwitterConfig.Save();
+                ShowMessage.ShowNoticeOK("設定を保存しました。", "通知");
             }
             catch (Exception e)
             {
@@ -232,10 +201,8 @@ namespace MovingWordpress.ViewModels
                 if (this.WordpressContents != null
                     && this.WordpressContents.SelectedItem != null)
                 {
-                    string title = this.WordpressContents.SelectedItem.Post_title;
-                    string url = this.WordpressContents.SelectedItem.Guid;
-
-                    this.Message = this.TweetContent.CreateTweetMessage(url, title);
+                    this.TwitterConfig.TempleteM.Title = this.WordpressContents.SelectedItem.Post_title;
+                    this.TwitterConfig.TempleteM.URL = this.WordpressContents.SelectedItem.Guid;
                 }
             }
             catch (Exception e)
