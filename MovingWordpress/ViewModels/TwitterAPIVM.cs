@@ -40,8 +40,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
-
         #region ツイート内容[TweetContent]プロパティ
         /// <summary>
         /// ツイート内容[TweetContent]プロパティ用変数
