@@ -95,14 +95,9 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                var config = this.TwitterConfig;
-
-                // コンフィグファイルのロード
-                config.Load();
-
                 // トークンの作成
-                this.TwitterAPI.CreateToken(config.KeysM.ConsumerKey,
-                    config.KeysM.ConsumerSecretKey, config.KeysM.AccessToken, config.KeysM.AccessSecret);
+                this.TwitterAPI.CreateToken(this.TwitterConfig.KeysM.ConsumerKey,
+                    this.TwitterConfig.KeysM.ConsumerSecretKey, this.TwitterConfig.KeysM.AccessToken, this.TwitterConfig.KeysM.AccessSecret);
 
                 // 送信文字列をチェック
                 if (!string.IsNullOrEmpty(this.TwitterConfig.TempleteM.Message)
