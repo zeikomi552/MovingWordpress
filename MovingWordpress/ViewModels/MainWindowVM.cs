@@ -84,5 +84,55 @@ namespace MovingWordpress.ViewModels
 
         }
         #endregion
+
+        #region 引っ越し画面への遷移処理
+        /// <summary>
+        /// 引っ越し画面への遷移処理
+        /// </summary>
+        public void AnalizeBacknumberV()
+        {
+            try
+            {
+                var wnd = new AnalizeBacknumberV();
+
+                if (wnd.ShowDialog() == true)
+                {
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+
+        }
+        #endregion
+
+        #region 引っ越し画面への遷移処理
+        /// <summary>
+        /// 引っ越し画面への遷移処理
+        /// </summary>
+        public void TwitterAPIV()
+        {
+            try
+            {
+                var wnd = new TwitterAPIV();
+
+                if (wnd.ShowDialog() == true)
+                {
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+
+        }
+        #endregion
     }
 }

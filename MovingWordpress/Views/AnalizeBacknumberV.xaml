@@ -1,0 +1,317 @@
+﻿<mah:MetroWindow
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MovingWordpress.Views"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels" xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters" x:Class="MovingWordpress.Views.AnalizeBacknumberV"
+        mc:Ignorable="d"
+        Title="過去記事分析 - タグカテくん" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
+    <mah:MetroWindow.Resources>
+        <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+        <ViewModels:AnalizeBacknumberVM x:Key="vm"/>
+    </mah:MetroWindow.Resources>
+    <mah:MetroWindow.DataContext>
+        <Binding Source="{StaticResource vm}"/>
+    </mah:MetroWindow.DataContext>
+    <b:Interaction.Triggers>
+        <b:EventTrigger>
+            <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="過去記事分析 - タグカテくん" FontSize="30"/>
+        </Border>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="アクションアイテム" Grid.ColumnSpan="2">
+                <StackPanel Orientation="Horizontal">
+                    <Button Width="100" Height="100" Margin="5"
+                            IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="LoadBackup" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-backup-load.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="記事取込"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="ContentAnalize" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-robot.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="個別記事解析"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="AnalizeContents" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-robot.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="全体記事解析"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="AnalizeNewArticle" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-robot.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="新記事解析"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+                    <Button Margin="5" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="SaveContents" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-save-file.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="解析保存"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="サブアクションアイテム" Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="CombinePage" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="50" Height="50" VerticalAlignment="Center" Source="/Common/Icons/icon-save-file.png" />
+                            <Viewbox>
+                                <StackPanel>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="記事内容"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="まとめて出力"/>
+                                </StackPanel>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="SaveExcel" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-excel.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="レポート出力"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="CreateBackNumber" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-save-file.png" />
+                            <Viewbox>
+                                <StackPanel>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="バックナンバー"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="作成"/>
+                                </StackPanel>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <GroupBox Grid.Row="1" Header="過去記事">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid IsReadOnly="True" Language="ja-jp" AutoGenerateColumns="False"
+                          ItemsSource="{Binding BlogContentsManager.BlogContents.Items}"
+                          SelectedItem="{Binding BlogContentsManager.BlogContents.SelectedItem}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="投稿日" Binding="{Binding Post_date}"/>
+                                <DataGridTextColumn Header="ステータス" Binding="{Binding Post_status}"/>
+                                <DataGridTextColumn Width="200" Header="タイトル" Binding="{Binding Post_title}"/>
+                                <DataGridTextColumn Width="100" Header="推奨カテゴリ" Binding="{Binding SelectorAnalizer.RecomendCategory, Mode=OneWay}"/>
+                                <DataGridTextColumn Width="100" Header="推奨タグ" Binding="{Binding SelectorAnalizer.ReccomendTags, Mode=OneWay}"/>
+                                <DataGridTextColumn Width="100" Header="ポスト名" Binding="{Binding Post_name}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="2" Header="記事詳細">
+                    <Grid Grid.Row="1">
+                        <TextBox IsReadOnly="True" Text="{Binding BlogContentsManager.BlogContents.SelectedItem.Post_content_Except, Mode=OneWay}" Cursor="IBeam"/>
+
+                    </Grid>
+
+
+                </GroupBox>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <GroupBox Grid.Column="1" Header="個別記事解析">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox Margin="5" Width="100"
+                                      ItemsSource="{Binding BlogContentsManager.BlogContents.SelectedItem.SelectorAnalizer.PartsOfSpeechSelector.Items, Mode=OneWay}" 
+                                      SelectedItem="{Binding BlogContentsManager.BlogContents.SelectedItem.SelectorAnalizer.PartsOfSpeechSelector.SelectedItem}">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="SelectionChanged">
+                                        <b:CallMethodAction MethodName="SelectionChanged" 
+                                                            TargetObject="{Binding BlogContentsManager.BlogContents.SelectedItem.SelectorAnalizer, Source={StaticResource vm}}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </ComboBox>
+                            <ComboBox DataContext="{Binding BlogContentsManager.BlogContents.SelectedItem}"
+                                      Margin="5" Width="100" ItemsSource="{Binding SelectorAnalizer.PartsOfSpeechSelector2.Items}" 
+                                      SelectedItem="{Binding SelectorAnalizer.PartsOfSpeechSelector2.SelectedItem}">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="SelectionChanged">
+                                        <b:CallMethodAction MethodName="Selection2Changed" 
+                                                            TargetObject="{Binding BlogContentsManager.BlogContents.SelectedItem.SelectorAnalizer, Source={StaticResource vm}}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </ComboBox>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="解析中:"
+                                       Visibility="{Binding IsExecuteContentAnaize, Converter={StaticResource boolToVisibilityConverter}, Source={StaticResource vm}}"/>
+                            <ProgressBar Width="100" IsIndeterminate="True"
+                                         Visibility="{Binding IsExecuteContentAnaize, Converter={StaticResource boolToVisibilityConverter}, Source={StaticResource vm}}"/>
+                        </StackPanel>
+                        <DataGrid DataContext="{Binding BlogContentsManager.BlogContents.SelectedItem}"
+                                  AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True"
+                                ItemsSource="{Binding SelectorAnalizer.DisplayAnalizer.RankItems.Items, Mode=OneWay}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="出現回数" Binding="{Binding Count}"/>
+                                <DataGridTextColumn Header="単語" Binding="{Binding Surface}"/>
+                                <DataGridTextColumn Header="解析結果" Binding="{Binding Feature}"/>
+                                <DataGridTextColumn Header="品詞タイプ2" Binding="{Binding PartsOfSpeech}"/>
+                                <DataGridTextColumn Header="品詞タイプ2" Binding="{Binding PartsOfSpeech2}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="1" Header="全記事解析">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox Margin="5" Width="100"
+                                  ItemsSource="{Binding SelectorAnalizer.PartsOfSpeechSelector.Items}" 
+                                  SelectedItem="{Binding SelectorAnalizer.PartsOfSpeechSelector.SelectedItem}">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="SelectionChanged">
+                                        <b:CallMethodAction MethodName="SelectionChanged" TargetObject="{Binding SelectorAnalizer, Source={StaticResource vm}}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </ComboBox>
+                            <ComboBox Margin="5" Width="100"
+                                      ItemsSource="{Binding SelectorAnalizer.PartsOfSpeechSelector2.Items}" 
+                                      SelectedItem="{Binding SelectorAnalizer.PartsOfSpeechSelector2.SelectedItem}">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="SelectionChanged">
+                                        <b:CallMethodAction MethodName="Selection2Changed" TargetObject="{Binding SelectorAnalizer, Source={StaticResource vm}}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </ComboBox>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="解析中:" Visibility="{Binding IsExecuteAnaize, Converter={StaticResource boolToVisibilityConverter}}"/>
+                            <ProgressBar Width="100" IsIndeterminate="True" Visibility="{Binding IsExecuteAnaize, Converter={StaticResource boolToVisibilityConverter}}"/>
+                        </StackPanel>
+
+                        <DataGrid AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" 
+                              ItemsSource="{Binding SelectorAnalizer.DisplayAnalizer.RankItems.Items, Mode=OneWay}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="出現回数" Binding="{Binding Count}"/>
+                                <DataGridTextColumn Header="単語" Binding="{Binding Surface}"/>
+                                <DataGridTextColumn Header="解析結果" Binding="{Binding Feature}"/>
+                                <DataGridTextColumn Header="品詞タイプ2" Binding="{Binding PartsOfSpeech}"/>
+                                <DataGridTextColumn Header="品詞タイプ2" Binding="{Binding PartsOfSpeech2}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </GroupBox>
+
+
+            </Grid>
+
+        </Grid>
+    </Grid>
+</mah:MetroWindow>

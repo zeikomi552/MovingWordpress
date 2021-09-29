@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="Views\AnalizeBacknumberV.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\AnalizeNewContentV.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\OutputTypeV.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\TwitterAPIV.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\AnalizeBacknumberV.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\AnalizeNewContentV.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\OutputTypeV.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\TwitterAPIV.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

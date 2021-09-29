@@ -79,8 +79,5 @@ namespace MVVMCore.Common.Utilities
             return (T)serializer.Deserialize(stream);       // デシリアライズ
         }
         #endregion
-
-
-
     }
 }

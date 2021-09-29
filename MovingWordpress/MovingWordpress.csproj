@@ -20,21 +20,31 @@ SSHに対応したブログサイトを想定しています。
     <None Remove="Common\Icons\app-icon.ico" />
     <None Remove="Common\Icons\app.ico" />
     <None Remove="Common\Icons\icon-after-wordpress.png" />
+    <None Remove="Common\Icons\icon-backup-load.png" />
     <None Remove="Common\Icons\icon-before-wordpress.png" />
     <None Remove="Common\Icons\Icon-clearn.png" />
     <None Remove="Common\Icons\Icon-compress.png" />
     <None Remove="Common\Icons\Icon-depress.png" />
     <None Remove="Common\Icons\icon-download.png" />
+    <None Remove="Common\Icons\icon-excel.png" />
+    <None Remove="Common\Icons\icon-load-file.png" />
     <None Remove="Common\Icons\icon-moving.png" />
+    <None Remove="Common\Icons\icon-random.png" />
+    <None Remove="Common\Icons\icon-robot.png" />
+    <None Remove="Common\Icons\icon-save-file.png" />
     <None Remove="Common\Icons\icon-search.png" />
+    <None Remove="Common\Icons\icon-twitter.png" />
     <None Remove="Common\Icons\icon-upload.png" />
     <None Remove="Common\Themes\SplushScreen.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="CoreTweet" Version="1.0.0.483" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="MahApps.Metro" Version="2.4.7" />
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.7" />
+    <PackageReference Include="MeCab.DotNet" Version="0.0.40" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="SSH.NET" Version="2020.0.1" />
     <PackageReference Include="WindowsAPICodePack" Version="1.1.2" />
@@ -47,13 +57,22 @@ SSHに対応したブログサイトを想定しています。
   <ItemGroup>
     <Resource Include="Common\Icons\app.ico" />
     <Resource Include="Common\Icons\icon-after-wordpress.png" />
+    <Resource Include="Common\Icons\icon-backup-load.png" />
     <Resource Include="Common\Icons\icon-before-wordpress.png" />
     <Resource Include="Common\Icons\Icon-clearn.png" />
     <Resource Include="Common\Icons\Icon-compress.png" />
     <Resource Include="Common\Icons\Icon-depress.png" />
     <Resource Include="Common\Icons\icon-download.png" />
+    <Resource Include="Common\Icons\icon-excel.png" />
+    <Resource Include="Common\Icons\icon-load-file.png" />
     <Resource Include="Common\Icons\icon-moving.png" />
+    <Resource Include="Common\Icons\icon-random.png" />
+    <Resource Include="Common\Icons\icon-robot.png" />
+    <Resource Include="Common\Icons\icon-save-file.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Common\Icons\icon-search.png" />
+    <Resource Include="Common\Icons\icon-twitter.png" />
     <Resource Include="Common\Icons\icon-upload.png" />
   </ItemGroup>
 
