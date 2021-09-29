@@ -11,6 +11,7 @@ namespace MovingWordpress.ViewModels
 {
     public class OutputTypeVM : ViewModelBase
     {
+		#region コンストラクタ
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
@@ -22,6 +23,7 @@ namespace MovingWordpress.ViewModels
 			this.TypeItems.Items.Add(new OutputTypeElementM() { OutputType = OutputTypeElementM.OutputTypeEnum.NameAsc, DisplayType = "名前順", });
 			this.TypeItems.Items.Add(new OutputTypeElementM() { OutputType = OutputTypeElementM.OutputTypeEnum.NameDesc, DisplayType = "名前逆順", });
 		}
+		#endregion
 
 		#region タイトル[Title]プロパティ
 		/// <summary>
