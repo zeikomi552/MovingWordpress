@@ -11,9 +11,21 @@ namespace MovingWordpress.Models
 	{
 		public enum OutputTypeEnum
 		{ 
+			/// <summary>
+			/// 名前順
+			/// </summary>
 			NameAsc,
+			/// <summary>
+			/// 名前逆順
+			/// </summary>
 			NameDesc,
+			/// <summary>
+			/// 日付順
+			/// </summary>
 			DateAsc,
+			/// <summary>
+			/// 日付逆順
+			/// </summary>
 			DateDesc
 		}
 

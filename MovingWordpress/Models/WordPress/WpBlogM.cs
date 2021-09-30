@@ -85,21 +85,21 @@ namespace MovingWordpress.Models
 				case OutputTypeElementM.OutputTypeEnum.DateAsc:
 					{
 						// バックナンバー記事を日付で作成
-						text = this.CreateBackNumberForMonth(true);
+						text = this.CreateBackNumberForMonth(false);
 						break;
 					}
 				// 日付で降順に並べる
 				case OutputTypeElementM.OutputTypeEnum.DateDesc:
 					{
 						// バックナンバー記事を日付で作成
-						text = this.CreateBackNumberForMonth(false);
+						text = this.CreateBackNumberForMonth(true);
 						break;
 					}
 				// 名前で昇順に並べる
 				case OutputTypeElementM.OutputTypeEnum.NameAsc:
 					{
 						// バックナンバー記事を名前で作成
-						text = this.CreateBackNumberForTitle(true);
+						text = this.CreateBackNumberForTitle(false);
 						break;
 					}
 				// 名前で降順に並べる
@@ -131,7 +131,7 @@ namespace MovingWordpress.Models
 			var sort_contents = desc ?
 				this.BlogContents.Items.OrderByDescending(x => x.Post_title)
 				: this.BlogContents.Items.OrderBy(x => x.Post_title);
-
+			
 			text.AppendLine($"## バックナンバー(タイトル順)");
 			text.Append($"{DateTime.Today.ToString("yyyy年MM月dd日")} 作成");
 			text.AppendLine();

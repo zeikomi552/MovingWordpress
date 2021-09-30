@@ -22,6 +22,7 @@ namespace MovingWordpress.ViewModels
 			this.TypeItems.Items.Add(new OutputTypeElementM() { OutputType = OutputTypeElementM.OutputTypeEnum.DateDesc, DisplayType = "日付逆順", });
 			this.TypeItems.Items.Add(new OutputTypeElementM() { OutputType = OutputTypeElementM.OutputTypeEnum.NameAsc, DisplayType = "名前順", });
 			this.TypeItems.Items.Add(new OutputTypeElementM() { OutputType = OutputTypeElementM.OutputTypeEnum.NameDesc, DisplayType = "名前逆順", });
+			this.TypeItems.SelectedItem = this.TypeItems.Items.First();
 		}
 		#endregion
 
