@@ -30,7 +30,7 @@ namespace MovingWordpress.ViewModels
 		/// <summary>
 		/// タイトル[Title]プロパティ用変数
 		/// </summary>
-		string _Title = string.Empty;
+		string _Title = "出力方法選択";
 		/// <summary>
 		/// タイトル[Title]プロパティ
 		/// </summary>

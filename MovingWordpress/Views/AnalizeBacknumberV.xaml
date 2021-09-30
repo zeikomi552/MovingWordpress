@@ -81,20 +81,6 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
-                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
-                        Width="100" Height="100" Margin="5" Cursor="Hand">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="AnalizeNewArticle" TargetObject="{Binding}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                        <StackPanel Orientation="Vertical">
-                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-robot.png" />
-                            <Viewbox>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="新記事解析"/>
-                            </Viewbox>
-                        </StackPanel>
-                    </Button>
                     <Button Margin="5" IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
                         Width="100" Height="100" Cursor="Hand">
                         <b:Interaction.Triggers>
@@ -114,6 +100,21 @@
             </GroupBox>
             <GroupBox Header="サブアクションアイテム" Grid.Column="1">
                 <StackPanel Orientation="Horizontal">
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Margin="5" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="AnalizeNewArticle" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-robot.png" />
+                            <Viewbox>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="新記事解析"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
+
                     <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
                         Width="100" Height="100" Margin="5" Cursor="Hand">
                         <b:Interaction.Triggers>

@@ -465,6 +465,7 @@ namespace MovingWordpress.ViewModels
                         {
                             // ファイルの出力処理
                             this.BlogContentsManager.OutputBackNumber(dialog.FileName, vm.TypeItems.SelectedItem.OutputType);
+                            ShowMessage.ShowNoticeOK("バックナンバーを作成しました。", "通知");
                         }
                     }
                 }

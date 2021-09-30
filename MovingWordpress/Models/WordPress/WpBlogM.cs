@@ -138,6 +138,7 @@ namespace MovingWordpress.Models
 
 			foreach (var tmp in sort_contents)
 			{
+
 				if (tmp.Post_status.Equals("publish"))
 				{
 					text.AppendLine($"- [{tmp.Post_title}]({tmp.Guid})");
