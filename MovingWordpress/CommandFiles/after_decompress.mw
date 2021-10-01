@@ -3,30 +3,20 @@
 //*******************************
 
 // 元々いるディレクトリをリネーム
-cd {mw:RemoteDirecotry};mv uploads/ _uploads/;mv plugins/ _plugins/;mv themes/ _themes/;
+cp -r {mw:RemoteDirecotry}uploads/ {mw:RemoteDirecotry}_uploads/;cp -r {mw:RemoteDirecotry}plugins/ {mw:RemoteDirecotry}_plugins/;cp -r {mw:RemoteDirecotry}themes/ {mw:RemoteDirecotry}_themes/;
 
 // /tmpにいる圧縮ファイルをwp-contentsディレクトリ配下に移動
-cd {mw:RemoteDirecotry};cp /tmp/uploads.tar.gz uploads.tar.gz;cp /tmp/plugins.tar.gz plugins.tar.gz;cp /tmp/themes.tar.gz themes.tar.gz;cp /tmp/dump.sql.gz dump.sql.gz;
+cp /tmp/uploads.tar.gz {mw:RemoteDirecotry}uploads.tar.gz;cp /tmp/plugins.tar.gz {mw:RemoteDirecotry}plugins.tar.gz;cp /tmp/themes.tar.gz {mw:RemoteDirecotry}themes.tar.gz;cp /tmp/dump.sql.gz {mw:RemoteDirecotry}dump.sql.gz;
 
 // 各種圧縮ファイルを解凍
-cd {mw:RemoteDirecotry};tar -zxvf uploads.tar.gz;tar -zxvf plugins.tar.gz;tar -zxvf themes.tar.gz;rm -f uploads.tar.gz;rm -f plugins.tar.gz;rm -f themes.tar.gz;
+sudo tar -zxvf {mw:RemoteDirecotry}uploads.tar.gz -C {mw:RemoteDirecotry};
+sudo tar -zxvf {mw:RemoteDirecotry}plugins.tar.gz -C {mw:RemoteDirecotry};
+sudo tar -zxvf {mw:RemoteDirecotry}themes.tar.gz -C {mw:RemoteDirecotry};
 
-// ディレクトリの権限を変更
-cd {mw:RemoteDirecotry};sudo chown bitnami:daemon -R uploads;sudo chown bitnami:daemon -R plugins;sudo chown bitnami:daemon -R themes;
-
-// uploadsディレクトリの権限変更
-cd {mw:RemoteDirecotry}uploads;sudo chown daemon:daemon -R *;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {} +;
-
-// pluginsディレクトの権限変更
-cd {mw:RemoteDirecotry}plugins;sudo chown daemon:daemon -R all-in-one-seo-pack;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {} +;
-
-// themesディレクトリの権限変更
-cd {mw:RemoteDirecotry}themes;sudo chmod 664 -R *;sudo find . -type d -exec chmod 775 {} +;
+rm -f {mw:RemoteDirecotry}uploads.tar.gz;rm -f {mw:RemoteDirecotry}plugins.tar.gz;rm -f {mw:RemoteDirecotry}themes.tar.gz;
 
 // データベースデータの解凍
 cd {mw:RemoteDirecotry};gzip -d -f {mw:RemoteDirecotry}dump.sql.gz;
 
 // データベースのリストア
 cd {mw:RemoteDirecotry};mysql -u {mw:DatabaseUserID} -p{mw:DatabasePassword} -h localhost -D {mw:Database} < dump.sql
-
-chmod 700 bitnami_credentials

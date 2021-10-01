@@ -1,6 +1,9 @@
 ﻿//*******************************
 // 各ディレクトリの権限確認
 //*******************************
+cd {mw:RemoteDirecotry}uploads;pwd;ls -l;
+cd {mw:RemoteDirecotry}themes;pwd;ls -l;
+cd {mw:RemoteDirecotry}plugins;pwd;ls -l;
 cd {mw:RemoteDirecotry};pwd;ls -l;
 cd {mw:RemoteDirecotry};cd ..;pwd;ls -l;
 cd {mw:RemoteDirecotry};cd ../..;pwd;ls -l;
