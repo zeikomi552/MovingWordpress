@@ -101,6 +101,20 @@
                     </Button.Content>
 
                 </Button>
+                <Button Height="100" Width="100" Cursor="Hand">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="Click">
+                            <b:CallMethodAction MethodName="GitHubAPIV" TargetObject="{Binding}"/>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                    <StackPanel Orientation="Vertical">
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                        <Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="GitHUb-API"/>
+                        </Viewbox>
+                    </StackPanel>
+
+                </Button>
             </WrapPanel>
         </GroupBox>
     </Grid>

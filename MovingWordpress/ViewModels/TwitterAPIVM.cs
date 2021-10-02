@@ -76,14 +76,23 @@ namespace MovingWordpress.ViewModels
         /// </summary>
         public void Init()
         {
-            var config = this.TwitterConfig;
+            try
+            {
+                var config = this.TwitterConfig;
 
-            // コンフィグファイルのロード
-            config.Load();
+                // コンフィグファイルのロード
+                config.Load();
 
-            // トークンの作成
-            this.TwitterAPI.CreateToken(config.KeysM.ConsumerKey,
-                config.KeysM.ConsumerSecretKey, config.KeysM.AccessToken, config.KeysM.AccessSecret);
+                // トークンの作成
+                this.TwitterAPI.CreateToken(config.KeysM.ConsumerKey,
+                    config.KeysM.ConsumerSecretKey, config.KeysM.AccessToken, config.KeysM.AccessSecret);
+            }
+            catch (Exception e)
+            {
+
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
         }
         #endregion
 
@@ -114,6 +123,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
@@ -166,6 +176,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
@@ -207,6 +218,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
@@ -237,6 +249,7 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }

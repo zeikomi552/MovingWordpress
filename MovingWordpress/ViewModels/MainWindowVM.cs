@@ -134,5 +134,24 @@ namespace MovingWordpress.ViewModels
 
         }
         #endregion
+
+        public void GitHubAPIV()
+        {
+            try
+            {
+                var wnd = new GitHubAPIV();
+
+                if (wnd.ShowDialog() == true)
+                {
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
     }
 }
