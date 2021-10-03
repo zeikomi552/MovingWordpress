@@ -163,6 +163,23 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
+                    <Button IsEnabled="{Binding IsExecute, Converter={StaticResource InverseBooleanConverter}, Mode=OneWay}"
+                        Width="100" Height="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="SaveMarkdown" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="50" Height="50" VerticalAlignment="Center" Source="/Common/Icons/icon-save-file.png" />
+                            <Viewbox>
+                                <StackPanel>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="マークダウン"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="出力"/>
+                                </StackPanel>
+                            </Viewbox>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </GroupBox>
         </Grid>

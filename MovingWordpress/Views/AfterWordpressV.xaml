@@ -215,7 +215,7 @@
                                 <TextBlock Margin="5" Width="100" VerticalAlignment="Center" Text="ローカルパス"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                 <TextBox Margin="5" Width="250" VerticalAlignment="Center" Text="{Binding LocalDirectory}" Cursor="IBeam"/>
-                                <Button Margin="5" Content="フォルダ選択">
+                                <Button Margin="5" Content="フォルダ選択" Cursor="Hand">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="Click">
                                             <b:CallMethodAction MethodName="OpenFileBrowzeDialog" TargetObject="{Binding}"/>
