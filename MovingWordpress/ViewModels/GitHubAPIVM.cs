@@ -112,6 +112,53 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region 開発言語リスト[LanguageList]プロパティ
+        /// <summary>
+        /// 開発言語リスト[LanguageList]プロパティ用変数
+        /// </summary>
+        ModelList<GitHubLanguageM> _LanguageList = new ModelList<GitHubLanguageM>();
+        /// <summary>
+        /// 開発言語リスト[LanguageList]プロパティ
+        /// </summary>
+        public ModelList<GitHubLanguageM> LanguageList
+        {
+            get
+            {
+                return _LanguageList;
+            }
+            set
+            {
+                if (_LanguageList == null || !_LanguageList.Equals(value))
+                {
+                    _LanguageList = value;
+                    NotifyPropertyChanged("LanguageList");
+                }
+            }
+        }
+        #endregion
+
+
+
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public GitHubAPIVM()
+        {
+            // 全件の要素を登録する
+            GitHubLanguageM all = new GitHubLanguageM() { DisplayName = "-", UseLanguage = null };
+            this.LanguageList.Items.Add(all);
+
+            foreach (Language val in Enum.GetValues(typeof(Language)))
+            {
+                string lang_name = Enum.GetName(typeof(Language), val);
+                GitHubLanguageM tmp = new GitHubLanguageM() { DisplayName = lang_name, UseLanguage = val };
+
+                this.LanguageList.Items.Add(tmp);
+            }
+
+            // 1つ目の値を取り出す
+            this.LanguageList.SelectedItem = this.LanguageList.Items.First();
+        }
 
 
         /// <summary>
@@ -139,7 +186,7 @@ namespace MovingWordpress.ViewModels
             // スターの数でソート
             request.SortField = RepoSearchSort.Stars;
 
-            request.Language = Language.CSharp;
+            request.Language = this.LanguageList.SelectedItem.UseLanguage;
 
             // 降順でソート
             request.Order = SortDirection.Descending;
