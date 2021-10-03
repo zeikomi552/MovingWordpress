@@ -111,7 +111,7 @@
                                     <DatePicker Language="ja-jp" SelectedDate="{Binding SearchDateRange.ToDateBase}" Width="100" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Width="85" TextAlignment="Right" Margin="5" VerticalAlignment="Center" Text="From"/>
+                                    <TextBlock Width="85" TextAlignment="Right" Margin="5" VerticalAlignment="Center" Text="開発言語"/>
                                     <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
                                     <ComboBox Width="100" ItemsSource="{Binding LanguageList.Items}" 
                                               DisplayMemberPath="DisplayName"
