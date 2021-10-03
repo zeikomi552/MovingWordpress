@@ -110,5 +110,23 @@ namespace MovingWordpress.Common
             }
         }
         #endregion
+
+        /// <summary>
+        /// NullやStringEmptyが入ってきたらpadding_textに置き換える
+        /// </summary>
+        /// <param name="text">文字列</param>
+        /// <param name="padding_text"></param>
+        /// <returns></returns>
+        public static string NullPadding(string text, string padding_text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return padding_text;
+            }
+            else
+            {
+                return text;
+            }
+        }
     }
 }

@@ -27,6 +27,7 @@ SSHに対応したブログサイトを想定しています。
     <None Remove="Common\Icons\Icon-depress.png" />
     <None Remove="Common\Icons\icon-download.png" />
     <None Remove="Common\Icons\icon-excel.png" />
+    <None Remove="Common\Icons\icon-github-octocat.png" />
     <None Remove="Common\Icons\icon-load-file.png" />
     <None Remove="Common\Icons\icon-moving.png" />
     <None Remove="Common\Icons\icon-random.png" />
@@ -65,6 +66,7 @@ SSHに対応したブログサイトを想定しています。
     <Resource Include="Common\Icons\Icon-depress.png" />
     <Resource Include="Common\Icons\icon-download.png" />
     <Resource Include="Common\Icons\icon-excel.png" />
+    <Resource Include="Common\Icons\icon-github-octocat.png" />
     <Resource Include="Common\Icons\icon-load-file.png" />
     <Resource Include="Common\Icons\icon-moving.png" />
     <Resource Include="Common\Icons\icon-random.png" />

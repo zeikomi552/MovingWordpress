@@ -108,9 +108,9 @@
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
                     <StackPanel Orientation="Vertical">
-                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-github-octocat.png" />
                         <Viewbox>
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="GitHUb-API"/>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="GitHub-API"/>
                         </Viewbox>
                     </StackPanel>
 
