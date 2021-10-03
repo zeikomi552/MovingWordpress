@@ -17,6 +17,9 @@
     <Compile Update="Views\TwitterAPIV.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\TwitterSearchV.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\AnalizeBacknumberV.xaml">
@@ -32,6 +35,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\TwitterAPIV.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\TwitterSearchV.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

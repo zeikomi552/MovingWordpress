@@ -135,6 +135,25 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        public void TwitterSearchV()
+        {
+            try
+            {
+                var wnd = new TwitterSearchV();
+
+                if (wnd.ShowDialog() == true)
+                {
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+
         public void GitHubAPIV()
         {
             try

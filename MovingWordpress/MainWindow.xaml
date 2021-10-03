@@ -9,7 +9,7 @@
         xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels"
         x:Class="MovingWordpress.MainWindow"
         mc:Ignorable="d"
-        Title="ワードプレスの引っ越し屋さん" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="ワードプレスの引っ越し屋さん" Height="600" Width="800" WindowStartupLocation="CenterScreen">
     <b:Interaction.Triggers>
         <b:EventTrigger>
             <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
@@ -27,11 +27,12 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
             <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="ワードプレスの引っ越し屋さん" FontSize="30"/>
         </Border>
-        <GroupBox Grid.Row="1" Header="引っ越し">
+        <GroupBox Grid.Row="1" Header="ワードプレスの引っ越し">
             <WrapPanel Margin="5" Grid.Row="1" Orientation="Horizontal">
                 <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                     <b:Interaction.Triggers>
@@ -67,7 +68,7 @@
                 </Button>
             </WrapPanel>
         </GroupBox>
-        <GroupBox Grid.Row="2" Header="過去記事">
+        <GroupBox Grid.Row="2" Header="過去記事活用">
             <WrapPanel Margin="5" Grid.Row="1" Orientation="Horizontal">
                 <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                     <b:Interaction.Triggers>
@@ -101,7 +102,11 @@
                     </Button.Content>
 
                 </Button>
-                <Button Height="100" Width="100" Cursor="Hand">
+            </WrapPanel>
+        </GroupBox>
+        <GroupBox Grid.Row="3" Header="ブログネタ探し効率化">
+            <WrapPanel Margin="5" Grid.Row="1" Orientation="Horizontal">
+                <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="Click">
                             <b:CallMethodAction MethodName="GitHubAPIV" TargetObject="{Binding}"/>
@@ -111,6 +116,20 @@
                         <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-github-octocat.png" />
                         <Viewbox>
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="GitHub-API"/>
+                        </Viewbox>
+                    </StackPanel>
+
+                </Button>
+                <Button Margin="5" Height="100" Width="100" Cursor="Hand">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="Click">
+                            <b:CallMethodAction MethodName="TwitterSearchV" TargetObject="{Binding}"/>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                    <StackPanel Orientation="Vertical">
+                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                        <Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitter検索"/>
                         </Viewbox>
                     </StackPanel>
 
