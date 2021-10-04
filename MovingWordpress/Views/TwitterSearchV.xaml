@@ -32,7 +32,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
-            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitterボット" FontSize="30"/>
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="雑に探すTwitter検索" FontSize="30"/>
         </Border>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -167,7 +167,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="キーワード"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                            <TextBox Width="200" Text="{Binding SearchKeyword}"/>
+                            <TextBox VerticalAlignment="Center" Width="200" Text="{Binding SearchKeyword}"/>
                             <Button Margin="5" Content="検索">
                                 <b:Interaction.Triggers>
                                     <b:EventTrigger EventName="Click">
@@ -192,14 +192,25 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="5" VerticalAlignment="Center" Text="API使用制限"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="[API使用制限]"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Remaining}"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="/"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Limit}"/>
-                            <TextBlock Margin="5" VerticalAlignment="Center" Text="クリア時刻"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="[制限リセット時刻]"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Reset.LocalDateTime, StringFormat=MM/dd HH:mm}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="[フィルタ]"/>
+                            <TextBox Margin="5" VerticalAlignment="Center" Width="150"
+                                     Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Button Content="検索">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:CallMethodAction MethodName="OnFilter" TargetObject="{Binding}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+
                         </StackPanel>
-                        <DataGrid Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding StatusList.Items}" SelectedItem="{Binding StatusList.SelectedItem}">
+                        <DataGrid Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding FilteredList.Items}" SelectedItem="{Binding FilteredList.SelectedItem}">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseDoubleClick">
                                     <b:CallMethodAction MethodName="RowDoubleClick" TargetObject="{Binding}"/>

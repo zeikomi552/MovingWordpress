@@ -1,6 +1,7 @@
 ﻿using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,80 @@ namespace MovingWordpress.ViewModels
 {
     public class TwitterSearchVM : TwitterAPIVM
     {
+		#region フィルタ[Filter]プロパティ
+		/// <summary>
+		/// フィルタ[Filter]プロパティ用変数
+		/// </summary>
+		string _Filter = string.Empty;
+		/// <summary>
+		/// フィルタ[Filter]プロパティ
+		/// </summary>
+		public string Filter
+		{
+			get
+			{
+				return _Filter;
+			}
+			set
+			{
+				if (_Filter == null || !_Filter.Equals(value))
+				{
+					_Filter = value;
+					NotifyPropertyChanged("Filter");
+				}
+			}
+		}
+		#endregion
+
+		#region フィルタリスト[FilteredList]プロパティ
+		/// <summary>
+		/// フィルタリスト[FilteredList]プロパティ用変数
+		/// </summary>
+		ModelList<CoreTweet.Status> _FilteredList = new ModelList<CoreTweet.Status>();
+		/// <summary>
+		/// フィルタリスト[FilteredList]プロパティ
+		/// </summary>
+		public ModelList<CoreTweet.Status> FilteredList
+		{
+			get
+			{
+				return _FilteredList;
+			}
+			set
+			{
+				if (_FilteredList == null || !_FilteredList.Equals(value))
+				{
+					_FilteredList = value;
+					NotifyPropertyChanged("FilteredList");
+				}
+			}
+		}
+		#endregion
+
+
+
+		//public ModelList<CoreTweet.Status> FilteredList
+  //      {
+		//	get
+		//	{
+		//		if (string.IsNullOrWhiteSpace(this.Filter))
+		//		{
+		//			return this.StatusList;
+		//		}
+		//		else
+		//		{
+		//			var tmp = (from x in this.StatusList.Items
+		//					   where x.Text.Contains(this.Filter) || x.User.Description.Contains(this.Filter)
+		//					   select x).ToList<CoreTweet.Status>();
+
+		//			return new ModelList<CoreTweet.Status>()
+		//			{
+		//				Items = new System.Collections.ObjectModel.ObservableCollection<CoreTweet.Status>(tmp)
+		//			};
+		//		}
+		//	}
+  //      }
+
 		#region 検索キーワード[SearchKeyword]プロパティ
 		/// <summary>
 		/// 検索キーワード[SearchKeyword]プロパティ用変数
@@ -155,6 +230,11 @@ namespace MovingWordpress.ViewModels
 					if (!tmp)
 					{
 						this.StatusList.Items.Add(value);
+
+						var status = (from x in this.StatusList.Items
+									  select x);
+						this.FilteredList.Items 
+							= new ObservableCollection<CoreTweet.Status>(status);
 					}
 				}
 			}
@@ -165,6 +245,35 @@ namespace MovingWordpress.ViewModels
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// フィルタ押下処理
+		/// </summary>
+		public void OnFilter()
+		{
+            try
+            {
+				if (!string.IsNullOrWhiteSpace(this.Filter))
+				{
+					var tmp = (from x in this.StatusList.Items
+							   where x.Text.Contains(this.Filter) || x.User.Description.Contains(this.Filter)
+							   select x);
+					this.FilteredList.Items
+						= new ObservableCollection<CoreTweet.Status>(tmp);
+				}
+				else
+				{
+					var status = (from x in this.StatusList.Items select x);
+					this.FilteredList.Items
+						= new ObservableCollection<CoreTweet.Status>(status);
+				}
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
 
 		#region URLを既定のブラウザで開く
 		/// <summary>
