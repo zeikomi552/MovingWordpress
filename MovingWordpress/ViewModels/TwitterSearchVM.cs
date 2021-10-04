@@ -5,6 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MovingWordpress.ViewModels
 {
@@ -60,7 +63,60 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+		#region [RateLimit]プロパティ
+		/// <summary>
+		/// [RateLimit]プロパティ用変数
+		/// </summary>
+		CoreTweet.RateLimit _RateLimit = new CoreTweet.RateLimit();
+		/// <summary>
+		/// [RateLimit]プロパティ
+		/// </summary>
+		public CoreTweet.RateLimit RateLimit
+		{
+			get
+			{
+				return _RateLimit;
+			}
+			set
+			{
+				if (_RateLimit == null || !_RateLimit.Equals(value))
+				{
+					_RateLimit = value;
+					NotifyPropertyChanged("RateLimit");
+				}
+			}
+		}
+		#endregion
 
+		public void RowDoubleClick(object sender, MouseButtonEventArgs ev)
+		{
+			try
+			{
+				var dg = sender as DataGrid;
+				if (null != dg.SelectedItem)
+				{
+					var ctrl = dg.ItemContainerGenerator.ContainerFromItem(dg.SelectedItem) as DataGridRow;
+					if (null != ctrl)
+					{
+						if (null != ctrl.InputHitTest(ev.GetPosition(ctrl)))
+						{
+							var data = ctrl.DataContext as CoreTweet.Status;
+
+							if (data != null)
+							{
+								string url = "https://twitter.com/" + data.User.ScreenName;
+								OpenUrl(url);
+							}
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
 
 		public void Search()
 		{
@@ -76,6 +132,7 @@ namespace MovingWordpress.ViewModels
 
 				var result = this.TwitterAPI.Tokens.Search.Tweets(count => 100, q => keyword, lang => "ja");
 
+				this.RateLimit = result.RateLimit;
 
 				StringBuilder tweet_text = new StringBuilder();
 				foreach (var value in result)

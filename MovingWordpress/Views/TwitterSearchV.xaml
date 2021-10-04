@@ -49,7 +49,7 @@
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="テスト"/>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="検索"/>
                         </StackPanel>
 
                     </Button>
@@ -167,9 +167,14 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="キーワード"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                            <Grid>
-                                <TextBox Width="200" Text="{Binding SearchKeyword}"/>
-                            </Grid>
+                            <TextBox Width="200" Text="{Binding SearchKeyword}"/>
+                            <Button Margin="5" Content="検索">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:CallMethodAction MethodName="Search" TargetObject="{Binding}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
                         </StackPanel>
 
 
@@ -181,17 +186,48 @@
             </GroupBox>
             <Grid Grid.Column="1">
                 <GroupBox Header="ブログリスト">
-                    <DataGrid IsReadOnly="True" ItemsSource="{Binding StatusList.Items}" SelectedItem="{Binding StatusList.SelectedItem}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ScreenName" Binding="{Binding User.ScreenName}"/>
-                            <DataGridTextColumn Header="フォロワー数" Binding="{Binding User.FollowersCount}"/>
-                            <DataGridTextColumn Header="フォロー数" Binding="{Binding User.FriendsCount}"/>
-                            <DataGridTextColumn Header="ツイート" Binding="{Binding Text}"/>
-                            <DataGridTextColumn Header="投稿日時" Binding="{Binding CreatedAt.LocalDateTime}"/>
-                            <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
-                            <DataGridTextColumn Header="説明" Binding="{Binding User.Description}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="API使用制限"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Remaining}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="/"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Limit}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="クリア時刻"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Reset.LocalDateTime, StringFormat=MM/dd HH:mm}"/>
+                        </StackPanel>
+                        <DataGrid Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding StatusList.Items}" SelectedItem="{Binding StatusList.SelectedItem}">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseDoubleClick">
+                                    <b:CallMethodAction MethodName="RowDoubleClick" TargetObject="{Binding}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ScreenName" Binding="{Binding User.ScreenName}"/>
+                                <DataGridTextColumn Width="200" Header="ツイート" Binding="{Binding Text}">
+                                    <DataGridTextColumn.CellStyle>
+                                        <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                            <Setter Property="ToolTip" Value="{Binding Text}" />
+                                        </Style>
+                                    </DataGridTextColumn.CellStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Width="200" Header="説明" Binding="{Binding User.Description}">
+                                    <DataGridTextColumn.CellStyle>
+                                        <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                            <Setter Property="ToolTip" Value="{Binding User.Description}" />
+                                        </Style>
+                                    </DataGridTextColumn.CellStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="フォロワー数" Binding="{Binding User.FollowersCount}"/>
+                                <DataGridTextColumn Header="フォロー数" Binding="{Binding User.FriendsCount}"/>
+                                <DataGridTextColumn Header="投稿日時" Binding="{Binding CreatedAt.LocalDateTime, StringFormat=MM/dd HH:mm}"/>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </GroupBox>
             </Grid>
         </Grid>
