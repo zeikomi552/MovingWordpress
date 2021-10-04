@@ -166,6 +166,7 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+		#region URLを既定のブラウザで開く
 		/// <summary>
 		/// URLを既定のブラウザで開く
 		/// </summary>
@@ -181,12 +182,13 @@ namespace MovingWordpress.ViewModels
 
 			return Process.Start(pi);
 		}
+        #endregion
 
-		#region 選択行のURLへ移動する
-		/// <summary>
-		/// 選択行のURLへ移動する
-		/// </summary>
-		public void MoveProfiel()
+        #region 選択行のURLへ移動する
+        /// <summary>
+        /// 選択行のURLへ移動する
+        /// </summary>
+        public void MoveProfiel()
 		{
 			try
 			{
