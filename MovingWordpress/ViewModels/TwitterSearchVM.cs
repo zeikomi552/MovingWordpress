@@ -63,9 +63,9 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		#region [RateLimit]プロパティ
+		#region API使用制限[RateLimit]プロパティ
 		/// <summary>
-		/// [RateLimit]プロパティ用変数
+		/// API使用制限[RateLimit]プロパティ用変数
 		/// </summary>
 		CoreTweet.RateLimit _RateLimit = new CoreTweet.RateLimit();
 		/// <summary>
@@ -88,6 +88,12 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+		#region 行ダブルクリック処理
+		/// <summary>
+		/// 行ダブルクリック処理
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="ev"></param>
 		public void RowDoubleClick(object sender, MouseButtonEventArgs ev)
 		{
 			try
@@ -117,7 +123,12 @@ namespace MovingWordpress.ViewModels
 				ShowMessage.ShowErrorOK(e.Message, "Error");
 			}
 		}
+		#endregion
 
+		#region 検索処理
+		/// <summary>
+		/// 検索処理
+		/// </summary>
 		public void Search()
 		{
 			try
@@ -153,6 +164,7 @@ namespace MovingWordpress.ViewModels
 				ShowMessage.ShowErrorOK(e.Message, "Error");
 			}
 		}
+		#endregion
 
 		/// <summary>
 		/// URLを既定のブラウザで開く
@@ -170,6 +182,10 @@ namespace MovingWordpress.ViewModels
 			return Process.Start(pi);
 		}
 
+		#region 選択行のURLへ移動する
+		/// <summary>
+		/// 選択行のURLへ移動する
+		/// </summary>
 		public void MoveProfiel()
 		{
 			try
@@ -187,7 +203,12 @@ namespace MovingWordpress.ViewModels
 				ShowMessage.ShowErrorOK(e.Message, "Error");
 			}
 		}
+		#endregion
 
+		#region 行クリア
+		/// <summary>
+		/// 行クリア
+		/// </summary>
 		public void Clear()
 		{
 			try
@@ -199,7 +220,7 @@ namespace MovingWordpress.ViewModels
 				_logger.Error(e.Message);
 				ShowMessage.ShowErrorOK(e.Message, "Error");
 			}
-
 		}
+		#endregion
 	}
 }
