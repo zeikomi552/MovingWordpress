@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace MovingWordpress.Views
 {
     /// <summary>
-    /// GitHubAPIV.xaml の相互作用ロジック
+    /// TwitterSearchV.xaml の相互作用ロジック
     /// </summary>
-    public partial class GitHubAPIV : MetroWindow
+    public partial class TwitterSearchV : MetroWindow
     {
-        public GitHubAPIV()
+        public TwitterSearchV()
         {
             InitializeComponent();
         }

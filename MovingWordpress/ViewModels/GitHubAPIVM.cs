@@ -112,6 +112,80 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region 開発言語リスト[LanguageList]プロパティ
+        /// <summary>
+        /// 開発言語リスト[LanguageList]プロパティ用変数
+        /// </summary>
+        ModelList<GitHubLanguageM> _LanguageList = new ModelList<GitHubLanguageM>();
+        /// <summary>
+        /// 開発言語リスト[LanguageList]プロパティ
+        /// </summary>
+        public ModelList<GitHubLanguageM> LanguageList
+        {
+            get
+            {
+                return _LanguageList;
+            }
+            set
+            {
+                if (_LanguageList == null || !_LanguageList.Equals(value))
+                {
+                    _LanguageList = value;
+                    NotifyPropertyChanged("LanguageList");
+                }
+            }
+        }
+        #endregion
+
+        #region リポジトリの検索結果[SearchResult]プロパティ
+        /// <summary>
+        /// リポジトリの検索結果[SearchResult]プロパティ用変数
+        /// </summary>
+        SearchRepositoryResult _SearchResult = new SearchRepositoryResult();
+        /// <summary>
+        /// リポジトリの検索結果[SearchResult]プロパティ
+        /// </summary>
+        public SearchRepositoryResult SearchResult
+        {
+            get
+            {
+                return _SearchResult;
+            }
+            set
+            {
+                if (_SearchResult == null || !_SearchResult.Equals(value))
+                {
+                    _SearchResult = value;
+                    NotifyPropertyChanged("SearchResult");
+                }
+            }
+        }
+        #endregion
+
+
+
+
+
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public GitHubAPIVM()
+        {
+            // 全件の要素を登録する
+            GitHubLanguageM all = new GitHubLanguageM() { DisplayName = "-", UseLanguage = null };
+            this.LanguageList.Items.Add(all);
+
+            foreach (Language val in Enum.GetValues(typeof(Language)))
+            {
+                string lang_name = Enum.GetName(typeof(Language), val);
+                GitHubLanguageM tmp = new GitHubLanguageM() { DisplayName = lang_name, UseLanguage = val };
+
+                this.LanguageList.Items.Add(tmp);
+            }
+
+            // 1つ目の値を取り出す
+            this.LanguageList.SelectedItem = this.LanguageList.Items.First();
+        }
 
 
         /// <summary>
@@ -119,36 +193,46 @@ namespace MovingWordpress.ViewModels
         /// </summary>
         public async void Search()
         {
-            var client = new GitHubClient(new ProductHeaderValue(this.GitHubAPIConfig.ProductHeader));
+            try
+            {
+                // GitHub Clientの作成
+                var client = new GitHubClient(new ProductHeaderValue(this.GitHubAPIConfig.ProductHeader));
 
-            var tokenAuth = new Credentials(this.GitHubAPIConfig.AccessToken); // NOTE: not real token
-            client.Credentials = tokenAuth;
+                // トークンの取得
+                var tokenAuth = new Credentials(this.GitHubAPIConfig.AccessToken);
+                client.Credentials = tokenAuth;
 
-            SearchRepositoriesRequest request = new SearchRepositoriesRequest();
+                SearchRepositoriesRequest request = new SearchRepositoriesRequest();
 #pragma warning disable CS0618 // 型またはメンバーが旧型式です
 
-            // 値を持っているかどうかのチェック
-            if (this.SearchDateRange.HasValue)
-            {
-                request.Created = new DateRange(this.SearchDateRange.FromDate, this.SearchDateRange.ToDate);
-            }
+                // 値を持っているかどうかのチェック
+                if (this.SearchDateRange.HasValue)
+                {
+                    request.Created = new DateRange(this.SearchDateRange.FromDate, this.SearchDateRange.ToDate);
+                }
 
-            // スターの数
-            request.Stars = new Octokit.Range(1,int.MaxValue);
+                // スターの数
+                request.Stars = new Octokit.Range(1, int.MaxValue);
 
-            // スターの数でソート
-            request.SortField = RepoSearchSort.Stars;
+                // スターの数でソート
+                request.SortField = RepoSearchSort.Stars;
 
-            request.Language = Language.CSharp;
+                request.Language = this.LanguageList.SelectedItem.UseLanguage;
 
-            // 降順でソート
-            request.Order = SortDirection.Descending;
+                // 降順でソート
+                request.Order = SortDirection.Descending;
 #pragma warning restore CS0618 // 型またはメンバーが旧型式です
 
-            var repostitories = await client.Search.SearchRepo(request);
+                this.SearchResult = await client.Search.SearchRepo(request);
 
-            // 記事の作成
-            this.Article = RepositorySearchResultM.GetArticle(this.SearchDateRange, request.Language, repostitories);
+                // 記事の作成
+                this.Article = RepositorySearchResultM.GetArticle(this.SearchDateRange, request.Language, this.SearchResult);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
         }
 
         #region 保存処理

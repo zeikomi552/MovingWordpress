@@ -114,6 +114,7 @@ namespace MovingWordpress.ViewModels
                 {
                     // メッセージの送信処理
                     this.TwitterAPI.Tweet(this.TwitterConfig.TempleteM.Message);
+                    
                     ShowMessage.ShowNoticeOK("送信しました。", "通知");
                 }
                 else

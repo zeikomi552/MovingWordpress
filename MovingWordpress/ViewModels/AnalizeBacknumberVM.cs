@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using MovingWordpress.Common;
 using MovingWordpress.Models;
 using MovingWordpress.Views;
@@ -207,16 +208,49 @@ namespace MovingWordpress.ViewModels
             }
             catch (Exception e)
             {
+                _logger.Error(e.Message);
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
         #endregion
 
+        public void SaveMarkdown()
+        {
+            try
+            {
+
+                using (var cofd = new CommonOpenFileDialog()
+                {
+                    Title = "フォルダを選択してください",
+                    // フォルダ選択モードにする
+                    IsFolderPicker = true,
+                })
+                {
+                    if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
+                    {
+                        var dir = cofd.FileName;
+
+                        foreach (var article in this.BlogContentsManager.BlogContents.Items)
+                        {
+                            File.WriteAllText(Path.Combine(dir, article.Post_name + ".md"), article.Post_content.Replace("\\\"", "\""));
+                        }
+                        ShowMessage.ShowNoticeOK("マークダウン出力が完了しました", "通知");
+                    }
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
         #region コンテンツの形態素解析処理
-        /// <summary>
-        /// コンテンツの形態素解析処理
-        /// </summary>
-        public void AnalizeContents()
+            /// <summary>
+            /// コンテンツの形態素解析処理
+            /// </summary>
+            public void AnalizeContents()
         {
             try
             {
