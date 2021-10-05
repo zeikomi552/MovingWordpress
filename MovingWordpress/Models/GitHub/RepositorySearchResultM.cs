@@ -48,12 +48,15 @@ namespace MovingWordpress.Models.GitHub
             int rank = 1;
             foreach (var repo in repogitories.Items)
             {
-                string description = repo.Description.EmptyToText("-").CutText(50);
+                string description = repo.Description.EmptyToText("-").CutText(50).Replace("|", "\\/");
                 string language = repo.Language.EmptyToText("-").CutText(20);
 
+                string homepage_url = !string.IsNullOrWhiteSpace(repo.Homepage) ? $" [[Home Page]({repo.Homepage})]" : string.Empty;
+
                 // 行情報の作成
-                text.AppendLine($"|{repo.StargazersCount}<br>({rank++})|" +
-                    $"[{repo.FullName}]({repo.HtmlUrl})<br>{description}|{language}|" +
+                text.AppendLine($"|<center>{repo.StargazersCount}<br>({rank++})</center>|" +
+                    $"[{repo.FullName}]({repo.HtmlUrl}){homepage_url}<br>{description}|" +
+                    $"{language}|" +
                     $"[[google](https://www.google.com/search?q={repo.Name})] " +
                     $"[[Qiita](https://qiita.com/search?q={repo.Name})] " +
                     $"[[Google Trends](https://trends.google.co.jp/trends/explore?q={repo.Name})]|");

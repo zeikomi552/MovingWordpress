@@ -138,7 +138,9 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <TextBox Margin="5,5,5,5" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding Article}" Cursor="IBeam"/>
+                    <TabControl>
+                        <TextBox Margin="5,5,5,5" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding Article}" Cursor="IBeam"/>
+                    </TabControl>
                     <StackPanel Grid.Row="1" Orientation="Horizontal">
                         <Button Width="85" Margin="5" Content="コピー" Cursor="Hand">
                             <b:Interaction.Triggers>
