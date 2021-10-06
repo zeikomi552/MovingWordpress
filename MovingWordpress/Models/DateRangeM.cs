@@ -85,7 +85,7 @@ namespace MovingWordpress.Models
 		{
 			get
 			{
-				return this.FromDateBase.HasValue || this.FromDateBase.HasValue;
+				return this.FromDateBase.HasValue || this.ToDateBase.HasValue;
 			}
 		}
 		#endregion
