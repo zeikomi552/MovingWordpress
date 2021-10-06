@@ -198,15 +198,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MovingWordPress"
-        "ProductCode" = "8:{D6712CE5-5DDA-46CA-965A-24E5F66B90C8}"
-        "PackageCode" = "8:{6609616F-4634-4391-B5B2-C357E6CDF4CF}"
+        "ProductCode" = "8:{82E24823-9B57-432D-9D4C-A1CF7459A854}"
+        "PackageCode" = "8:{D5486F5E-2CCC-4F52-A4A6-4EA3671B627C}"
         "UpgradeCode" = "8:{00AC879E-009D-4BE9-9C1E-DD7874CF6143}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.9.0"
+        "ProductVersion" = "8:0.9.1"
         "Manufacturer" = "8:Zeikomi"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -748,7 +748,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AFC7347C626F410FAAA87AE7C5754DAA"
             {
-            "SourcePath" = "8:..\\MovingWordpress\\obj\\Release\\net5.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\MovingWordpress\\obj\\Debug\\net5.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_332EA1ED8AA8412090485B85B8C4D5D9"
