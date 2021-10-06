@@ -1,4 +1,5 @@
-﻿using MVVMCore.Common.Utilities;
+﻿using MovingWordpress.Common;
+using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -186,7 +187,7 @@ namespace MovingWordpress.ViewModels
 							if (data != null)
 							{
 								string url = "https://twitter.com/" + data.User.ScreenName;
-								OpenUrl(url);
+								MovingWordpressUtilities.OpenUrl(url);
 							}
 						}
 					}
@@ -275,23 +276,7 @@ namespace MovingWordpress.ViewModels
 			}
 		}
 
-		#region URLを既定のブラウザで開く
-		/// <summary>
-		/// URLを既定のブラウザで開く
-		/// </summary>
-		/// <param name="url">URL</param>
-		/// <returns>Process</returns>
-		private Process OpenUrl(string url)
-		{
-			ProcessStartInfo pi = new ProcessStartInfo()
-			{
-				FileName = url,
-				UseShellExecute = true,
-			};
 
-			return Process.Start(pi);
-		}
-        #endregion
 
         #region 選択行のURLへ移動する
         /// <summary>
@@ -305,7 +290,7 @@ namespace MovingWordpress.ViewModels
                 {
 					string url = "https://twitter.com/" + this.StatusList.SelectedItem.User.ScreenName;
 
-					OpenUrl(url);
+					MovingWordpressUtilities.OpenUrl(url);
 				}
 			}
 			catch (Exception e)

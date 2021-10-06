@@ -134,22 +134,78 @@
             </Grid>
             <GroupBox Margin="5" Grid.Column="1" Header="ランキング記事">
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
                     <TabControl>
-                        <TextBox Margin="5,5,5,5" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding Article}" Cursor="IBeam"/>
+                        <TabItem Header="リスト">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding SearchResult.Items}">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="MouseDoubleClick">
+                                            <b:CallMethodAction MethodName="RowDoubleClick" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="スター" Binding="{Binding StargazersCount}"/>
+                                        <DataGridTextColumn Header="リポジトリ名" Binding="{Binding FullName}"/>
+                                        <DataGridTextColumn Header="開発言語" Binding="{Binding Language}"/>
+                                        <DataGridTextColumn Width="200" Header="説明" Binding="{Binding Description}">
+                                            <DataGridTextColumn.CellStyle>
+                                                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                                    <Setter Property="ToolTip" Value="{Binding Description}" />
+                                                </Style>
+                                            </DataGridTextColumn.CellStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Width="100" Header="HtmlUrl" Binding="{Binding HtmlUrl}"/>
+                                        <DataGridTextColumn Width="100" Header="ホームページ" Binding="{Binding Homepage}"/>
+                                        <DataGridTextColumn Header="Push" Binding="{Binding PushedAt, StringFormat=yy/MM/dd}"/>
+                                        <DataGridTextColumn Header="Create" Binding="{Binding CreatedAt, StringFormat=yy/MM/dd}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="1">
+                                    <Button Width="80" Margin="5" Content="←">
+                                        <b:Interaction.Triggers>
+                                            <b:EventTrigger EventName="Click">
+                                                <b:CallMethodAction MethodName="SearchPrev" TargetObject="{Binding}"/>
+                                            </b:EventTrigger>
+                                        </b:Interaction.Triggers>
+                                    </Button>
+                                    <TextBlock TextAlignment="Center" Width="30" Margin="5" VerticalAlignment="Center" Text="{Binding Page}" FontSize="20"/>
+                                    <Button Width="80" Margin="5" Content="→">
+                                        <b:Interaction.Triggers>
+                                            <b:EventTrigger EventName="Click">
+                                                <b:CallMethodAction MethodName="SearchNext" TargetObject="{Binding}"/>
+                                            </b:EventTrigger>
+                                        </b:Interaction.Triggers>
+
+                                    </Button>
+                                    <TextBlock VerticalAlignment="Center" Margin="5" Text="※ダブルクリックでリポジトリ,Ctrl+ダブルクリックでホームページへ遷移"/>
+                                </StackPanel>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="マークダウン">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBox Margin="5,5,5,5" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Text="{Binding Article}" Cursor="IBeam"/>
+                                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                    <Button Width="85" Margin="5" Content="コピー" Cursor="Hand">
+                                        <b:Interaction.Triggers>
+                                            <b:EventTrigger EventName="Click">
+                                                <b:CallMethodAction MethodName="CopyClipBoard" TargetObject="{Binding}"/>
+                                            </b:EventTrigger>
+                                        </b:Interaction.Triggers>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </TabItem>
                     </TabControl>
-                    <StackPanel Grid.Row="1" Orientation="Horizontal">
-                        <Button Width="85" Margin="5" Content="コピー" Cursor="Hand">
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="Click">
-                                    <b:CallMethodAction MethodName="CopyClipBoard" TargetObject="{Binding}"/>
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                        </Button>
-                    </StackPanel>
+
                 </Grid>
             </GroupBox>
         </Grid>

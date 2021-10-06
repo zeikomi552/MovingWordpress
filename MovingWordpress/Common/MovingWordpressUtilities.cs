@@ -1,6 +1,7 @@
 ﻿using MovingWordpress.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -128,5 +129,23 @@ namespace MovingWordpress.Common
                 return text;
             }
         }
+
+        #region URLを既定のブラウザで開く
+        /// <summary>
+        /// URLを既定のブラウザで開く
+        /// </summary>
+        /// <param name="url">URL</param>
+        /// <returns>Process</returns>
+        public static Process OpenUrl(string url)
+        {
+            ProcessStartInfo pi = new ProcessStartInfo()
+            {
+                FileName = url,
+                UseShellExecute = true,
+            };
+
+            return Process.Start(pi);
+        }
+        #endregion
     }
 }

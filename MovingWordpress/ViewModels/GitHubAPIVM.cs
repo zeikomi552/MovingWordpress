@@ -1,4 +1,5 @@
-﻿using MovingWordpress.Models;
+﻿using MovingWordpress.Common;
+using MovingWordpress.Models;
 using MovingWordpress.Models.GitHub;
 using MVVMCore.BaseClass;
 using MVVMCore.Common.Utilities;
@@ -9,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MovingWordpress.ViewModels
 {
@@ -48,8 +51,8 @@ namespace MovingWordpress.ViewModels
             try
             {
                 // 検索開始日
-                this.SearchDateRange.FromDateBase = DateTime.Today.AddMonths(-3);
-                this.SearchDateRange.ToDateBase = null; // 終了日は無制限
+                this.SearchDateRange.FromDateBase = null;   // 開始日は無制限
+                this.SearchDateRange.ToDateBase = DateTime.Today;     // 終了日は無制限
 
 
                 this.GitHubAPIConfig.Load();
@@ -163,6 +166,31 @@ namespace MovingWordpress.ViewModels
         #endregion
 
 
+        #region ページ[Page]プロパティ
+        /// <summary>
+        /// ページ[Page]プロパティ用変数
+        /// </summary>
+        int _Page = 1;
+        /// <summary>
+        /// ページ[Page]プロパティ
+        /// </summary>
+        public int Page
+        {
+            get
+            {
+                return _Page;
+            }
+            set
+            {
+                if (!_Page.Equals(value))
+                {
+                    _Page = value;
+                    NotifyPropertyChanged("Page");
+                }
+            }
+        }
+        #endregion
+
 
 
 
@@ -187,46 +215,54 @@ namespace MovingWordpress.ViewModels
             this.LanguageList.SelectedItem = this.LanguageList.Items.First();
         }
 
+        private async void Search(int page)
+        {
+            // GitHub Clientの作成
+            var client = new GitHubClient(new ProductHeaderValue(this.GitHubAPIConfig.ProductHeader));
+
+            // トークンの取得
+            var tokenAuth = new Credentials(this.GitHubAPIConfig.AccessToken);
+            client.Credentials = tokenAuth;
+
+            SearchRepositoriesRequest request = new SearchRepositoriesRequest();
+#pragma warning disable CS0618 // 型またはメンバーが旧型式です
+
+            // 値を持っているかどうかのチェック
+            if (this.SearchDateRange.HasValue)
+            {
+                request.Created = new DateRange(this.SearchDateRange.FromDate, this.SearchDateRange.ToDate);
+            }
+
+            // スターの数
+            request.Stars = new Octokit.Range(1, int.MaxValue);
+
+            // 読み込むページ
+            request.Page = page;
+
+            // スターの数でソート
+            request.SortField = RepoSearchSort.Stars;
+
+            request.Language = this.LanguageList.SelectedItem.UseLanguage;
+
+            // 降順でソート
+            request.Order = SortDirection.Descending;
+#pragma warning restore CS0618 // 型またはメンバーが旧型式です
+
+            this.SearchResult = await client.Search.SearchRepo(request);
+
+            // 記事の作成
+            this.Article = RepositorySearchResultM.GetArticle(this.SearchDateRange, request.Language, this.SearchResult);
+        }
 
         /// <summary>
         /// リポジトリ検索処理
         /// </summary>
-        public async void Search()
+        public  void Search()
         {
             try
             {
-                // GitHub Clientの作成
-                var client = new GitHubClient(new ProductHeaderValue(this.GitHubAPIConfig.ProductHeader));
-
-                // トークンの取得
-                var tokenAuth = new Credentials(this.GitHubAPIConfig.AccessToken);
-                client.Credentials = tokenAuth;
-
-                SearchRepositoriesRequest request = new SearchRepositoriesRequest();
-#pragma warning disable CS0618 // 型またはメンバーが旧型式です
-
-                // 値を持っているかどうかのチェック
-                if (this.SearchDateRange.HasValue)
-                {
-                    request.Created = new DateRange(this.SearchDateRange.FromDate, this.SearchDateRange.ToDate);
-                }
-
-                // スターの数
-                request.Stars = new Octokit.Range(1, int.MaxValue);
-
-                // スターの数でソート
-                request.SortField = RepoSearchSort.Stars;
-
-                request.Language = this.LanguageList.SelectedItem.UseLanguage;
-
-                // 降順でソート
-                request.Order = SortDirection.Descending;
-#pragma warning restore CS0618 // 型またはメンバーが旧型式です
-
-                this.SearchResult = await client.Search.SearchRepo(request);
-
-                // 記事の作成
-                this.Article = RepositorySearchResultM.GetArticle(this.SearchDateRange, request.Language, this.SearchResult);
+                this.Page = 1;
+                Search(this.Page);
             }
             catch (Exception e)
             {
@@ -234,6 +270,87 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+
+        public void SearchNext()
+        {
+            try
+            {
+                this.Page ++;
+                Search(this.Page);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+
+        public void SearchPrev()
+        {
+            try
+            {
+                if (this.Page > 1)
+                {
+                    this.Page--;
+                    Search(this.Page);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+
+
+        #region 行ダブルクリック処理
+        /// <summary>
+        /// 行ダブルクリック処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="ev"></param>
+        public void RowDoubleClick(object sender, MouseButtonEventArgs ev)
+        {
+            try
+            {
+                var dg = sender as DataGrid;
+                if (null != dg.SelectedItem)
+                {
+                    var ctrl = dg.ItemContainerGenerator.ContainerFromItem(dg.SelectedItem) as DataGridRow;
+                    if (null != ctrl)
+                    {
+                        if (null != ctrl.InputHitTest(ev.GetPosition(ctrl)))
+                        {
+                            var data = ctrl.DataContext as Repository;
+
+                            if (data != null)
+                            {
+                                if (((Keyboard.GetKeyStates(Key.LeftCtrl) | Keyboard.GetKeyStates(Key.RightCtrl)) & KeyStates.Down) > 0)
+                                {
+                                    string url = data.Homepage;
+
+                                    if (!string.IsNullOrEmpty(url))
+                                    {
+                                        MovingWordpressUtilities.OpenUrl(url);
+                                    }
+                                }
+                                else
+                                {
+                                    string url = data.HtmlUrl;
+                                    MovingWordpressUtilities.OpenUrl(url);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
 
         #region 保存処理
         /// <summary>
