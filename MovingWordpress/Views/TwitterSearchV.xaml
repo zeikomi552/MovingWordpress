@@ -210,7 +210,7 @@
                             </Button>
 
                         </StackPanel>
-                        <DataGrid Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding FilteredList.Items}" SelectedItem="{Binding FilteredList.SelectedItem}">
+                        <DataGrid AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding FilteredList.Items}" SelectedItem="{Binding FilteredList.SelectedItem}">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseDoubleClick">
                                     <b:CallMethodAction MethodName="RowDoubleClick" TargetObject="{Binding}"/>
