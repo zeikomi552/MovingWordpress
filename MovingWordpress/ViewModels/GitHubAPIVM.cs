@@ -165,7 +165,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
         #region ページ[Page]プロパティ
         /// <summary>
         /// ページ[Page]プロパティ用変数
@@ -191,9 +190,7 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
-
-
+        #region コンストラクタ
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -214,7 +211,13 @@ namespace MovingWordpress.ViewModels
             // 1つ目の値を取り出す
             this.LanguageList.SelectedItem = this.LanguageList.Items.First();
         }
+        #endregion
 
+        #region 検索処理
+        /// <summary>
+        /// 検索処理
+        /// </summary>
+        /// <param name="page">検索するページ</param>
         private async void Search(int page)
         {
             // GitHub Clientの作成
@@ -253,11 +256,13 @@ namespace MovingWordpress.ViewModels
             // 記事の作成
             this.Article = RepositorySearchResultM.GetArticle(this.SearchDateRange, request.Language, this.SearchResult);
         }
+        #endregion
 
+        #region リポジトリ検索処理
         /// <summary>
         /// リポジトリ検索処理
         /// </summary>
-        public  void Search()
+        public void Search()
         {
             try
             {
@@ -270,13 +275,21 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
 
+        #region 次のページへ移動
+        /// <summary>
+        /// 次のページへ移動
+        /// </summary>
         public void SearchNext()
         {
             try
             {
-                this.Page ++;
-                Search(this.Page);
+                if (this.Page < 10)
+                {
+                    this.Page++;
+                    Search(this.Page);
+                }
             }
             catch (Exception e)
             {
@@ -284,7 +297,12 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
 
+        #region 前のページへ移動
+        /// <summary>
+        /// 前のページへ移動
+        /// </summary>
         public void SearchPrev()
         {
             try
@@ -301,7 +319,7 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
-
+        #endregion
 
         #region 行ダブルクリック処理
         /// <summary>
