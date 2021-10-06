@@ -3,6 +3,8 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/zeikomi552/MovingWordPress)
 ![GitHub](https://img.shields.io/github/license/zeikomi552/MovingWordPress)
 
+[![MovingWordPress](https://github-readme-stats.vercel.app/api?username=zeikomi552)](https://github.com/zeikomi552/MovingWordPress)
+
 ## リポジトリの説明
 
 このリポジトリは、[プログラマーやめました](https://www.premium-tsubu-hero.net/)の人が作っています。
