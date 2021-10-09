@@ -2,4 +2,8 @@
 // フォルダの情報を取得するコマンド
 //*******************************
 
-find /opt -name wp-content;
+// Bitnami環境用
+sudo find /opt -name wp-content;
+
+// KUSANAGI環境用
+sudo find /home -name wp-content;

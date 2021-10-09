@@ -2,8 +2,14 @@
 // 引っ越し画面の荷ほどきボタンのコマンド
 //*******************************
 
-// 元々いるディレクトリをリネーム
+// 元々いるディレクトリをコピー
 cp -r {mw:RemoteDirecotry}uploads/ {mw:RemoteDirecotry}_uploads/;cp -r {mw:RemoteDirecotry}plugins/ {mw:RemoteDirecotry}_plugins/;cp -r {mw:RemoteDirecotry}themes/ {mw:RemoteDirecotry}_themes/;
+
+// 元々いるディレクトリの中身を消す
+sudo rm -rf {mw:RemoteDirecotry}uploads/*;ls {mw:RemoteDirecotry}uploads/;
+sudo rm -rf {mw:RemoteDirecotry}plugins/*;ls {mw:RemoteDirecotry}plugins/;
+sudo rm -rf {mw:RemoteDirecotry}themes/*;ls {mw:RemoteDirecotry}themes/;
+
 
 // /tmpにいる圧縮ファイルをwp-contentsディレクトリ配下に移動
 cp /tmp/uploads.tar.gz {mw:RemoteDirecotry}uploads.tar.gz;cp /tmp/plugins.tar.gz {mw:RemoteDirecotry}plugins.tar.gz;cp /tmp/themes.tar.gz {mw:RemoteDirecotry}themes.tar.gz;cp /tmp/dump.sql.gz {mw:RemoteDirecotry}dump.sql.gz;
