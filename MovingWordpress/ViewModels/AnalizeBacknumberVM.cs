@@ -214,6 +214,10 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region マークダウン出力処理
+        /// <summary>
+        /// マークダウン出力処理
+        /// </summary>
         public void SaveMarkdown()
         {
             try
@@ -232,7 +236,7 @@ namespace MovingWordpress.ViewModels
 
                         foreach (var article in this.BlogContentsManager.BlogContents.Items)
                         {
-                            File.WriteAllText(Path.Combine(dir, article.Post_name + ".md"), article.Post_content.Replace("\\\"", "\""));
+                            File.WriteAllText(Path.Combine(dir, article.Post_name + ".md"), "# " + article.Post_title + "\r\n\r\n" + article.Post_content.Replace("\\\"", "\""));
                         }
                         ShowMessage.ShowNoticeOK("マークダウン出力が完了しました", "通知");
                     }
@@ -246,11 +250,13 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
+
         #region コンテンツの形態素解析処理
-            /// <summary>
-            /// コンテンツの形態素解析処理
-            /// </summary>
-            public void AnalizeContents()
+        /// <summary>
+        /// コンテンツの形態素解析処理
+        /// </summary>
+        public void AnalizeContents()
         {
             try
             {
