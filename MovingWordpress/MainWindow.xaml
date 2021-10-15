@@ -43,9 +43,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/Icon-compress.png" />
-                            <Viewbox>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷づくり"/>
-                            </Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="荷づくり"/>
                         </StackPanel>
                     </Button.Content>
 
@@ -59,9 +57,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-moving.png" />
-                            <Viewbox>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="お引越し"/>
-                            </Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="お引越し"/>
                         </StackPanel>
                     </Button.Content>
 
@@ -79,9 +75,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-search.png" />
-                            <Viewbox>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="タグカテくん"/>
-                            </Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="タグカテくん"/>
                         </StackPanel>
                     </Button.Content>
 
@@ -95,9 +89,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <Viewbox>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitter-Bot"/>
-                            </Viewbox>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitter-Bot"/>
                         </StackPanel>
                     </Button.Content>
 
@@ -115,7 +107,7 @@
                     <StackPanel Orientation="Vertical">
                         <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-github-octocat.png" />
                         <Viewbox>
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="GitHub-API"/>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="GitHub検索"/>
                         </Viewbox>
                     </StackPanel>
 
@@ -128,9 +120,7 @@
                     </b:Interaction.Triggers>
                     <StackPanel Orientation="Vertical">
                         <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                        <Viewbox>
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitter検索"/>
-                        </Viewbox>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitter検索"/>
                     </StackPanel>
 
                 </Button>
