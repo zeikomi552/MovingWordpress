@@ -89,7 +89,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitter-Bot"/>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="TwitterBot"/>
                         </StackPanel>
                     </Button.Content>
 
