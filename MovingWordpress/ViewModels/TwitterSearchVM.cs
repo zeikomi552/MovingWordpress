@@ -65,30 +65,6 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-
-
-		//public ModelList<CoreTweet.Status> FilteredList
-  //      {
-		//	get
-		//	{
-		//		if (string.IsNullOrWhiteSpace(this.Filter))
-		//		{
-		//			return this.StatusList;
-		//		}
-		//		else
-		//		{
-		//			var tmp = (from x in this.StatusList.Items
-		//					   where x.Text.Contains(this.Filter) || x.User.Description.Contains(this.Filter)
-		//					   select x).ToList<CoreTweet.Status>();
-
-		//			return new ModelList<CoreTweet.Status>()
-		//			{
-		//				Items = new System.Collections.ObjectModel.ObservableCollection<CoreTweet.Status>(tmp)
-		//			};
-		//		}
-		//	}
-  //      }
-
 		#region 検索キーワード[SearchKeyword]プロパティ
 		/// <summary>
 		/// 検索キーワード[SearchKeyword]プロパティ用変数
@@ -209,6 +185,10 @@ namespace MovingWordpress.ViewModels
 		{
 			try
 			{
+				// トークンの作成
+				this.TwitterAPI.CreateToken(this.TwitterConfig.KeysM.ConsumerKey,
+					this.TwitterConfig.KeysM.ConsumerSecretKey, this.TwitterConfig.KeysM.AccessToken, this.TwitterConfig.KeysM.AccessSecret);
+
 				string keyword = this.SearchKeyword;
 
 				if (string.IsNullOrWhiteSpace(this.SearchKeyword))
