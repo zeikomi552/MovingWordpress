@@ -102,9 +102,9 @@
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーキー"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <Grid>
-                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerKey}"/>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.KeysM.ConsumerKey}"/>
                                     <PasswordBox Width="300" hlp:PasswordBoxHelper.IsAttached="True"
-                                             hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.ConsumerKey}" 
+                                             hlp:PasswordBoxHelper.Password="{Binding TwitterAPI.Config.KeysM.ConsumerKey}" 
                                              Margin="5" VerticalAlignment="Center" Cursor="IBeam"
                                              Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=consumer_key}"/>
                                 </Grid>
@@ -115,9 +115,9 @@
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーシークレット"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <Grid>
-                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_secret_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerSecretKey}"/>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_secret_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.KeysM.ConsumerSecretKey}"/>
                                     <PasswordBox Width="300" hlp:PasswordBoxHelper.IsAttached="True"
-                                             hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.ConsumerSecretKey}" 
+                                             hlp:PasswordBoxHelper.Password="{Binding TwitterAPI.Config.KeysM.ConsumerSecretKey}" 
                                              Margin="5" VerticalAlignment="Center" Cursor="IBeam"
                                              Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=consumer_secret_key}"/>
                                 </Grid>
@@ -129,9 +129,9 @@
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <Grid>
                                     <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=access_token}" 
-                                             Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessToken}"/>
+                                             Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.KeysM.AccessToken}"/>
                                     <PasswordBox Background="White" Width="300" hlp:PasswordBoxHelper.IsAttached="True"
-                                             hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.AccessToken}" 
+                                             hlp:PasswordBoxHelper.Password="{Binding TwitterAPI.Config.KeysM.AccessToken}" 
                                              Margin="5" VerticalAlignment="Center" Cursor="IBeam"
                                              Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=access_token}"/>
                                 </Grid>
@@ -143,9 +143,9 @@
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <Grid>
                                     <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=access_secret}"
-                                             Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessSecret}"/>
+                                             Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.KeysM.AccessSecret}"/>
                                     <PasswordBox Width="300"
-                                             hlp:PasswordBoxHelper.IsAttached="True" hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.AccessSecret}" 
+                                             hlp:PasswordBoxHelper.IsAttached="True" hlp:PasswordBoxHelper.Password="{Binding TwitterAPI.Config.KeysM.AccessSecret}" 
                                              Margin="5" VerticalAlignment="Center" Cursor="IBeam"
                                              Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=access_secret}"/>
                                 </Grid>

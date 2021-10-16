@@ -105,6 +105,21 @@ namespace MovingWordpress.Models.Tweet
             }
         }
 
+        #region Tweetの検索処理
+        /// <summary>
+        /// Tweetの検索処理
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <returns></returns>
+        public CoreTweet.SearchResult TweetSearch(string keyword)
+        {
+            // トークンの作成
+            CreateToken();
+
+            // 検索処理
+            return this.Tokens.Search.Tweets(count => 100, q => keyword, lang => "ja");
+        }
+        #endregion
 
         #region フォロワーリストの取得
         /// <summary>

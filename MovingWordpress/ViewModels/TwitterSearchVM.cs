@@ -126,29 +126,38 @@ namespace MovingWordpress.ViewModels
 				string keyword = this.SearchKeyword;
 
 				if (string.IsNullOrWhiteSpace(this.SearchKeyword))
-                {
+				{
 					ShowMessage.ShowNoticeOK("キーワードは入力必須です", "通知");
 					return;
-                }
+				}
 
-				var result = this.TwitterAPI.Tokens.Search.Tweets(count => 100, q => keyword, lang => "ja");
+				// キーワード検索
+				var result = this.TwitterAPI.TweetSearch(this.SearchKeyword);
 
+				// リミットの取り出し
 				this.RateLimit = result.RateLimit;
 
 				StringBuilder tweet_text = new StringBuilder();
+
+				// 結果の取り出し
 				foreach (var value in result)
 				{
+					// 既にリスト上に登録されているかを確認する
 					var tmp = (from x in this.StatusList.Items
 							   where x.Id.Equals(value.Id)
 							   select x).Count() > 0;
 
+					// 登録されていない
 					if (!tmp)
 					{
+						// リストに追加
 						this.StatusList.Items.Add(value);
 
-						var status = (from x in this.StatusList.Items
-									  select x);
-						this.FilteredList.Items 
+						// ステータスの取得
+						var status = (from x in this.StatusList.Items select x);
+
+						// フィルターリストに追加
+						this.FilteredList.Items
 							= new ObservableCollection<CoreTweet.Status>(status);
 					}
 				}
