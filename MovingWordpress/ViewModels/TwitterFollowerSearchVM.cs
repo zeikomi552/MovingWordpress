@@ -1,4 +1,5 @@
 ﻿using MovingWordpress.Common;
+using MovingWordpress.Models.Tweet;
 using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
@@ -91,6 +92,7 @@ namespace MovingWordpress.ViewModels
 
 		Random _Rand = new Random();
 
+
 		#region 検索
 		/// <summary>
 		/// 検索
@@ -100,11 +102,6 @@ namespace MovingWordpress.ViewModels
 			try
 			{
 				// トークンの作成
-				this.TwitterAPI.CreateToken(this.TwitterConfig.KeysM.ConsumerKey,
-					this.TwitterConfig.KeysM.ConsumerSecretKey, this.TwitterConfig.KeysM.AccessToken, this.TwitterConfig.KeysM.AccessSecret);
-
-				string keyword = this.ScreenName;
-
 				if (string.IsNullOrWhiteSpace(this.ScreenName))
 				{
 					ShowMessage.ShowNoticeOK("Screen Nameは入力必須です", "通知");
@@ -123,8 +120,9 @@ namespace MovingWordpress.ViewModels
 						if (!this.RepeatSearch)
 							break;
 
-						// ユーザー情報の取得
-						var result = this.TwitterAPI.Tokens.Followers.List(screen_name, next_cursor, 100);
+						var result = this.TwitterAPI.GetFollower(next_cursor, screen_name);
+						next_cursor = result.NextCursor;	// 次のカーソル取得
+						this.RateLimit = result.RateLimit;	// リミット限界
 
 						foreach (var tmp in result)
 						{
@@ -145,10 +143,7 @@ namespace MovingWordpress.ViewModels
 							}
 						}
 
-                        // 次のカーソル取得
-                        next_cursor = result.NextCursor;
-
-                        // 次のカーソルが見つからなかった場合次の人へ移動
+                        // 次のカーソルが見つからなかった場合、次の人へ移動
                         if (next_cursor == 0)
                         {
                             int index = this._Rand.Next(0, this._FollowerList.Items.Count - 1);
@@ -168,19 +163,10 @@ namespace MovingWordpress.ViewModels
                             break;
                         }
 
-                        // 残り回数が0の場合は待つ
-                        if (result.RateLimit.Remaining <= 0)
-						{
-							// 現在時刻がリセット時間を超えない限り待つ
-							while (result.RateLimit.Reset.CompareTo(DateTime.Now) > 0)
-							{
-								System.Threading.Thread.Sleep(1 * 60 * 1000);   // 1min待機
+						// リセット時間を確認して待ち処理を入れる
+						while (!this.TwitterAPI.Wait(this.RateLimit)) ;
 
-								// 繰り返し検索キャンセル
-								if (!this.RepeatSearch) break;
-							}
-						}
-
+						// 検索中かのチェック
 						if (!this.RepeatSearch)
 							break;
 
@@ -189,7 +175,6 @@ namespace MovingWordpress.ViewModels
 				});
 
 
-				//this.RateLimit = result.RateLimit;
 
 			}
 			catch (Exception e)

@@ -20,6 +20,33 @@ namespace MovingWordpress.Models.Tweet
         /// </summary>
         public bool IsSuccessToken { get; set; } = false;
 
+
+        #region ツイッターAPI用のコンフィグ[Config]プロパティ
+        /// <summary>
+        /// ツイッターAPI用のコンフィグ[Config]プロパティ用変数
+        /// </summary>
+        TwitterConfigM _Config = new TwitterConfigM();
+        /// <summary>
+        /// ツイッターAPI用のコンフィグ[Config]プロパティ
+        /// </summary>
+        public TwitterConfigM Config
+        {
+            get
+            {
+                return _Config;
+            }
+            set
+            {
+                if (_Config == null || !_Config.Equals(value))
+                {
+                    _Config = value;
+                    NotifyPropertyChanged("Config");
+                }
+            }
+        }
+        #endregion
+
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -32,14 +59,15 @@ namespace MovingWordpress.Models.Tweet
         /// トークンの作成処理
         /// </summary>
         /// <returns></returns>
-        public void CreateToken(string consumer_key, string consumer_secret, string access_token, string access_secret)
+        public void CreateToken()
         {
             try
             {
-                this.Tokens = CoreTweet.Tokens.Create(consumer_key,
-                        consumer_secret,
-                        access_token,
-                        access_secret);
+                // トークンの作成
+                this.Tokens = CoreTweet.Tokens.Create(Config.KeysM.ConsumerKey,
+                        Config.KeysM.ConsumerSecretKey,
+                        Config.KeysM.AccessToken,
+                        Config.KeysM.AccessSecret);
 
                 // トークンの作成成功
                 this.IsSuccessToken = true;
@@ -59,18 +87,65 @@ namespace MovingWordpress.Models.Tweet
         /// <returns>true:ツイート成功 false:トークンが作成されていない それ以外はエクセプション</returns>
         public bool Tweet(string message)
         {
-            if (this.IsSuccessToken)
+            try
             {
+                // トークンの作成
+                CreateToken();
+
+                // ツイート
                 this.Tokens.Statuses.Update(status => message);
+
+                // 成功
                 return true;
             }
-            else
+            catch
             {
+                // 失敗
                 return false;
             }
         }
 
 
+        #region フォロワーリストの取得
+        /// <summary>
+        /// フォロワーリストの取得
+        /// </summary>
+        /// <param name="cursor">カーソル</param>
+        /// <param name="screen_name">スクリーン名</param>
+        /// <returns>フォロワーリスト</returns>
+        public CoreTweet.Cursored<CoreTweet.User> GetFollower(long cursor, string screen_name)
+        {
+            // トークンの作成
+            CreateToken();
+
+            // ユーザー情報の取得
+            return this.Tokens.Followers.List(screen_name, cursor, 100);
+        }
+        #endregion
+
+        #region 待ち処理
+        /// <summary>
+        /// 待ち処理
+        /// </summary>
+        /// <param name="limit">リミット情報</param>
+        /// <param name="wait_ms">待ち時間(デフォルト60秒)</param>
+        /// <returns>true:待ち時間のリセット false:待ち時間中</returns>
+        public bool Wait(CoreTweet.RateLimit limit, int wait_ms = 60000)
+        {
+            // 残り回数が0の場合は待つ
+            if (limit.Remaining <= 0)
+            {
+                // 現在時刻がリセット時間を超えない限り待つ
+                if (limit.Reset.CompareTo(DateTime.Now) > 0)
+                {
+                    System.Threading.Thread.Sleep(wait_ms);   // 待機
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        #endregion
 
     }
 }

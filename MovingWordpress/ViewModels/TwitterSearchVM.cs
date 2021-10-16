@@ -123,10 +123,6 @@ namespace MovingWordpress.ViewModels
 		{
 			try
 			{
-				// トークンの作成
-				this.TwitterAPI.CreateToken(this.TwitterConfig.KeysM.ConsumerKey,
-					this.TwitterConfig.KeysM.ConsumerSecretKey, this.TwitterConfig.KeysM.AccessToken, this.TwitterConfig.KeysM.AccessSecret);
-
 				string keyword = this.SearchKeyword;
 
 				if (string.IsNullOrWhiteSpace(this.SearchKeyword))

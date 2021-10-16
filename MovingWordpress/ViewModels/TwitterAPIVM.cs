@@ -18,30 +18,6 @@ namespace MovingWordpress.ViewModels
 {
     public class TwitterAPIVM : ViewModelBase
     {
-        #region ツイッターAPI用のコンフィグ[TwitterConfig]プロパティ
-        /// <summary>
-        /// ツイッターAPI用のコンフィグ[TwitterConfig]プロパティ用変数
-        /// </summary>
-        TwitterConfigM _TwitterConfig = new TwitterConfigM();
-        /// <summary>
-        /// ツイッターAPI用のコンフィグ[TwitterConfig]プロパティ
-        /// </summary>
-        public TwitterConfigM TwitterConfig
-        {
-            get
-            {
-                return _TwitterConfig;
-            }
-            set
-            {
-                if (_TwitterConfig == null || !_TwitterConfig.Equals(value))
-                {
-                    _TwitterConfig = value;
-                    NotifyPropertyChanged("TwitterConfig");
-                }
-            }
-        }
-        #endregion
 
         #region API使用制限[RateLimit]プロパティ
         /// <summary>
@@ -93,11 +69,31 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region TwitterAPI用オブジェクト
+        #region TwitterAPI用オブジェクト[TwitterAPI]プロパティ
         /// <summary>
-        /// TwitterAPI用オブジェクト
+        /// TwitterAPI用オブジェクト[TwitterAPI]プロパティ用変数
         /// </summary>
-        public TwitterM TwitterAPI = new TwitterM();
+        TwitterM _TwitterAPI = new TwitterM();
+        /// <summary>
+        /// TwitterAPI用オブジェクト[TwitterAPI]プロパティ
+        /// </summary>
+        public TwitterM TwitterAPI
+        {
+            get
+            {
+                return _TwitterAPI;
+            }
+            set
+            {
+                if (_TwitterAPI == null || !_TwitterAPI.Equals(value))
+                {
+                    _TwitterAPI = value;
+                    NotifyPropertyChanged("TwitterAPI");
+                }
+            }
+        }
+        #endregion
+
 
         /// <summary>
         /// 初期化処理
@@ -106,14 +102,8 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                var config = this.TwitterConfig;
-
                 // コンフィグファイルのロード
-                config.Load();
-
-                // トークンの作成
-                this.TwitterAPI.CreateToken(config.KeysM.ConsumerKey,
-                    config.KeysM.ConsumerSecretKey, config.KeysM.AccessToken, config.KeysM.AccessSecret);
+                this.TwitterAPI.Config.Load();
             }
             catch (Exception e)
             {
@@ -122,7 +112,6 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
-        #endregion
 
         #region ツイート
         /// <summary>
@@ -132,16 +121,12 @@ namespace MovingWordpress.ViewModels
         {
             try
             {
-                // トークンの作成
-                this.TwitterAPI.CreateToken(this.TwitterConfig.KeysM.ConsumerKey,
-                    this.TwitterConfig.KeysM.ConsumerSecretKey, this.TwitterConfig.KeysM.AccessToken, this.TwitterConfig.KeysM.AccessSecret);
-
                 // 送信文字列をチェック
-                if (!string.IsNullOrEmpty(this.TwitterConfig.TempleteM.Message)
+                if (!string.IsNullOrEmpty(this.TwitterAPI.Config.TempleteM.Message)
                     && this.WordpressContents.SelectedItem != null)
                 {
                     // メッセージの送信処理
-                    this.TwitterAPI.Tweet(this.TwitterConfig.TempleteM.Message);
+                    this.TwitterAPI.Tweet(this.TwitterAPI.Config.TempleteM.Message);
                     
                     ShowMessage.ShowNoticeOK("送信しました。", "通知");
                 }
@@ -220,7 +205,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 // コンフィグファイルのセーブ
-                this.TwitterConfig.Save();
+                this.TwitterAPI.Config.Save();
                 ShowMessage.ShowNoticeOK("設定を保存しました。", "通知");
             }
             catch (Exception e)
@@ -242,8 +227,8 @@ namespace MovingWordpress.ViewModels
                 if (this.WordpressContents != null
                     && this.WordpressContents.SelectedItem != null)
                 {
-                    this.TwitterConfig.TempleteM.Title = this.WordpressContents.SelectedItem.Post_title;
-                    this.TwitterConfig.TempleteM.URL = this.WordpressContents.SelectedItem.Guid;
+                    this.TwitterAPI.Config.TempleteM.Title = this.WordpressContents.SelectedItem.Post_title;
+                    this.TwitterAPI.Config.TempleteM.URL = this.WordpressContents.SelectedItem.Guid;
                 }
             }
             catch (Exception e)
@@ -284,6 +269,15 @@ namespace MovingWordpress.ViewModels
             }
         }
         #endregion
+
+
+        #region 待ち処理を終了する
+        /// <summary>
+        /// 待ち処理を終了する
+        /// </summary>
+        protected static bool IsBreakWait { get; set; } = false;
+        #endregion
+
 
     }
 }
