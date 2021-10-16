@@ -115,68 +115,6 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		#region API使用制限[RateLimit]プロパティ
-		/// <summary>
-		/// API使用制限[RateLimit]プロパティ用変数
-		/// </summary>
-		CoreTweet.RateLimit _RateLimit = new CoreTweet.RateLimit();
-		/// <summary>
-		/// [RateLimit]プロパティ
-		/// </summary>
-		public CoreTweet.RateLimit RateLimit
-		{
-			get
-			{
-				return _RateLimit;
-			}
-			set
-			{
-				if (_RateLimit == null || !_RateLimit.Equals(value))
-				{
-					_RateLimit = value;
-					NotifyPropertyChanged("RateLimit");
-				}
-			}
-		}
-		#endregion
-
-		#region 行ダブルクリック処理
-		/// <summary>
-		/// 行ダブルクリック処理
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="ev"></param>
-		public void RowDoubleClick(object sender, MouseButtonEventArgs ev)
-		{
-			try
-			{
-				var dg = sender as DataGrid;
-				if (null != dg.SelectedItem)
-				{
-					var ctrl = dg.ItemContainerGenerator.ContainerFromItem(dg.SelectedItem) as DataGridRow;
-					if (null != ctrl)
-					{
-						if (null != ctrl.InputHitTest(ev.GetPosition(ctrl)))
-						{
-							var data = ctrl.DataContext as CoreTweet.Status;
-
-							if (data != null)
-							{
-								string url = "https://twitter.com/" + data.User.ScreenName;
-								MovingWordpressUtilities.OpenUrl(url);
-							}
-						}
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				_logger.Error(e.Message);
-				ShowMessage.ShowErrorOK(e.Message, "Error");
-			}
-		}
-		#endregion
-
 		#region 検索処理
 		/// <summary>
 		/// 検索処理
@@ -227,6 +165,7 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+		#region フィルタ押下処理
 		/// <summary>
 		/// フィルタ押下処理
 		/// </summary>
@@ -255,14 +194,14 @@ namespace MovingWordpress.ViewModels
 				ShowMessage.ShowErrorOK(e.Message, "Error");
 			}
 		}
+		#endregion
 
 
-
-        #region 選択行のURLへ移動する
-        /// <summary>
-        /// 選択行のURLへ移動する
-        /// </summary>
-        public void MoveProfiel()
+		#region 選択行のURLへ移動する
+		/// <summary>
+		/// 選択行のURLへ移動する
+		/// </summary>
+		public void MoveProfiel()
 		{
 			try
 			{
@@ -298,5 +237,44 @@ namespace MovingWordpress.ViewModels
 			}
 		}
 		#endregion
+
+
+		#region 行ダブルクリック処理
+		/// <summary>
+		/// 行ダブルクリック処理
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="ev"></param>
+		public void RowDoubleClick(object sender, MouseButtonEventArgs ev)
+		{
+			try
+			{
+				var dg = sender as DataGrid;
+				if (null != dg.SelectedItem)
+				{
+					var ctrl = dg.ItemContainerGenerator.ContainerFromItem(dg.SelectedItem) as DataGridRow;
+					if (null != ctrl)
+					{
+						if (null != ctrl.InputHitTest(ev.GetPosition(ctrl)))
+						{
+							var data = ctrl.DataContext as CoreTweet.Status;
+
+							if (data != null)
+							{
+								string url = "https://twitter.com/" + data.User.ScreenName;
+								MovingWordpressUtilities.OpenUrl(url);
+							}
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
 	}
 }

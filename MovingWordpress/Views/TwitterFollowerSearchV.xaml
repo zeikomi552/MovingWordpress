@@ -1,0 +1,233 @@
+﻿<mah:MetroWindow x:Class="MovingWordpress.Views.TwitterFollowerSearchV"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:hlp="clr-namespace:MovingWordpress.Common.Helpers"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:Converters="clr-namespace:MovingWordpress.Common.Converters"
+        xmlns:ViewModels="clr-namespace:MovingWordpress.ViewModels"
+        xmlns:local="clr-namespace:MovingWordpress.Views"
+        mc:Ignorable="d"
+        Title="Twitterフォロワー検索" Height="900" Width="1200" WindowStartupLocation="CenterScreen">
+    <mah:MetroWindow.Resources>
+        <Converters:boolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+        <Converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+    </mah:MetroWindow.Resources>
+    <mah:MetroWindow.DataContext>
+        <ViewModels:TwitterFollowerSearchVM/>
+    </mah:MetroWindow.DataContext>
+
+    <b:Interaction.Triggers>
+        <b:EventTrigger>
+            <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitterフォロワー検索" FontSize="30"/>
+        </Border>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Margin="5,5,0,5" Header="メインアクションアイテム">
+                <StackPanel Orientation="Horizontal">
+                    <Button Height="100" Width="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="Search" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="検索"/>
+                        </StackPanel>
+
+                    </Button>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Grid.Column="1" Margin="5,5,0,5" Header="サブアクションアイテム">
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="5" Height="100" Width="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="MoveProfiel" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="移動"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Margin="5" Height="100" Width="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="Clear" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="リストクリア"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="設定">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Margin="5" Header="キーセット">
+                        <StackPanel Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーキー"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerKey}"/>
+                                    <PasswordBox Width="300" hlp:PasswordBoxHelper.IsAttached="True"
+                                             hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.ConsumerKey}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam"
+                                             Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=consumer_key}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False"
+                                          x:Name="consumer_key" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーシークレット"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_secret_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerSecretKey}"/>
+                                    <PasswordBox Width="300" hlp:PasswordBoxHelper.IsAttached="True"
+                                             hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.ConsumerSecretKey}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam"
+                                             Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=consumer_secret_key}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False"
+                                          x:Name="consumer_secret_key" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="アクセストークン"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=access_token}" 
+                                             Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessToken}"/>
+                                    <PasswordBox Background="White" Width="300" hlp:PasswordBoxHelper.IsAttached="True"
+                                             hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.AccessToken}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam"
+                                             Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=access_token}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False"
+                                          x:Name="access_token" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="アクセスシークレット"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <Grid>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=access_secret}"
+                                             Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessSecret}"/>
+                                    <PasswordBox Width="300"
+                                             hlp:PasswordBoxHelper.IsAttached="True" hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.AccessSecret}" 
+                                             Margin="5" VerticalAlignment="Center" Cursor="IBeam"
+                                             Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=access_secret}"/>
+                                </Grid>
+                                <CheckBox Width="25" Height="25" Style="{DynamicResource MaterialDesignActionCheckBox}" IsChecked="False"
+                                          x:Name="access_secret" Margin="5" Content="表示" Cursor="Hand" FontSize="10"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Margin="5" Width="100" Content="保存">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="SaveSetting" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Margin="5" Grid.Row="1" Header="検索条件">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Screen Name"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                            <TextBox VerticalAlignment="Center" Width="200" Text="{Binding ScreenName}"/>
+                            <ToggleButton Width="80" Margin="5" Content="検索" IsChecked="{Binding RepeatSearch}">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Checked">
+                                        <b:CallMethodAction MethodName="Search" TargetObject="{Binding}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </ToggleButton>
+                        </StackPanel>
+
+
+                    </GroupBox>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
+
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+            <Grid Grid.Column="1">
+                <GroupBox Header="ブログリスト">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="[API使用制限]"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Remaining}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="/"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Limit}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="[制限リセット時刻]"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Reset.LocalDateTime, StringFormat=MM/dd HH:mm}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="[フィルタ]"/>
+                            <TextBox Margin="5" VerticalAlignment="Center" Width="150"
+                                     Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Button Content="検索">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="Click">
+                                        <b:CallMethodAction MethodName="OnFilter" TargetObject="{Binding}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </Button>
+
+                        </StackPanel>
+                        <DataGrid AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding FollowerList.Items}"
+                                  SelectedItem="{Binding FollowerList.SelectedItem}">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseDoubleClick">
+                                    <b:CallMethodAction MethodName="RowDoubleClick" TargetObject="{Binding}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Screen Name" Binding="{Binding ScreenName}"/>
+                                <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
+                                <DataGridTextColumn Header="作成日" Binding="{Binding CreatedAt}"/>
+                                <DataGridTextColumn Header="説明" Binding="{Binding Description}"/>
+                                <DataGridTextColumn Header="フォロー数" Binding="{Binding FriendsCount}"/>
+                                <DataGridTextColumn Header="フォロワー数" Binding="{Binding FollowersCount}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </Grid>
+    </Grid>
+</mah:MetroWindow>

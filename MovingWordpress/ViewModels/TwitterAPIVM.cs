@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using MovingWordpress.Common;
 using MovingWordpress.Models;
 using MovingWordpress.Models.Tweet;
 using MVVMCore.BaseClass;
@@ -10,6 +11,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MovingWordpress.ViewModels
 {
@@ -35,6 +38,31 @@ namespace MovingWordpress.ViewModels
                 {
                     _TwitterConfig = value;
                     NotifyPropertyChanged("TwitterConfig");
+                }
+            }
+        }
+        #endregion
+
+        #region API使用制限[RateLimit]プロパティ
+        /// <summary>
+        /// API使用制限[RateLimit]プロパティ用変数
+        /// </summary>
+        CoreTweet.RateLimit _RateLimit = new CoreTweet.RateLimit();
+        /// <summary>
+        /// [RateLimit]プロパティ
+        /// </summary>
+        public CoreTweet.RateLimit RateLimit
+        {
+            get
+            {
+                return _RateLimit;
+            }
+            set
+            {
+                if (_RateLimit == null || !_RateLimit.Equals(value))
+                {
+                    _RateLimit = value;
+                    NotifyPropertyChanged("RateLimit");
                 }
             }
         }
@@ -256,5 +284,6 @@ namespace MovingWordpress.ViewModels
             }
         }
         #endregion
+
     }
 }

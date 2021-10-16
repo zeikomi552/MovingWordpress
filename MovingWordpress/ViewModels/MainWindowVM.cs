@@ -135,6 +135,10 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region Twitter検索
+        /// <summary>
+        /// Twitter検索
+        /// </summary>
         public void TwitterSearchV()
         {
             try
@@ -153,7 +157,36 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
 
+        #region フォロワー検索
+        /// <summary>
+        /// フォロワー検索
+        /// </summary>
+        public void TwitterFollowerSearchV()
+        {
+            try
+            {
+                var wnd = new TwitterFollowerSearchV();
+
+                if (wnd.ShowDialog() == true)
+                {
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
+        #region GitHubAPI
+        /// <summary>
+        /// GitHubAPI
+        /// </summary>
         public void GitHubAPIV()
         {
             try
@@ -172,5 +205,6 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }
+        #endregion
     }
 }
