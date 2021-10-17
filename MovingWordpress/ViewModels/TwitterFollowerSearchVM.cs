@@ -1,8 +1,11 @@
 ﻿using MovingWordpress.Common;
+using MovingWordpress.Models;
 using MovingWordpress.Models.Tweet;
 using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -90,173 +93,6 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		Random _Rand = new Random();
-
-		private void SearchSub()
-        {
-            try
-            {
-				string screen_name = this.ScreenName;
-				long next_cursor = -1;
-
-				for (; ; )
-				{
-					// 繰り返し検索がキャンセルされた
-					if (!this.RepeatSearch)
-						break;
-
-					// フォロワーの取得
-					var result = this.TwitterAPI.GetFollower(next_cursor, screen_name);
-					next_cursor = result.NextCursor;    // 次のカーソル取得
-					this.RateLimit = result.RateLimit;  // リミット限界
-
-					foreach (var tmp in result)
-					{
-						// 既に登録されているかチェック
-						var user = (from x in this.FollowerList.Items
-									where x.ScreenName.Equals(tmp.ScreenName)
-									select x);
-
-						// 未追加の場合追加
-						if (user == null || user.ToList().Count() <= 0)
-						{
-							// スレッドセーフな呼び出し
-							Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-							   new Action(() =>
-							   {
-								   this.FollowerList.Items.Add(tmp);
-							   })).Wait();
-						}
-					}
-
-					// フォロワー数ゼロの人にあたった場合
-					if (this._FollowerList.Items.Count <= 0)
-					{
-						this.RepeatSearch = false;
-						break;
-					}
-
-					// 次のカーソルが見つからなかった場合、次の人へ移動
-					if (next_cursor == 0)
-					{
-						int index = this._Rand.Next(0, this._FollowerList.Items.Count - 1);
-						screen_name = this._FollowerList.ElementAt(index).ScreenName;
-						next_cursor = -1;
-					}
-
-					// 次のカーソルが無い場合は抜ける
-					if (next_cursor == 0)
-					{
-						// スレッドセーフな呼び出し
-						Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-						   new Action(() =>
-						   {
-							   this.RepeatSearch = false;
-						   }));
-						break;
-					}
-
-					// リセット時間を確認して待ち処理を入れる
-					while (!this.TwitterAPI.Wait(this.RateLimit)) ;
-
-					// 検索中かのチェック
-					if (!this.RepeatSearch)
-						break;
-
-					System.Threading.Thread.Sleep(60000);
-				}
-			}
-			catch (Exception e)
-			{
-				_logger.Error(e.Message);
-				ShowMessage.ShowErrorOK(e.Message, "Error");
-			}
-		}
-		#region 検索
-		/// <summary>
-		/// 検索
-		/// </summary>
-		public void Search()
-		{
-			try
-			{
-				// トークンの作成
-				if (string.IsNullOrWhiteSpace(this.ScreenName))
-				{
-					ShowMessage.ShowNoticeOK("Screen Nameは入力必須です", "通知");
-					return;
-				}
-
-				Task.Run(() =>
-				{
-					// 検索処理
-					SearchSub();
-				});
-
-			}
-			catch (Exception e)
-			{
-				_logger.Error(e.Message);
-				ShowMessage.ShowErrorOK(e.Message, "Error");
-			}
-		}
-		#endregion
-
-
-		/// <summary>
-		/// 自分のフォロワーに含まれているかどうかをチェックする
-		/// </summary>
-		/// <param name="user">ユーザー</param>
-		/// <returns>true:含まれる false:含まれない</returns>
-		public bool ExistMyFollower(CoreTweet.User user)
-        {
-			return (from x in this._MyFollowers
-					   where x.Id.Equals(user.Id)
-					   select x).Count() > 0;
-		}
-
-		/// <summary>
-		/// 条件に該当するユーザーをランダムで取得
-		/// </summary>
-		/// <returns>ユーザー</returns>
-		private CoreTweet.User RandomGetUser()
-		{
-			string[] nous_list = this.DescriptionKeys.Split(',');
-
-			// 上限と下限の範囲内に存在するかを確認する
-			var list = (from x in this.FollowerList.Items
-						where this.TwitterAPI.CheckFriendShipRatio(x, this.MinRatio, this.MaxRatio)
-						select x).ToList<CoreTweet.User>();
-
-			// 条件に該当するユーザーを取得する
-			list = (from x in list
-				   where this.TwitterAPI.CheckDescription(nous_list, x)
-				   select x).ToList<CoreTweet.User>();
-
-			// 自分のフォロワーに含まれているかどうかをチェックする
-			list = (from x in list
-				   where ExistMyFollower(x)
-				   select x).ToList<CoreTweet.User>();
-
-			// フォロワー数の取得
-			int max = list.Count;
-
-			if (max > 0)
-			{
-				// インデックスをランダムで取得
-				int index = this._Rand.Next(1, max) - 1;
-
-
-				// ユーザーの取り出し
-				var user = this.FollowerList.Items.ElementAt(index);
-
-				return user;
-			}
-			else
-			{
-				return null;
-			}
-		}
 		#region 説明文に含まれる文字[DescriptionKeys]プロパティ
 		/// <summary>
 		/// 説明文に含まれる文字[DescriptionKeys]プロパティ用変数
@@ -332,20 +168,116 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		private List<CoreTweet.User> _MyFollowers = null;
+		#region マイフォローリスト[MyFollows]プロパティ
 		/// <summary>
-		/// ランダムフォロー
+		/// マイフォローリスト[MyFollows]プロパティ用変数
 		/// </summary>
-		public void RandomFollow()
+		ModelList<CoreTweet.User> _MyFollows = new ModelList<CoreTweet.User>();
+		/// <summary>
+		/// マイフォローリスト[MyFollows]プロパティ
+		/// </summary>
+		public ModelList<CoreTweet.User> MyFollows
 		{
+			get
+			{
+				return _MyFollows;
+			}
+			set
+			{
+				if (_MyFollows == null || !_MyFollows.Equals(value))
+				{
+					_MyFollows = value;
+					NotifyPropertyChanged("MyFollows");
+				}
+			}
+		}
+		#endregion
+
+		#region フォロー数[FollowCount]プロパティ
+		/// <summary>
+		/// フォロー数[FollowCount]プロパティ用変数
+		/// </summary>
+		int _FollowCount = 0;
+		/// <summary>
+		/// フォロー数[FollowCount]プロパティ
+		/// </summary>
+		public int FollowCount
+		{
+			get
+			{
+				return _FollowCount;
+			}
+			set
+			{
+				if (!_FollowCount.Equals(value))
+				{
+					_FollowCount = value;
+					NotifyPropertyChanged("FollowCount");
+				}
+			}
+		}
+		#endregion
+
+		#region ユーザーリスト[UserList]プロパティ
+		/// <summary>
+		/// ユーザーリスト[UserList]プロパティ用変数
+		/// </summary>
+		TwitterUserCollectionM _UserList = new TwitterUserCollectionM();
+		/// <summary>
+		/// ユーザーリスト[UserList]プロパティ
+		/// </summary>
+		public TwitterUserCollectionM UserList
+		{
+			get
+			{
+				return _UserList;
+			}
+			set
+			{
+				if (_UserList == null || !_UserList.Equals(value))
+				{
+					_UserList = value;
+					NotifyPropertyChanged("UserList");
+				}
+			}
+		}
+		#endregion
+
+
+
+		/// <summary>
+		/// ランダムフォロー実行中フラグ
+		/// </summary>
+		bool _ExecuteRandomFollow = false;
+
+		Random _Rand = new Random();
+
+		string ConfigFileName = "FollowList.xml";
+
+		public string GetConfigFilePath()
+		{
+			ConfigM conf = new ConfigM();
+			var tconf_dir = conf.ConfigDirPath;
+			var tconf_path = Path.Combine(tconf_dir, ConfigFileName);
+			return tconf_path;
+		}
+
+	public override void Init()
+        {
             try
             {
-				this._MyFollowers = this.TwitterAPI.GetAllFollower(this.TwitterAPI.Config.MyScreenName);
+				base.Init();
 
-				Task.Run(() =>
+				// Configファイルパス
+				string config_file_path = GetConfigFilePath();
+
+				// ファイルの存在確認
+				if (File.Exists(config_file_path))
 				{
-					RandomFollowSub();
-				}).Wait();
+					// ファイルの読み込み
+					this.UserList = XMLUtil.Deserialize<TwitterUserCollectionM>(config_file_path);
+				}
+
 			}
 			catch (Exception e)
 			{
@@ -354,6 +286,246 @@ namespace MovingWordpress.ViewModels
 			}
 		}
 
+		#region 検索
+		/// <summary>
+		/// 検索
+		/// </summary>
+		public void Search()
+		{
+			try
+			{
+				// 待ち処理
+				this.TwitterAPI.Wait();
+
+				// トークンの作成
+				if (string.IsNullOrWhiteSpace(this.ScreenName))
+				{
+					ShowMessage.ShowNoticeOK("Screen Nameは入力必須です", "通知");
+					return;
+				}
+
+				Task.Run(() =>
+				{
+					// フォロワーの取得
+					var result = this.TwitterAPI.GetAllFollower(this.ScreenName);
+
+					// スレッドセーフな呼び出し
+					Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+					   new Action(() =>
+					   {
+						   this.FollowerList = new ModelList<CoreTweet.User>()
+						   {
+							   Items = new ObservableCollection<CoreTweet.User>(result)
+						   };
+					   })).Wait();
+				});
+
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
+		#region 自分のフォロワーに含まれているかどうかをチェックする
+		/// <summary>
+		/// 自分のフォロワーに含まれているかどうかをチェックする
+		/// </summary>
+		/// <param name="user">ユーザー</param>
+		/// <returns>true:含まれる false:含まれない</returns>
+		public bool ExistMyFollow(CoreTweet.User user)
+        {
+			return (from x in this.MyFollows.Items
+					   where x.Id.Equals(user.Id)
+					   select x).Count() > 0;
+		}
+		#endregion
+
+		#region 合致するユーザーを抽出する
+		/// <summary>
+		/// 合致するユーザーを抽出する
+		/// </summary>
+		/// <param name="user_list">ユーザーリスト</param>
+		/// <param name="follower_check">true:自分のフォローに含まれるかのチェックを行う</param>
+		/// <param name="ratio_check">true:フォロー率のチェックを行う</param>
+		/// <param name="word_check">単語のチェックを行う</param>
+		/// <returns>条件で絞った後のリスト</returns>
+		private List<CoreTweet.User> MatchUser(List<CoreTweet.User> user_list, bool follower_check = true, bool ratio_check = true, bool word_check = true)
+		{
+			string[] nous_list = this.DescriptionKeys.Split(',');
+			var list = user_list;
+
+			if (ratio_check)
+			{
+				// 上限と下限の範囲内に存在するかを確認する
+				list = (from x in list
+						where this.TwitterAPI.CheckFriendShipRatio(x, this.MinRatio, this.MaxRatio)
+						select x).ToList<CoreTweet.User>();
+			}
+
+			if (word_check)
+			{
+				// 条件に該当するユーザーを取得する
+				list = (from x in list
+						where this.TwitterAPI.CheckDescription(nous_list, x)
+						select x).ToList<CoreTweet.User>();
+			}
+
+			if (follower_check)
+			{
+				// 自分のフォロワーに含まれているかどうかをチェックする
+				list = (from x in list
+						where !ExistMyFollow(x)
+						select x).ToList<CoreTweet.User>();
+			}
+			return list;
+		}
+		#endregion
+
+		#region 条件に該当するユーザーをランダムで取得
+		/// <summary>
+		/// 条件に該当するユーザーをランダムで取得
+		/// </summary>
+		/// <returns>ユーザー</returns>
+		private CoreTweet.User RandomGetUser(bool follower_check = true, bool ratio_check = true, bool word_check = true)
+		{
+			var list = MatchUser(this.FollowerList.Items.ToList<CoreTweet.User>(), follower_check, ratio_check, word_check);
+
+			// フォロワー数の取得
+			int max = list.Count;
+
+			if (max > 0)
+			{
+				// インデックスをランダムで取得
+				int index = this._Rand.Next(1, max) - 1;
+
+				// ユーザーの取り出し
+				var user = list.ElementAt(index);
+
+				return user;
+			}
+			else
+			{
+				return null;
+			}
+		}
+		#endregion
+
+		/// <summary>
+		/// ユーザーリストの取得
+		/// </summary>
+		/// <param name="screen_name">検索するスクリーン名</param>
+		/// <param name="follow_f">true:フォローの検索 false:フォロワーの検索</param>
+		private void GetAndSaveUserList(string screen_name, bool follow_f = true)
+		{
+			try
+			{
+				List<CoreTweet.User> tmp;
+
+				if (follow_f)
+				{
+					// フォローの取得
+					tmp = this.TwitterAPI.GetAllFollows(screen_name);
+				}
+				else
+				{
+					// フォロワーの取得
+					tmp = this.TwitterAPI.GetAllFollower(screen_name);
+				}
+
+				foreach (var user in tmp)
+				{
+					var count = (from x in this.UserList.Items
+								 where x.Id.Equals(user.Id)
+								 select x).Count();
+
+					// まだ追加されていないようであれば追加する
+					if (count <= 0)
+					{
+						this.UserList.Items.Add(new TwitterUserM(user));
+					}
+				}
+
+				string path = GetConfigFilePath();  // Configファイルパスの取得
+				XMLUtil.Seialize<TwitterUserCollectionM>(path, this.UserList);  // ユーザーリストの保存
+			}
+			catch { }
+
+		}
+
+		#region 自分のフォロワーを取得
+		/// <summary>
+		/// 自分のフォロワーを取得
+		/// </summary>
+		public void GetMyFollows()
+		{
+			try
+			{
+				Task.Run(() =>
+				{
+					// フォローの取得
+					var tmp = this.TwitterAPI.GetAllFollows(this.ScreenName);
+
+					// フォローリストの取得
+					this.MyFollows = new ModelList<CoreTweet.User>
+					{
+						Items = new ObservableCollection<CoreTweet.User>(tmp)
+					};
+				}).Wait();
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
+		#region ランダムフォロー
+		/// <summary>
+		/// ランダムフォロー
+		/// </summary>
+		public void RandomFollow()
+		{
+            try
+            {
+				if (string.IsNullOrWhiteSpace(this.DescriptionKeys))
+				{
+					ShowMessage.ShowNoticeOK("キーワードは必須です", "通知");
+					return;
+				}
+
+				// マイフォロワーの数を取得
+				if (this.MyFollows.Items.Count <= 0)
+				{
+					// 自分のフォロワーを取得
+					GetMyFollows();
+				}
+
+				Task.Run(() =>
+				{
+					// ランダムフォローが実行されていない時だけ実行する
+					if (!this._ExecuteRandomFollow)
+					{
+						_ExecuteRandomFollow = true;
+						RandomFollowSub();
+						_ExecuteRandomFollow = false;
+					}
+
+					this.RepeatSearch = false;
+				});
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
+		#region ランダムフォロー
 		/// <summary>
 		/// ランダムフォロー
 		/// </summary>
@@ -365,24 +537,58 @@ namespace MovingWordpress.ViewModels
 
 				while (true)
 				{
+					// 繰り返し検索の中止
+					if (!this.RepeatSearch)
+					{
+						break;
+					}
+
+					// 待ち確認
+					this.TwitterAPI.Wait(60000);
+
 					// ユーザーをランダムに取得する
 					user = RandomGetUser();
 
 					// ユーザーが取得できなかった
 					if (user == null)
-						return;
-
-					// フォロー処理
-					var result = this.TwitterAPI.CreateFollow(user.Id.Value);
-
-					// 残りが0になったので解除されるまで待つ
-					if (result.RateLimit.Remaining == 0)
 					{
-						// ローカル時刻と比較
-						while (DateTime.Now.CompareTo(result.RateLimit.Reset.LocalDateTime) <= 0)
-						{
-							System.Threading.Thread.Sleep(1000);
-						}
+						int max = this.UserList.Items.Count;
+						int min = 1;
+						int index = _Rand.Next(min, max) - 1;
+
+						// 自分のフォローしている人の誰かを選ぶ
+						var follow_user = this.MyFollows.ElementAt(index);
+
+						// 次に検索するスクリーン名をセット
+						this.ScreenName = follow_user.ScreenName;
+
+						// フォロワーの取得
+						var result = this.TwitterAPI.GetAllFollower(this.ScreenName);
+
+                        // スレッドセーフな呼び出し
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                           new Action(() =>
+                           {
+                               this.FollowerList = new ModelList<CoreTweet.User>()
+                               {
+                                   Items = new ObservableCollection<CoreTweet.User>(result)
+                               };
+                           })).Wait();
+                    }
+                    else
+                    {
+						// フォロー処理
+						var result = this.TwitterAPI.CreateFollow(user);
+
+						// フォローカウントを保存
+						this.FollowCount++;
+
+						// スレッドセーフな呼び出し
+						Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+						   new Action(() =>
+						   {
+							   this.MyFollows.Items.Add(user);
+						   })).Wait();
 					}
 				}
 			}
@@ -392,6 +598,7 @@ namespace MovingWordpress.ViewModels
 				ShowMessage.ShowErrorOK(e.Message, "Error");
 			}
 		}
+		#endregion
 
 		#region 行ダブルクリック処理
 		/// <summary>

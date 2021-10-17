@@ -134,9 +134,6 @@ namespace MovingWordpress.ViewModels
 				// キーワード検索
 				var result = this.TwitterAPI.TweetSearch(this.SearchKeyword);
 
-				// リミットの取り出し
-				this.RateLimit = result.RateLimit;
-
 				StringBuilder tweet_text = new StringBuilder();
 
 				// 結果の取り出し

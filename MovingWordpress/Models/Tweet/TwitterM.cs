@@ -47,14 +47,41 @@ namespace MovingWordpress.Models.Tweet
         #endregion
 
 
+        #region API使用制限[RateLimit]プロパティ
+        /// <summary>
+        /// API使用制限[RateLimit]プロパティ用変数
+        /// </summary>
+        CoreTweet.RateLimit _RateLimit = new CoreTweet.RateLimit();
+        /// <summary>
+        /// [RateLimit]プロパティ
+        /// </summary>
+        public CoreTweet.RateLimit RateLimit
+        {
+            get
+            {
+                return _RateLimit;
+            }
+            set
+            {
+                if (_RateLimit == null || !_RateLimit.Equals(value))
+                {
+                    _RateLimit = value;
+                    NotifyPropertyChanged("RateLimit");
+                }
+            }
+        }
+        #endregion
+
+        #region コンストラクタ
         /// <summary>
         /// コンストラクタ
         /// </summary>
         public TwitterM()
         {
         }
+        #endregion
 
-
+        #region トークンの作成処理
         /// <summary>
         /// トークンの作成処理
         /// </summary>
@@ -79,7 +106,9 @@ namespace MovingWordpress.Models.Tweet
                 throw;
             }
         }
+        #endregion
 
+        #region ツイート処理
         /// <summary>
         /// ツイート処理
         /// </summary>
@@ -93,7 +122,10 @@ namespace MovingWordpress.Models.Tweet
                 CreateToken();
 
                 // ツイート
-                this.Tokens.Statuses.Update(status => message);
+                var result = this.Tokens.Statuses.Update(status => message);
+
+                // 限界値の取得
+                this.RateLimit = result.RateLimit;
 
                 // 成功
                 return true;
@@ -104,6 +136,7 @@ namespace MovingWordpress.Models.Tweet
                 return false;
             }
         }
+        #endregion
 
         #region Tweetの検索処理
         /// <summary>
@@ -116,11 +149,14 @@ namespace MovingWordpress.Models.Tweet
             // トークンの作成
             CreateToken();
 
-            // 検索処理
-            return this.Tokens.Search.Tweets(count => 100, q => keyword, lang => "ja");
+            // 検索
+            var result = this.Tokens.Search.Tweets(count => 100, q => keyword, lang => "ja"); ;
+
+            // リミットの保持
+            this.RateLimit = result.RateLimit;
+            return result;
         }
         #endregion
-
 
         #region 待ち処理
         /// <summary>
@@ -129,8 +165,10 @@ namespace MovingWordpress.Models.Tweet
         /// <param name="limit">リミット情報</param>
         /// <param name="wait_ms">待ち時間(デフォルト60秒)</param>
         /// <returns>true:待ち時間のリセット false:待ち時間中</returns>
-        public bool Wait(CoreTweet.RateLimit limit, int wait_ms = 60000)
+        public bool Wait(int wait_ms = 60000)
         {
+            var limit = this.RateLimit;
+
             // 残り回数が0の場合は待つ
             if (limit.Remaining <= 0)
             {
@@ -150,14 +188,20 @@ namespace MovingWordpress.Models.Tweet
         /// <summary>
         /// フォローを実行する
         /// </summary>
-        /// <param name="id">ID</param>
+        /// <param name="user">ユーザー情報</param>
         /// <returns>ステータス</returns>
-        public UserResponse CreateFollow(long id)
+        public UserResponse CreateFollow(CoreTweet.User user)
         {
             // トークンの作成
             CreateToken();
 
-            return this.Tokens.Friendships.Create(id => id);
+            // フォローの実行
+            var result = this.Tokens.Friendships.Create(user.Id.Value, true);
+
+            // リミットの取得(フォロー追加の場合はnullが返ってくるので設定しない)
+            //this.RateLimit = result.RateLimit;
+
+            return result;
         }
         #endregion
 
@@ -208,6 +252,7 @@ namespace MovingWordpress.Models.Tweet
         }
         #endregion
 
+        #region フォロー率の比率チェック
         /// <summary>
         /// フォロー率の比率チェック
         /// </summary>
@@ -230,6 +275,7 @@ namespace MovingWordpress.Models.Tweet
                 return false;
             }
         }
+        #endregion
 
         #region フォロワーリストの取得
         /// <summary>
@@ -245,12 +291,13 @@ namespace MovingWordpress.Models.Tweet
             // トークンの作成
             CreateToken();
 
-            int next_cursor = -1;
+            long next_cursor = -1;
 
             // 次のカーソルが無くなるまで繰り返す
             while (next_cursor != 0)
             {
                 var result = GetFollower(next_cursor, screen_name);
+                next_cursor = result.NextCursor;
 
                 foreach (var tmp in result)
                 {
@@ -258,8 +305,11 @@ namespace MovingWordpress.Models.Tweet
                     list.Add(tmp);
                 }
 
-                // 1min待つ
-                Wait(result.RateLimit, 60000);
+                if(next_cursor != 0)
+                {
+                    // 1min待つ
+                    Wait(60000);
+                }
             }
             return list;
         }
@@ -277,10 +327,73 @@ namespace MovingWordpress.Models.Tweet
             // トークンの作成
             CreateToken();
 
+            // 結果の取得
+            var result = this.Tokens.Followers.List(screen_name, cursor, 100);
+
+            // リミットの取得
+            this.RateLimit = result.RateLimit;
+
             // ユーザー情報の取得
-            return this.Tokens.Followers.List(screen_name, cursor, 100);
+            return result;
         }
         #endregion
 
+        #region フォロワーリストの取得
+        /// <summary>
+        /// フォロワーリストの取得
+        /// </summary>
+        /// <param name="cursor">カーソル</param>
+        /// <param name="screen_name">スクリーン名</param>
+        /// <returns>フォロワーリスト</returns>
+        public List<CoreTweet.User> GetAllFollows(string screen_name)
+        {
+            List<CoreTweet.User> list = new List<User>();
+
+            // トークンの作成
+            CreateToken();
+
+            long next_cursor = -1;
+
+            // 次のカーソルが無くなるまで繰り返す
+            while (next_cursor != 0)
+            {
+                var result = GetFollows(next_cursor, screen_name);
+                next_cursor = result.NextCursor;
+
+                foreach (var tmp in result)
+                {
+                    // リストの追加
+                    list.Add(tmp);
+                }
+
+                // 1min待つ
+                Wait(60000);
+            }
+            return list;
+        }
+        #endregion
+
+        #region フォローリストの取得
+        /// <summary>
+        /// フォローリストの取得
+        /// </summary>
+        /// <param name="cursor">カーソル</param>
+        /// <param name="screen_name">スクリーン名</param>
+        /// <returns>フォローリスト</returns>
+        public CoreTweet.Cursored<CoreTweet.User> GetFollows(long cursor, string screen_name)
+        {
+            // トークンの作成
+            CreateToken();
+
+            // 結果の取得
+            var result = this.Tokens.Friends.List(screen_name, cursor, 100);
+
+            // リミットの取得
+            this.RateLimit = result.RateLimit;
+
+            // ユーザー情報の取得
+            return result;
+        }
+        #endregion
     }
 }

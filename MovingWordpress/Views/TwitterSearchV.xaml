@@ -193,11 +193,11 @@
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="[API使用制限]"/>
-                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Remaining}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding TwitterAPI.RateLimit.Remaining}"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="/"/>
-                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Limit}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding TwitterAPI.RateLimit.Limit}"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="[制限リセット時刻]"/>
-                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RateLimit.Reset.LocalDateTime, StringFormat=MM/dd HH:mm}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding TwitterAPI.RateLimit.Reset.LocalDateTime, StringFormat=MM/dd HH:mm}"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="[フィルタ]"/>
                             <TextBox Margin="5" VerticalAlignment="Center" Width="150"
                                      Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

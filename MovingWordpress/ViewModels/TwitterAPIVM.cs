@@ -18,32 +18,6 @@ namespace MovingWordpress.ViewModels
 {
     public class TwitterAPIVM : ViewModelBase
     {
-
-        #region API使用制限[RateLimit]プロパティ
-        /// <summary>
-        /// API使用制限[RateLimit]プロパティ用変数
-        /// </summary>
-        CoreTweet.RateLimit _RateLimit = new CoreTweet.RateLimit();
-        /// <summary>
-        /// [RateLimit]プロパティ
-        /// </summary>
-        public CoreTweet.RateLimit RateLimit
-        {
-            get
-            {
-                return _RateLimit;
-            }
-            set
-            {
-                if (_RateLimit == null || !_RateLimit.Equals(value))
-                {
-                    _RateLimit = value;
-                    NotifyPropertyChanged("RateLimit");
-                }
-            }
-        }
-        #endregion
-
         #region ブログ記事[WordpressContents]プロパティ
         /// <summary>
         /// ブログ記事[WordpressContents]プロパティ用変数
@@ -98,7 +72,7 @@ namespace MovingWordpress.ViewModels
         /// <summary>
         /// 初期化処理
         /// </summary>
-        public void Init()
+        public virtual void Init()
         {
             try
             {
