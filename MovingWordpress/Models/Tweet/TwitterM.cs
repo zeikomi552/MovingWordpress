@@ -121,22 +121,6 @@ namespace MovingWordpress.Models.Tweet
         }
         #endregion
 
-        #region フォロワーリストの取得
-        /// <summary>
-        /// フォロワーリストの取得
-        /// </summary>
-        /// <param name="cursor">カーソル</param>
-        /// <param name="screen_name">スクリーン名</param>
-        /// <returns>フォロワーリスト</returns>
-        public CoreTweet.Cursored<CoreTweet.User> GetFollower(long cursor, string screen_name)
-        {
-            // トークンの作成
-            CreateToken();
-
-            // ユーザー情報の取得
-            return this.Tokens.Followers.List(screen_name, cursor, 100);
-        }
-        #endregion
 
         #region 待ち処理
         /// <summary>
@@ -159,6 +143,142 @@ namespace MovingWordpress.Models.Tweet
             }
 
             return true;
+        }
+        #endregion
+
+        #region フォローを実行する
+        /// <summary>
+        /// フォローを実行する
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns>ステータス</returns>
+        public UserResponse CreateFollow(long id)
+        {
+            // トークンの作成
+            CreateToken();
+
+            return this.Tokens.Friendships.Create(id => id);
+        }
+        #endregion
+
+        #region フォロー数に対するフォロワー数割合を出す
+        /// <summary>
+        /// フォロー数に対するフォロワー数割合を出す
+        /// </summary>
+        /// <param name="user">ユーザー</param>
+        /// <returns>割合</returns>
+        public double FriendshipRatio(CoreTweet.User user)
+        {
+            // 0割回避
+            if (user.FriendsCount > 0)
+            {
+                // 割合の算出
+                return (double)user.FollowersCount / (double)user.FriendsCount;
+            }
+            else
+            {
+                return 0.0;
+            }
+        }
+        #endregion
+
+        #region 説明に期待する文字列が含まれているかのチェック
+        /// <summary>
+        /// 説明に期待する文字列が含まれているかのチェック
+        /// </summary>
+        /// <param name="nouns_list">単語リスト</param>
+        /// <param name="user">チェックするユーザー</param>
+        /// <returns>true:含まれる false:含まれない</returns>
+        public bool CheckDescription(string[] nouns_list, CoreTweet.User user)
+        {
+            // 説明の取り出し
+            string descrinption = user.Description;
+
+            // 文字リストから要素を取り出し
+            foreach (var nouns in nouns_list)
+            {
+                // 説明に期待する文字が含まれるかどうかのチェック
+                if (descrinption.Contains(nouns))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        #endregion
+
+        /// <summary>
+        /// フォロー率の比率チェック
+        /// </summary>
+        /// <param name="user">ユーザー</param>
+        /// <param name="min_ratio">フォロー率の下限値</param>
+        /// <param name="max_ratio">フォロー率の上限値</param>
+        /// <returns>true:範囲内 false:範囲外</returns>
+        public bool CheckFriendShipRatio(CoreTweet.User user, double min_ratio, double max_ratio)
+        {
+            // フォロー率
+            var ratio = this.FriendshipRatio(user);
+
+            // フォロー率チェック
+            if (ratio >= (min_ratio / 100.0) && ratio <= (max_ratio / 100.0))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        #region フォロワーリストの取得
+        /// <summary>
+        /// フォロワーリストの取得
+        /// </summary>
+        /// <param name="cursor">カーソル</param>
+        /// <param name="screen_name">スクリーン名</param>
+        /// <returns>フォロワーリスト</returns>
+        public List<CoreTweet.User> GetAllFollower(string screen_name)
+        {
+            List<CoreTweet.User> list = new List<User>();
+
+            // トークンの作成
+            CreateToken();
+
+            int next_cursor = -1;
+
+            // 次のカーソルが無くなるまで繰り返す
+            while (next_cursor != 0)
+            {
+                var result = GetFollower(next_cursor, screen_name);
+
+                foreach (var tmp in result)
+                {
+                    // リストの追加
+                    list.Add(tmp);
+                }
+
+                // 1min待つ
+                Wait(result.RateLimit, 60000);
+            }
+            return list;
+        }
+        #endregion
+
+        #region フォロワーリストの取得
+        /// <summary>
+        /// フォロワーリストの取得
+        /// </summary>
+        /// <param name="cursor">カーソル</param>
+        /// <param name="screen_name">スクリーン名</param>
+        /// <returns>フォロワーリスト</returns>
+        public CoreTweet.Cursored<CoreTweet.User> GetFollower(long cursor, string screen_name)
+        {
+            // トークンの作成
+            CreateToken();
+
+            // ユーザー情報の取得
+            return this.Tokens.Followers.List(screen_name, cursor, 100);
         }
         #endregion
 
