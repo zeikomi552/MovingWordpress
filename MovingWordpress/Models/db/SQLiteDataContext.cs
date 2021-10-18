@@ -12,6 +12,8 @@ namespace MovingWordpress.Models.db
     public class SQLiteDataContext : DbContext
     {
         public DbSet<TwitterUserBase> DbSet_TwitterUser { get; internal set; }
+        public DbSet<MyFollowUserBase> DbSet_MyFollowUser { get; internal set; }
+        public DbSet<MyFollowerUserBase> DbSet_MyFollowerUser { get; internal set; }
 
         public SQLiteDataContext()
         {
@@ -33,6 +35,8 @@ namespace MovingWordpress.Models.db
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TwitterUserBase>().HasKey(c => new { c.Id });
+            modelBuilder.Entity<MyFollowUserBase>().HasKey(c => new { c.Id });
+            modelBuilder.Entity<MyFollowerUserBase>().HasKey(c => new { c.Id });
 
         }
     }

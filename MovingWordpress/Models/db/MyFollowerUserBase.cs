@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 namespace MovingWordpress.Models.db
 {
 	/// <summary>
-	/// ツイッターユーザーログテーブル
-	/// TwitterUserテーブルをベースに作成しています
-	/// 作成日：2021/10/18 作成者gohya
+	/// 自分のフォロワーテーブル
+	/// MyFollowerUserテーブルをベースに作成しています
+	/// 作成日：2021/10/19 作成者gohya
 	/// </summary>
-	[Table("TwitterUser")]
-	public class TwitterUserBase : INotifyPropertyChanged
+	[Table("MyFollowerUser")]
+	public class MyFollowerUserBase : INotifyPropertyChanged
 	{
 		#region パラメータ
 		#region ID[Id]プロパティ
@@ -209,7 +209,7 @@ namespace MovingWordpress.Models.db
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		public TwitterUserBase()
+		public MyFollowerUserBase()
 		{
 
 		}
@@ -220,7 +220,7 @@ namespace MovingWordpress.Models.db
 		/// コピーコンストラクタ
 		/// </summary>
 		/// <param name="item">コピー内容</param>
-		public TwitterUserBase(TwitterUserBase item)
+		public MyFollowerUserBase(MyFollowerUserBase item)
 		{
 			// 要素のコピー
 			Copy(item);
@@ -232,7 +232,7 @@ namespace MovingWordpress.Models.db
 		/// コピー
 		/// </summary>
 		/// <param name="item">コピー内容</param>
-		public void Copy(TwitterUserBase item)
+		public void Copy(MyFollowerUserBase item)
 		{
 			this.Id = item.Id;
 
@@ -257,12 +257,12 @@ namespace MovingWordpress.Models.db
 		/// Insert処理
 		/// </summary>
 		/// <param name="item">Insertする要素</param>
-		public static void Insert(TwitterUserBase item)
+		public static void Insert(MyFollowerUserBase item)
 		{
 			using (var db = new SQLiteDataContext())
 			{
 				// Insert
-				db.Add<TwitterUserBase>(item);
+				db.Add<MyFollowerUserBase>(item);
 
 				// コミット
 				db.SaveChanges();
@@ -276,11 +276,11 @@ namespace MovingWordpress.Models.db
 		/// </summary>
 		/// <param name="pk_item">更新する主キー（主キーの値のみ入っていれば良い）</param>
 		/// <param name="update_item">テーブル更新後の状態</param>
-		public static void Update(TwitterUserBase pk_item, TwitterUserBase update_item)
+		public static void Update(MyFollowerUserBase pk_item, MyFollowerUserBase update_item)
 		{
 			using (var db = new SQLiteDataContext())
 			{
-				var item = db.DbSet_TwitterUser.SingleOrDefault(x => x.Id.Equals(pk_item.Id));
+				var item = db.DbSet_MyFollowerUser.SingleOrDefault(x => x.Id.Equals(pk_item.Id));
 
 				if (item != null)
 				{
@@ -296,14 +296,14 @@ namespace MovingWordpress.Models.db
 		/// Delete処理
 		/// </summary>
 		/// <param name="pk_item">削除する主キー（主キーの値のみ入っていれば良い）</param>
-		public static void Delete(TwitterUserBase pk_item)
+		public static void Delete(MyFollowerUserBase pk_item)
 		{
 			using (var db = new SQLiteDataContext())
 			{
-				var item = db.DbSet_TwitterUser.SingleOrDefault(x => x.Id.Equals(pk_item.Id));
+				var item = db.DbSet_MyFollowerUser.SingleOrDefault(x => x.Id.Equals(pk_item.Id));
 				if (item != null)
 				{
-					db.DbSet_TwitterUser.Remove(item);
+					db.DbSet_MyFollowerUser.Remove(item);
 					db.SaveChanges();
 				}
 			}
@@ -315,11 +315,11 @@ namespace MovingWordpress.Models.db
 		/// Select処理
 		/// </summary>
 		/// <returns>全件取得</returns>
-		public static List<TwitterUserBase> Select()
+		public static List<MyFollowerUserBase> Select()
 		{
 			using (var db = new SQLiteDataContext())
 			{
-				return db.DbSet_TwitterUser.ToList<TwitterUserBase>();
+				return db.DbSet_MyFollowerUser.ToList<MyFollowerUserBase>();
 			}
 		}
 		#endregion

@@ -17,8 +17,8 @@ using System.Windows.Threading;
 
 namespace MovingWordpress.ViewModels
 {
-    public class TwitterFollowerSearchVM : TwitterAPIVM
-    {
+	public class TwitterFollowerSearchVM : TwitterAPIVM
+	{
 		#region スクリーン名[ScreenName]プロパティ
 		/// <summary>
 		/// スクリーン名[ScreenName]プロパティ用変数
@@ -244,29 +244,41 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-
-
+		#region コンフィグファイル名
 		/// <summary>
-		/// ランダムフォロー実行中フラグ
+		/// コンフィグファイル名
 		/// </summary>
-		bool _ExecuteRandomFollow = false;
-
-		Random _Rand = new Random();
-
 		string ConfigFileName = "FollowList.xml";
+		#endregion
 
+		#region コンフィグファイルパスの取得
+		/// <summary>
+		/// コンフィグファイルパスの取得
+		/// </summary>
+		/// <returns>コンフィグファイルパス</returns>
 		public string GetConfigFilePath()
 		{
+			// Config
 			ConfigM conf = new ConfigM();
+
+			// ディレクトリパスを取得
 			var tconf_dir = conf.ConfigDirPath;
+
+			// パスの結合
 			var tconf_path = Path.Combine(tconf_dir, ConfigFileName);
+
+			// コンフィグファイルパスの返却
 			return tconf_path;
 		}
+		#endregion
 
-	public override void Init()
-        {
-            try
-            {
+		/// <summary>
+		/// 初期化処理
+		/// </summary>
+		public override void Init()
+		{
+			try
+			{
 				base.Init();
 
 				// Configファイルパス
@@ -314,7 +326,7 @@ namespace MovingWordpress.ViewModels
 					Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
 					   new Action(() =>
 					   {
-						   this.GetAndSaveUserList(this.ScreenName, false);
+						   //this.GetAndSaveUserList(this.ScreenName, false);
 					   })).Wait();
 				});
 
@@ -334,10 +346,10 @@ namespace MovingWordpress.ViewModels
 		/// <param name="user">ユーザー</param>
 		/// <returns>true:含まれる false:含まれない</returns>
 		public bool ExistMyFollow(CoreTweet.User user)
-        {
+		{
 			return (from x in this.MyFollows.Items
-					   where x.Id.Equals(user.Id)
-					   select x).Count() > 0;
+					where x.Id.Equals(user.Id)
+					select x).Count() > 0;
 		}
 		#endregion
 
@@ -382,6 +394,47 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+		#region 自分のフォロワーを取得
+		/// <summary>
+		/// 自分のフォロワーを取得
+		/// </summary>
+		public void GetMyFollows()
+		{
+			try
+			{
+				Task.Run(() =>
+				{
+
+					// 自分のフォロワー情報を削除
+					MyFollowUserBaseEx.Delete();
+
+					// データベースからフォローを取得
+					var follow_user = MyFollowUserBaseEx.Select();
+
+					// Twitterからフォローの取得
+					var tw_follow_user = this.TwitterAPI.GetAllFollows(this.ScreenName);
+
+					// フォローリストの取得
+					this.MyFollows = new ModelList<CoreTweet.User>
+					{
+						Items = new ObservableCollection<CoreTweet.User>(tw_follow_user)
+					};
+
+					// 条件に合致するもののみ残す
+					foreach(var user in tw_follow_user)
+                    {
+						MyFollowUserBaseEx.Upsert(user);
+					}
+				}).Wait();
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
 		#region 条件に該当するユーザーをランダムで取得
 		/// <summary>
 		/// 条件に該当するユーザーをランダムで取得
@@ -411,134 +464,21 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		#region Upsert処理
+
 		/// <summary>
-		/// Upsert処理
+		/// ランダムフォロー実行中フラグ
 		/// </summary>
-		/// <param name="user">ユーザーデータ</param>
-		private void Upsert(CoreTweet.User user)
-		{
-			// nullチェック
-			if (user.Id == null)
-				return;
+		bool _ExecuteRandomFollow = false;
 
-			var item = TwitterUserBase.Select(user.Id.Value);
-
-			// データベースへ挿入
-			if (item.Count > 0)
-			{
-				TwitterUserBase.Update(
-					new TwitterUserBase()
-					{
-						Id = user.Id.Value,
-						InserDateTime = item.ElementAt(0).InserDateTime,
-						UpdateDateTime = DateTime.Now,
-						ScreenName = user.ScreenName,
-						Description = user.Description,
-						FollowersCount = user.FollowersCount,
-						FriendsCount = user.FriendsCount
-					},
-					new TwitterUserBase()
-					{
-						Id = user.Id.Value,
-						InserDateTime = item.ElementAt(0).InserDateTime,
-						UpdateDateTime = DateTime.Now,
-						ScreenName = user.ScreenName,
-						Description = user.Description,
-						FollowersCount = user.FollowersCount,
-						FriendsCount = user.FriendsCount
-					}
-					);
-			}
-			else
-			{
-				TwitterUserBase.Insert(
-					new TwitterUserBase()
-					{
-						Id = user.Id.Value,
-						InserDateTime = DateTime.Now,
-						UpdateDateTime = DateTime.Now,
-						ScreenName = user.ScreenName,
-						Description = user.Description,
-						FollowersCount = user.FollowersCount,
-						FriendsCount = user.FriendsCount
-					}
-					);
-			}
-		}
-		#endregion
-		#region ユーザーリストの取得
-		/// <summary>
-		/// ユーザーリストの取得
-		/// </summary>
-		/// <param name="screen_name">検索するスクリーン名</param>
-		/// <param name="follow_f">true:フォローの検索 false:フォロワーの検索</param>
-		private void GetAndSaveUserList(string screen_name, bool follow_f = true)
-		{
-			try
-			{
-				List<CoreTweet.User> tmp;
-
-				if (follow_f)
-				{
-					// フォローの取得
-					tmp = this.TwitterAPI.GetAllFollows(screen_name);
-				}
-				else
-				{
-					// フォロワーの取得
-					tmp = this.TwitterAPI.GetAllFollower(screen_name);
-				}
-
-				// 条件に合致するもののみ残す
-				tmp = MatchUser(tmp);
-
-				foreach (var user in tmp)
-				{
-					Upsert(user);
-				}
-			}
-			catch { }
-
-		}
-		#endregion
-
-		#region 自分のフォロワーを取得
-		/// <summary>
-		/// 自分のフォロワーを取得
-		/// </summary>
-		public void GetMyFollows()
-		{
-			try
-			{
-				Task.Run(() =>
-				{
-					// フォローの取得
-					var tmp = this.TwitterAPI.GetAllFollows(this.ScreenName);
-
-					// フォローリストの取得
-					this.MyFollows = new ModelList<CoreTweet.User>
-					{
-						Items = new ObservableCollection<CoreTweet.User>(tmp)
-					};
-				}).Wait();
-			}
-			catch (Exception e)
-			{
-				_logger.Error(e.Message);
-				ShowMessage.ShowErrorOK(e.Message, "Error");
-			}
-		}
-		#endregion
-
+		Random _Rand = new Random();
 		#region ランダムフォロー
 		/// <summary>
 		/// ランダムフォロー
 		/// </summary>
 		public void RandomFollow()
 		{
-            try
-            {
+			try
+			{
 				if (string.IsNullOrWhiteSpace(this.DescriptionKeys))
 				{
 					ShowMessage.ShowNoticeOK("キーワードは必須です", "通知");
@@ -613,18 +553,18 @@ namespace MovingWordpress.ViewModels
 						// フォロワーの取得
 						var result = this.TwitterAPI.GetAllFollower(this.ScreenName);
 
-                        // スレッドセーフな呼び出し
-                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                           new Action(() =>
-                           {
-                               this.FollowerList = new ModelList<CoreTweet.User>()
-                               {
-                                   Items = new ObservableCollection<CoreTweet.User>(result)
-                               };
-                           })).Wait();
-                    }
-                    else
-                    {
+						// スレッドセーフな呼び出し
+						Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+						   new Action(() =>
+						   {
+							   this.FollowerList = new ModelList<CoreTweet.User>()
+							   {
+								   Items = new ObservableCollection<CoreTweet.User>(result)
+							   };
+						   })).Wait();
+					}
+					else
+					{
 						// フォロー処理
 						var result = this.TwitterAPI.CreateFollow(user);
 
@@ -684,10 +624,5 @@ namespace MovingWordpress.ViewModels
 			}
 		}
 		#endregion
-
-
 	}
-
-
-
 }
