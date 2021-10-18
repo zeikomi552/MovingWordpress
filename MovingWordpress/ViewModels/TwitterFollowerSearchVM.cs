@@ -1,5 +1,6 @@
 ﻿using MovingWordpress.Common;
 using MovingWordpress.Models;
+using MovingWordpress.Models.db;
 using MovingWordpress.Models.Tweet;
 using MVVMCore.Common.Utilities;
 using System;
@@ -313,10 +314,7 @@ namespace MovingWordpress.ViewModels
 					Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
 					   new Action(() =>
 					   {
-						   this.FollowerList = new ModelList<CoreTweet.User>()
-						   {
-							   Items = new ObservableCollection<CoreTweet.User>(result)
-						   };
+						   this.GetAndSaveUserList(this.ScreenName, false);
 					   })).Wait();
 				});
 
@@ -413,6 +411,63 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+		#region Upsert処理
+		/// <summary>
+		/// Upsert処理
+		/// </summary>
+		/// <param name="user">ユーザーデータ</param>
+		private void Upsert(CoreTweet.User user)
+		{
+			// nullチェック
+			if (user.Id == null)
+				return;
+
+			var item = TwitterUserBase.Select(user.Id.Value);
+
+			// データベースへ挿入
+			if (item.Count > 0)
+			{
+				TwitterUserBase.Update(
+					new TwitterUserBase()
+					{
+						Id = user.Id.Value,
+						InserDateTime = item.ElementAt(0).InserDateTime,
+						UpdateDateTime = DateTime.Now,
+						ScreenName = user.ScreenName,
+						Description = user.Description,
+						FollowersCount = user.FollowersCount,
+						FriendsCount = user.FriendsCount
+					},
+					new TwitterUserBase()
+					{
+						Id = user.Id.Value,
+						InserDateTime = item.ElementAt(0).InserDateTime,
+						UpdateDateTime = DateTime.Now,
+						ScreenName = user.ScreenName,
+						Description = user.Description,
+						FollowersCount = user.FollowersCount,
+						FriendsCount = user.FriendsCount
+					}
+					);
+			}
+			else
+			{
+				TwitterUserBase.Insert(
+					new TwitterUserBase()
+					{
+						Id = user.Id.Value,
+						InserDateTime = DateTime.Now,
+						UpdateDateTime = DateTime.Now,
+						ScreenName = user.ScreenName,
+						Description = user.Description,
+						FollowersCount = user.FollowersCount,
+						FriendsCount = user.FriendsCount
+					}
+					);
+			}
+		}
+		#endregion
+		#region ユーザーリストの取得
 		/// <summary>
 		/// ユーザーリストの取得
 		/// </summary>
@@ -435,25 +490,18 @@ namespace MovingWordpress.ViewModels
 					tmp = this.TwitterAPI.GetAllFollower(screen_name);
 				}
 
+				// 条件に合致するもののみ残す
+				tmp = MatchUser(tmp);
+
 				foreach (var user in tmp)
 				{
-					var count = (from x in this.UserList.Items
-								 where x.Id.Equals(user.Id)
-								 select x).Count();
-
-					// まだ追加されていないようであれば追加する
-					if (count <= 0)
-					{
-						this.UserList.Items.Add(new TwitterUserM(user));
-					}
+					Upsert(user);
 				}
-
-				string path = GetConfigFilePath();  // Configファイルパスの取得
-				XMLUtil.Seialize<TwitterUserCollectionM>(path, this.UserList);  // ユーザーリストの保存
 			}
 			catch { }
 
 		}
+		#endregion
 
 		#region 自分のフォロワーを取得
 		/// <summary>
