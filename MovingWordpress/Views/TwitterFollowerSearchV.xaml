@@ -49,19 +49,19 @@
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="マイフォロー"/>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロー更新"/>
                         </StackPanel>
 
                     </Button>
                     <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="Search" TargetObject="{Binding}"/>
+                                <b:CallMethodAction MethodName="CreateFollowList" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="検索"/>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="候補作成"/>
                         </StackPanel>
 
                     </Button>
@@ -185,29 +185,9 @@
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Margin="5" Grid.Row="1" Header="検索条件">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Screen Name"/>
-                            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                            <TextBox VerticalAlignment="Center" Width="200" Text="{Binding ScreenName}"/>
-                            <Button Margin="5" Width="100" Content="検索">
-                                <b:Interaction.Triggers>
-                                    <b:EventTrigger EventName="Click">
-                                        <b:CallMethodAction MethodName="Search" TargetObject="{Binding}"/>
-                                    </b:EventTrigger>
-                                </b:Interaction.Triggers>
-                            </Button>
-                        </StackPanel>
 
-
-                    </GroupBox>
                     <GroupBox Margin="5" Grid.Row="2" Header="フォロー条件">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Width="150" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="本日のフォロー数(Max400)"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox VerticalAlignment="Center" Width="85" TextAlignment="Center" Text="{Binding FollowCount}" Cursor="IBeam"/>
-                            </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロー率"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
@@ -224,7 +204,7 @@
                                 <ToggleButton Width="80" Margin="5" Content="検索" IsChecked="{Binding RepeatSearch}">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="Checked">
-                                            <b:CallMethodAction MethodName="RandomFollow" TargetObject="{Binding}"/>
+                                            <b:CallMethodAction MethodName="CreateFollowList" TargetObject="{Binding}"/>
                                         </b:EventTrigger>
                                     </b:Interaction.Triggers>
                                 </ToggleButton>
@@ -261,8 +241,8 @@
 
                         </StackPanel>
                         <TabControl Grid.Row="1">
-                            <TabItem Header="フォロワーリスト">
-                                <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding FollowerList.Items}"
+                            <TabItem Header="フォロー候補リスト">
+                                <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding TwitterAPI.FollowList.Items}"
                                   SelectedItem="{Binding FollowerList.SelectedItem}">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="MouseDoubleClick">
@@ -273,14 +253,13 @@
                                         <DataGridTextColumn Header="Screen Name" Binding="{Binding ScreenName}"/>
                                         <DataGridTextColumn Header="フォロー数" Binding="{Binding FriendsCount}"/>
                                         <DataGridTextColumn Header="フォロワー数" Binding="{Binding FollowersCount}"/>
-                                        <DataGridTextColumn Header="作成日" Binding="{Binding CreatedAt, StringFormat=yy/MM/dd HH:mm:ss}"/>
                                         <DataGridTextColumn Header="説明" Binding="{Binding Description}"/>
                                         <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </TabItem>
                             <TabItem Header="マイフォロー">
-                                <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding MyFollows.Items}"
+                                <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding TwitterAPI.MyFollowList.Items}"
                                   SelectedItem="{Binding MyFollows.SelectedItem}">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="MouseDoubleClick">
@@ -291,12 +270,13 @@
                                         <DataGridTextColumn Header="Screen Name" Binding="{Binding ScreenName}"/>
                                         <DataGridTextColumn Header="フォロー数" Binding="{Binding FriendsCount}"/>
                                         <DataGridTextColumn Header="フォロワー数" Binding="{Binding FollowersCount}"/>
-                                        <DataGridTextColumn Header="作成日" Binding="{Binding CreatedAt, StringFormat=yy/MM/dd HH:mm:ss}"/>
                                         <DataGridTextColumn Header="説明" Binding="{Binding Description}"/>
                                         <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
+                                
                             </TabItem>
+
                         </TabControl>
                     </Grid>
                 </GroupBox>

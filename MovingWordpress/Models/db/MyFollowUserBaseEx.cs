@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MovingWordpress.Models.Tweet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,7 +45,7 @@ namespace MovingWordpress.Models.db
 		/// Upsert処理
 		/// </summary>
 		/// <param name="user">ユーザーデータ</param>
-		public static void Upsert(CoreTweet.User user)
+		public static void Upsert(TwitterUserM user)
 		{
 			// nullチェック
 			if (user.Id == null)

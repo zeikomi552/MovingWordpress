@@ -16,6 +16,7 @@ namespace MovingWordpress.Models.Tweet
 		public TwitterUserM(CoreTweet.User user)
 		{
 			this.Id = user.Id;
+			this.ScreenName = user.ScreenName;
 			this.FollowersCount = user.FollowersCount;
 			this.FriendsCount = user.FriendsCount;
 			this.Description = user.Description;
