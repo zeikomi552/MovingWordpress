@@ -256,18 +256,24 @@ namespace MovingWordpress.ViewModels
 
 				foreach (var tmp in this.TwitterAPI.FollowList.Items)
 				{
+					// フォロー候補リストを一時変数に保管
 					tmp_user.Items.Add(tmp);
 				}
 
 				foreach (var tmp in result)
 				{
+					// ユーザーリストの作成
 					tmp_user.Items.Add(new TwitterUserM(tmp));
+
+					// ユーザーリストのUpsert
+					TwitterUserBaseEx.Upsert(tmp);
 				}
 
 				// スレッドセーフな呼び出し
 				Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
 				   new Action(() =>
 				   {
+					   // 画面に表示
 					   this.TwitterAPI.FollowList = tmp_user;
 				   })).Wait();
 			});
