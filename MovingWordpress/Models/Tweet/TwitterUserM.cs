@@ -1,4 +1,5 @@
-﻿using MVVMCore.BaseClass;
+﻿using MovingWordpress.Models.db;
+using MVVMCore.BaseClass;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,7 +159,7 @@ namespace MovingWordpress.Models.Tweet
 				if (this.FriendsCount > 0)
 				{
 					// 割合の算出
-					return (double)this.FollowersCount / (double)this.FriendsCount;
+					return ((double)this.FollowersCount / (double)this.FriendsCount) * 100.0;
 				}
 				else
 				{
@@ -183,13 +184,89 @@ namespace MovingWordpress.Models.Tweet
 			foreach (var nouns in nouns_list)
 			{
 				// 説明に期待する文字が含まれるかどうかのチェック
-				if (descrinption.Contains(nouns))
+				if (descrinption.Contains(nouns.Trim()))
 				{
 					return true;
 				}
 			}
 
 			return false;
+		}
+		#endregion
+
+
+		#region TwitterAPIからの戻り値を保存できる形式に変換する
+		/// <summary>
+		/// TwitterAPIからの戻り値をTwitterUserM形式に変換する
+		/// </summary>
+		/// <param name="user_list">データベースから取得したユーザーリスト</param>
+		/// <returns>ユーザーリスト</returns>
+		public static List<TwitterUserM> ToTwitterUserM(List<MyFollowUserBase> user_list)
+		{
+			var ret = new List<TwitterUserM>();
+			foreach (var user in user_list)
+			{
+				ret.Add(new TwitterUserM()
+				{
+					Id = user.Id,
+					Description = user.Description,
+					FollowersCount = user.FollowersCount,
+					FriendsCount = user.FriendsCount,
+					ScreenName = user.ScreenName
+				}
+					);
+			}
+			return ret;
+		}
+		#endregion
+
+		#region TwitterUserM形式に変換する
+		/// <summary>
+		/// TwitterUserM形式に変換する
+		/// </summary>
+		/// <param name="user_list">ユーザーリスト</param>
+		/// <returns></returns>
+		public static List<TwitterUserM> ToTwitterUserM(List<MyFollowerUserBase> user_list)
+		{
+			var ret = new List<TwitterUserM>();
+			foreach (var user in user_list)
+			{
+				ret.Add(new TwitterUserM()
+				{
+					Id = user.Id,
+					Description = user.Description,
+					FollowersCount = user.FollowersCount,
+					FriendsCount = user.FriendsCount,
+					ScreenName = user.ScreenName
+				}
+					);
+			}
+			return ret;
+		}
+		#endregion
+
+		#region TwitterUserMに変換する
+		/// <summary>
+		/// TwitterUserMに変換する
+		/// </summary>
+		/// <param name="user_list">ユーザーリスト</param>
+		/// <returns>TwitterUserMのリスト</returns>
+		public static List<TwitterUserM> ToTwitterUserM(List<TwitterUserBase> user_list)
+		{
+			var ret = new List<TwitterUserM>();
+			foreach (var user in user_list)
+			{
+				ret.Add(new TwitterUserM()
+				{
+					Id = user.Id,
+					Description = user.Description,
+					FollowersCount = user.FollowersCount,
+					FriendsCount = user.FriendsCount,
+					ScreenName = user.ScreenName
+				}
+					);
+			}
+			return ret;
 		}
 		#endregion
 	}

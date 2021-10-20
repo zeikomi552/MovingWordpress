@@ -191,15 +191,15 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロー率"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox VerticalAlignment="Center" Width="85" TextAlignment="Center" Text="{Binding MinRatio}" Cursor="IBeam"/>
+                                <TextBox VerticalAlignment="Center" Width="85" TextAlignment="Center" Text="{Binding UserMatch.MinRatio}" Cursor="IBeam"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=" - "/>
-                                <TextBox VerticalAlignment="Center" Width="85" TextAlignment="Center" Text="{Binding MaxRatio}"/>
+                                <TextBox VerticalAlignment="Center" Width="85" TextAlignment="Center" Text="{Binding UserMatch.MaxRatio}"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="説明文内に含まれる文字"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox materialDesign:HintAssist.Hint="カンマ区切りで複数入力可" VerticalAlignment="Center" MinWidth="200" Text="{Binding DescriptionKeys}" Cursor="IBeam"/>
+                                <TextBox materialDesign:HintAssist.Hint="カンマ区切りで複数入力可" VerticalAlignment="Center" MinWidth="200" Text="{Binding UserMatch.DescriptionKeys}" Cursor="IBeam"/>
 
                                 <ToggleButton Width="80" Margin="5" Content="検索" IsChecked="{Binding RepeatSearch}">
                                     <b:Interaction.Triggers>
@@ -233,7 +233,7 @@
                         </StackPanel>
                         <TabControl Grid.Row="1">
                             <TabItem Header="フォロー候補リスト">
-                                <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding TwitterAPI.FollowList.Items}"
+                                <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding FilterdList.Items}"
                                   SelectedItem="{Binding FollowerList.SelectedItem}">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="MouseDoubleClick">
@@ -270,9 +270,40 @@
 
                         </TabControl>
                         <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <TextBlock Margin="5" VerticalAlignment="Center" Text="行数"/>
-                            <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding TwitterAPI.FollowList.Items.Count}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="行数"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding TwitterAPI.FollowList.Items.Count}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Margin="5" VerticalAlignment="Center" Content="フォロー率内人数" Cursor="Hand">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="RatioMatchFilter" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+
+                                </Button>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding RatioMatchUserCount}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Margin="5" VerticalAlignment="Center" Content="説明文が合致する人数">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="Click">
+                                            <b:CallMethodAction MethodName="KeysMatchFilter" TargetObject="{Binding}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+
+                                </Button>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding KeysMatchUserCount}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="自分のフォローに含まれない人数"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding NonFollowCount}"/>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </GroupBox>

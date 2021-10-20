@@ -126,9 +126,10 @@ namespace MovingWordpress.Models.Tweet
 		/// <returns>true:含まれている false:含まれていない</returns>
 		public bool CheckMyFollow(TwitterUserM user, List<TwitterUserM> my_follow)
 		{
-			return (from x in my_follow
-                    where x.Id.Equals(user.Id)
-                    select x).Any();
+			var ret = (from x in my_follow
+					   where x.Id.Equals(user.Id)
+					   select x).Any();
+			return ret;
 		}
 		#endregion
 	}

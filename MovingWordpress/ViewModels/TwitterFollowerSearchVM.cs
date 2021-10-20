@@ -44,63 +44,131 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-
+		#region ユーザーがマッチするかどうかをチェックするオブジェクト[UserMatch]プロパティ
 		/// <summary>
-		/// TwitterAPIからの戻り値を保存できる形式に変換する
+		/// ユーザーがマッチするかどうかをチェックするオブジェクト[UserMatch]プロパティ用変数
 		/// </summary>
-		/// <param name="user_list">データベースから取得したユーザーリスト</param>
-		/// <returns>ユーザーリスト</returns>
-		public List<TwitterUserM> ToTwitterUserM(List<MyFollowUserBase> user_list )
+		UserMatchM _UserMatch = new UserMatchM();
+		/// <summary>
+		/// ユーザーがマッチするかどうかをチェックするオブジェクト[UserMatch]プロパティ
+		/// </summary>
+		public UserMatchM UserMatch
 		{
-			var ret = new List<TwitterUserM>();
-			foreach (var user in user_list)
+			get
 			{
-				ret.Add(new TwitterUserM()
-				{
-					Id = user.Id,
-					Description = user.Description,
-					FollowersCount = user.FollowersCount,
-					FriendsCount = user.FriendsCount,
-					ScreenName = user.ScreenName
-				}
-					);
+				return _UserMatch;
 			}
-			return ret;
+			set
+			{
+				if (_UserMatch == null || !_UserMatch.Equals(value))
+				{
+					_UserMatch = value;
+					NotifyPropertyChanged("UserMatch");
+				}
+			}
 		}
-		public List<TwitterUserM> ToTwitterUserM(List<MyFollowerUserBase> user_list)
+		#endregion
+
+		#region 説明文に期待するキーワードが含まれる人数[KeysMatchUserCount]プロパティ
+		/// <summary>
+		/// 説明文に期待するキーワードが含まれる人数[KeysMatchUserCount]プロパティ用変数
+		/// </summary>
+		int _KeysMatchUserCount = 0;
+		/// <summary>
+		/// 説明文に期待するキーワードが含まれる人数[KeysMatchUserCount]プロパティ
+		/// </summary>
+		public int KeysMatchUserCount
 		{
-			var ret = new List<TwitterUserM>();
-			foreach (var user in user_list)
+			get
 			{
-				ret.Add(new TwitterUserM()
-				{
-					Id = user.Id,
-					Description = user.Description,
-					FollowersCount = user.FollowersCount,
-					FriendsCount = user.FriendsCount,
-					ScreenName = user.ScreenName
-				}
-					);
+				return _KeysMatchUserCount;
 			}
-			return ret;
+			set
+			{
+				if (!_KeysMatchUserCount.Equals(value))
+				{
+					_KeysMatchUserCount = value;
+					NotifyPropertyChanged("KeysMatchUserCount");
+				}
+			}
 		}
-		public List<TwitterUserM> ToTwitterUserM(List<TwitterUserBase> user_list)
+		#endregion
+
+		#region フォロー率が期待する範囲いある人数[RatioMatchUserCount]プロパティ
+		/// <summary>
+		/// フォロー率が期待する範囲いある人数[RatioMatchUserCount]プロパティ用変数
+		/// </summary>
+		int _RatioMatchUserCount = 0;
+		/// <summary>
+		/// フォロー率が期待する範囲いある人数[RatioMatchUserCount]プロパティ
+		/// </summary>
+		public int RatioMatchUserCount
 		{
-			var ret = new List<TwitterUserM>();
-			foreach (var user in user_list)
+			get
 			{
-				ret.Add(new TwitterUserM()
-				{
-					Id = user.Id,
-					Description = user.Description,
-					FollowersCount = user.FollowersCount,
-					FriendsCount = user.FriendsCount,
-					ScreenName = user.ScreenName
-				}
-					);
+				return _RatioMatchUserCount;
 			}
-			return ret;
+			set
+			{
+				if (!_RatioMatchUserCount.Equals(value))
+				{
+					_RatioMatchUserCount = value;
+					NotifyPropertyChanged("RatioMatchUserCount");
+				}
+			}
 		}
+		#endregion
+
+		#region 自分がフォローしていない人数[NonFollowCount]プロパティ
+		/// <summary>
+		/// 自分がフォローしていない人数[NonFollowCount]プロパティ用変数
+		/// </summary>
+		int _NonFollowCount = 0;
+		/// <summary>
+		/// 自分がフォローしていない人数[NonFollowCount]プロパティ
+		/// </summary>
+		public int NonFollowCount
+		{
+			get
+			{
+				return _NonFollowCount;
+			}
+			set
+			{
+				if (!_NonFollowCount.Equals(value))
+				{
+					_NonFollowCount = value;
+					NotifyPropertyChanged("NonFollowCount");
+				}
+			}
+		}
+		#endregion
+
+		#region フォロー候補[FilterdList]プロパティ
+		/// <summary>
+		/// フォロー候補[FilterdList]プロパティ用変数
+		/// </summary>
+		ModelList<TwitterUserM> _FilterdList = new ModelList<TwitterUserM>();
+		/// <summary>
+		/// フォロー候補[FilterdList]プロパティ
+		/// </summary>
+		public ModelList<TwitterUserM> FilterdList
+		{
+			get
+			{
+				return _FilterdList;
+			}
+			set
+			{
+				if (_FilterdList == null || !_FilterdList.Equals(value))
+				{
+					_FilterdList = value;
+					NotifyPropertyChanged("FilterdList");
+				}
+			}
+		}
+		#endregion
+
 
 		#region 初期化処理
 		/// <summary>
@@ -112,10 +180,19 @@ namespace MovingWordpress.ViewModels
 			{
 				base.Init();
 
-				this.TwitterAPI.FollowList.Items = new ObservableCollection<TwitterUserM>(ToTwitterUserM(TwitterUserBaseEx.Select()));
-				//this.TwitterAPI.MyFollowerList.Items = new ObservableCollection<TwitterUserM>(ToTwitterUserM(MyFollowerUserBaseEx.Select()));
-				this.TwitterAPI.MyFollowList.Items = new ObservableCollection<TwitterUserM>(ToTwitterUserM(MyFollowUserBaseEx.Select()));
+				using (var db = new SQLiteDataContext())
+				{
+					db.Database.EnsureCreated();
+				}
 
+				// フォロバリストをデータベースから取得
+				this.FilterdList.Items = this.TwitterAPI.FollowList.Items = new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(TwitterUserBaseEx.Select()));
+
+				// 自分のフォローリストをデータベースから取得
+				this.TwitterAPI.MyFollowList.Items = new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(MyFollowUserBaseEx.Select()));
+
+				// ユーザー数を確認
+				CheckUser();
 			}
 			catch (Exception e)
 			{
@@ -185,11 +262,19 @@ namespace MovingWordpress.ViewModels
 
 			foreach (var tmp in result)
 			{
-				// ユーザーリストの作成
-				tmp_user.Items.Add(new TwitterUserM(tmp));
+				var tuser = new TwitterUserM(tmp);
 
-				// ユーザーリストのUpsert
-				TwitterUserBaseEx.Upsert(tmp);
+				// 期待する文字列が含まれていて、自分のフォローに含まれていない、かつ自分ではない場合に登録する
+				if (this.UserMatch.CheckDescription(tuser)
+					&& !this.UserMatch.CheckMyFollow(tuser, this.TwitterAPI.MyFollowList.Items.ToList<TwitterUserM>())
+					&& !this.TwitterAPI.MyScreenName.Equals(tuser.ScreenName))
+				{
+					// ユーザーリストの作成
+					tmp_user.Items.Add(tuser);
+
+					// ユーザーリストのUpsert
+					TwitterUserBaseEx.Upsert(tmp);
+				}
 			}
 
 			// スレッドセーフな呼び出し
@@ -198,6 +283,12 @@ namespace MovingWordpress.ViewModels
 			   {
 				   // 画面に表示
 				   this.TwitterAPI.FollowList = tmp_user;
+
+				   // フィルターフォローリストに追加
+				   this.FilterdList.Items = this.TwitterAPI.FollowList.Items;
+
+				   // ユーザー数を確認
+				   CheckUser();
 			   })).Wait();
 		}
 		#endregion
@@ -215,7 +306,6 @@ namespace MovingWordpress.ViewModels
 					select x).Count() > 0;
 		}
 		#endregion
-
 
 		#region 自分のフォローを更新する
 		/// <summary>
@@ -285,6 +375,7 @@ namespace MovingWordpress.ViewModels
 				{
 					while (this.RepeatSearch)
 					{
+						// 検索処理
 						Search();
 					}
 				});
@@ -297,9 +388,65 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		public void CheckTweet()
+		#region ユーザーの内容をチェックする
+		/// <summary>
+		/// ユーザーの内容をチェックする
+		/// </summary>
+		public void CheckUser()
 		{
+			this.KeysMatchUserCount = (from x in this.TwitterAPI.FollowList.Items
+									  where this.UserMatch.CheckDescription(x)
+									  select x).Count();
+
+			this.RatioMatchUserCount = (from x in this.TwitterAPI.FollowList.Items
+									   where this.UserMatch.CheckFollowRatio(x)
+									   select x).Count();
+
+			this.NonFollowCount = (from x in this.TwitterAPI.FollowList.Items
+										where !this.UserMatch.CheckMyFollow(x, this.TwitterAPI.MyFollowList.Items.ToList<TwitterUserM>())
+										select x).Count();
 
 		}
+		#endregion
+
+		#region 説明文でフィルタする
+		/// <summary>
+		/// 説明文でフィルタする
+		/// </summary>
+		public void KeysMatchFilter()
+		{
+			try
+			{
+				this.FilterdList.Items = new ObservableCollection<TwitterUserM>((from x in this.TwitterAPI.FollowList.Items
+																				 where this.UserMatch.CheckDescription(x)
+																				 select x).ToList<TwitterUserM>());
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
+		#region フォロー率でフィルタする
+		/// <summary>
+		/// フォロー率でフィルタする
+		/// </summary>
+		public void RatioMatchFilter()
+		{
+			try
+			{
+				this.FilterdList.Items = new ObservableCollection<TwitterUserM>((from x in this.TwitterAPI.FollowList.Items
+																				 where this.UserMatch.CheckFollowRatio(x)
+																				 select x).ToList<TwitterUserM>());
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
 	}
 }
