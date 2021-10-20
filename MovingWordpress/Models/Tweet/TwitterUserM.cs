@@ -121,8 +121,6 @@ namespace MovingWordpress.Models.Tweet
 		}
 		#endregion
 
-
-
 		#region 説明[Description]プロパティ
 		/// <summary>
 		/// 説明[Description]プロパティ用変数
@@ -148,6 +146,51 @@ namespace MovingWordpress.Models.Tweet
 		}
 		#endregion
 
+		#region フォロー数に対するフォロワー数割合を出す
+		/// <summary>
+		/// フォロー数に対するフォロワー数割合を出す
+		/// </summary>
+		public double FriendshipRatio
+		{
+            get
+            {
+				// 0割回避
+				if (this.FriendsCount > 0)
+				{
+					// 割合の算出
+					return (double)this.FollowersCount / (double)this.FriendsCount;
+				}
+				else
+				{
+					return 0.0;
+				}
+			}
+		}
+		#endregion
 
+		#region 説明に期待する文字列が含まれているかのチェック
+		/// <summary>
+		/// 説明に期待する文字列が含まれているかのチェック
+		/// </summary>
+		/// <param name="nouns_list">単語リスト</param>
+		/// <returns>true:含まれる false:含まれない</returns>
+		public bool CheckDescription(string[] nouns_list)
+		{
+			// 説明の取り出し
+			string descrinption = this.Description;
+
+			// 文字リストから要素を取り出し
+			foreach (var nouns in nouns_list)
+			{
+				// 説明に期待する文字が含まれるかどうかのチェック
+				if (descrinption.Contains(nouns))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+		#endregion
 	}
 }

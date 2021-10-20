@@ -44,81 +44,6 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		#region 説明文に含まれる文字[DescriptionKeys]プロパティ
-		/// <summary>
-		/// 説明文に含まれる文字[DescriptionKeys]プロパティ用変数
-		/// </summary>
-		string _DescriptionKeys = string.Empty;
-		/// <summary>
-		/// 説明文に含まれる文字[DescriptionKeys]プロパティ
-		/// </summary>
-		public string DescriptionKeys
-		{
-			get
-			{
-				return _DescriptionKeys;
-			}
-			set
-			{
-				if (_DescriptionKeys == null || !_DescriptionKeys.Equals(value))
-				{
-					_DescriptionKeys = value;
-					NotifyPropertyChanged("DescriptionKeys");
-				}
-			}
-		}
-		#endregion
-
-		#region フォロー率の下限値[MinRatio]プロパティ
-		/// <summary>
-		/// フォロー率の下限値[MinRatio]プロパティ用変数
-		/// </summary>
-		double _MinRatio = 98.0;
-		/// <summary>
-		/// フォロー率の下限値[MinRatio]プロパティ
-		/// </summary>
-		public double MinRatio
-		{
-			get
-			{
-				return _MinRatio;
-			}
-			set
-			{
-				if (!_MinRatio.Equals(value))
-				{
-					_MinRatio = value;
-					NotifyPropertyChanged("MinRatio");
-				}
-			}
-		}
-		#endregion
-
-		#region フォロー率の上限値[MaxRatio]プロパティ
-		/// <summary>
-		/// フォロー率の上限値[MaxRatio]プロパティ用変数
-		/// </summary>
-		double _MaxRatio = 102.0;
-		/// <summary>
-		/// フォロー率の上限値[MaxRatio]プロパティ
-		/// </summary>
-		public double MaxRatio
-		{
-			get
-			{
-				return _MaxRatio;
-			}
-			set
-			{
-				if (!_MaxRatio.Equals(value))
-				{
-					_MaxRatio = value;
-					NotifyPropertyChanged("MaxRatio");
-				}
-			}
-		}
-		#endregion
-
 
 		/// <summary>
 		/// TwitterAPIからの戻り値を保存できる形式に変換する
@@ -206,77 +131,74 @@ namespace MovingWordpress.ViewModels
 		/// </summary>
 		private void Search()
 		{
-			Task.Run(() =>
+			// フォローリスト数を確認
+			int count = this.TwitterAPI.FollowList.Items.Count();
+
+			ModelList<TwitterUserM> tmp_user_list;
+
+			// フォロー候補リストが0以下の場合
+			if (count <= 0)
 			{
-				// フォローリスト数を確認
-				int count = this.TwitterAPI.FollowList.Items.Count();
-
-				ModelList<TwitterUserM> tmp_user_list;
-
-				// フォロー候補リストが0以下の場合
-				if (count <= 0)
+				// マイフォローリストが0以下の場合
+				if (this.TwitterAPI.MyFollowList.Items.Count <= 0)
 				{
-					// マイフォローリストが0以下の場合
-					if (this.TwitterAPI.MyFollowList.Items.Count <= 0)
-					{
-						GetMyFollows();
-					}
-
-					// フォロー候補がない場合、マイフォローリストを使用する
-					tmp_user_list = this.TwitterAPI.MyFollowList;
-
-					if(tmp_user_list.Items.Count <= 0)
-                    {
-						ShowMessage.ShowNoticeOK("数名フォローしてから実行してください。", "通知");
-						return;
-                    }
-				}
-				else
-				{
-					// フォロー候補リストを使用する
-					tmp_user_list = this.TwitterAPI.FollowList;
+					GetMyFollows();
 				}
 
-				count = tmp_user_list.Items.Count;
-				// ランダムで抜き出す
-				int index = _Rand.Next(0, count);
+				// フォロー候補がない場合、マイフォローリストを使用する
+				tmp_user_list = this.TwitterAPI.MyFollowList;
 
-				// ユーザーをランダムで取り出し
-				var user = tmp_user_list.ElementAt(index);
-
-				string screen_name = user.ScreenName;
-
-				// 待ち処理
-				this.TwitterAPI.Wait();
-
-				// フォロワーの取得
-				var result = this.TwitterAPI.GetUser(-1, screen_name, true);
-
-				var tmp_user = new ModelList<TwitterUserM>();
-
-				foreach (var tmp in this.TwitterAPI.FollowList.Items)
+				if (tmp_user_list.Items.Count <= 0)
 				{
-					// フォロー候補リストを一時変数に保管
-					tmp_user.Items.Add(tmp);
+					ShowMessage.ShowNoticeOK("数名フォローしてから実行してください。", "通知");
+					return;
 				}
+			}
+			else
+			{
+				// フォロー候補リストを使用する
+				tmp_user_list = this.TwitterAPI.FollowList;
+			}
 
-				foreach (var tmp in result)
-				{
-					// ユーザーリストの作成
-					tmp_user.Items.Add(new TwitterUserM(tmp));
+			count = tmp_user_list.Items.Count;
+			// ランダムで抜き出す
+			int index = _Rand.Next(0, count);
 
-					// ユーザーリストのUpsert
-					TwitterUserBaseEx.Upsert(tmp);
-				}
+			// ユーザーをランダムで取り出し
+			var user = tmp_user_list.ElementAt(index);
 
-				// スレッドセーフな呼び出し
-				Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-				   new Action(() =>
-				   {
-					   // 画面に表示
-					   this.TwitterAPI.FollowList = tmp_user;
-				   })).Wait();
-			});
+			string screen_name = user.ScreenName;
+
+			// 待ち処理
+			this.TwitterAPI.Wait();
+
+			// フォロワーの取得
+			var result = this.TwitterAPI.GetUser(-1, screen_name, true);
+
+			var tmp_user = new ModelList<TwitterUserM>();
+
+			foreach (var tmp in this.TwitterAPI.FollowList.Items)
+			{
+				// フォロー候補リストを一時変数に保管
+				tmp_user.Items.Add(tmp);
+			}
+
+			foreach (var tmp in result)
+			{
+				// ユーザーリストの作成
+				tmp_user.Items.Add(new TwitterUserM(tmp));
+
+				// ユーザーリストのUpsert
+				TwitterUserBaseEx.Upsert(tmp);
+			}
+
+			// スレッドセーフな呼び出し
+			Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+			   new Action(() =>
+			   {
+				   // 画面に表示
+				   this.TwitterAPI.FollowList = tmp_user;
+			   })).Wait();
 		}
 		#endregion
 
@@ -294,46 +216,6 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		#region 合致するユーザーを抽出する
-		/// <summary>
-		/// 合致するユーザーを抽出する
-		/// </summary>
-		/// <param name="user_list">ユーザーリスト</param>
-		/// <param name="follower_check">true:自分のフォローに含まれるかのチェックを行う</param>
-		/// <param name="ratio_check">true:フォロー率のチェックを行う</param>
-		/// <param name="word_check">単語のチェックを行う</param>
-		/// <returns>条件で絞った後のリスト</returns>
-		private List<TwitterUserM> MatchUser(List<TwitterUserM> user_list, bool follower_check = true, bool ratio_check = true, bool word_check = true)
-		{
-			string[] nous_list = this.DescriptionKeys.Split(',');
-			var list = user_list;
-
-			if (ratio_check)
-			{
-				// 上限と下限の範囲内に存在するかを確認する
-				list = (from x in list
-						where this.TwitterAPI.CheckFriendShipRatio(x, this.MinRatio, this.MaxRatio)
-						select x).ToList<TwitterUserM>();
-			}
-
-			if (word_check)
-			{
-				// 条件に該当するユーザーを取得する
-				list = (from x in list
-						where this.TwitterAPI.CheckDescription(nous_list, x)
-						select x).ToList<TwitterUserM>();
-			}
-
-			if (follower_check)
-			{
-				// 自分のフォロワーに含まれているかどうかをチェックする
-				list = (from x in list
-						where !ExistMyFollow(x)
-						select x).ToList<TwitterUserM>();
-			}
-			return list;
-		}
-		#endregion
 
 		#region 自分のフォローを更新する
 		/// <summary>
@@ -399,7 +281,13 @@ namespace MovingWordpress.ViewModels
         {
 			try
 			{
-				Search();
+				Task.Run(() =>
+				{
+					while (this.RepeatSearch)
+					{
+						Search();
+					}
+				});
 			}
 			catch (Exception e)
 			{
@@ -408,5 +296,10 @@ namespace MovingWordpress.ViewModels
 			}
 		}
 		#endregion
+
+		public void CheckTweet()
+		{
+
+		}
 	}
 }

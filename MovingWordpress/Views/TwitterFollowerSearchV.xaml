@@ -220,6 +220,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="[API使用制限]"/>
@@ -228,16 +229,6 @@
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding TwitterAPI.RateLimit.Limit}"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="[制限リセット時刻]"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding TwitterAPI.RateLimit.Reset.LocalDateTime, StringFormat=MM/dd HH:mm}"/>
-                            <TextBlock Margin="5" VerticalAlignment="Center" Text="[フィルタ]"/>
-                            <TextBox Margin="5" VerticalAlignment="Center" Width="150"
-                                     Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <Button Content="検索">
-                                <b:Interaction.Triggers>
-                                    <b:EventTrigger EventName="Click">
-                                        <b:CallMethodAction MethodName="OnFilter" TargetObject="{Binding}"/>
-                                    </b:EventTrigger>
-                                </b:Interaction.Triggers>
-                            </Button>
 
                         </StackPanel>
                         <TabControl Grid.Row="1">
@@ -278,6 +269,11 @@
                             </TabItem>
 
                         </TabControl>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="行数"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding TwitterAPI.FollowList.Items.Count}"/>
+                        </StackPanel>
                     </Grid>
                 </GroupBox>
             </Grid>
