@@ -194,6 +194,30 @@ namespace MovingWordpress.Models.Tweet
 		}
 		#endregion
 
+		#region CoreTweet型からTwitterUserMに変換する
+		/// <summary>
+		/// CoreTweet型からTwitterUserMに変換する
+		/// </summary>
+		/// <param name="user_list">ユーザーリスト</param>
+		/// <returns>ユーザーリスト</returns>
+		public static List<TwitterUserM> ToTwitterUserM(CoreTweet.Cursored<CoreTweet.User> user_list)
+		{
+			var ret = new List<TwitterUserM>();
+			foreach (var user in user_list)
+			{
+				ret.Add(new TwitterUserM()
+				{
+					Id = user.Id,
+					Description = user.Description,
+					FollowersCount = user.FollowersCount,
+					FriendsCount = user.FriendsCount,
+					ScreenName = user.ScreenName
+				}
+					);
+			}
+			return ret;
+		}
+		#endregion
 
 		#region TwitterAPIからの戻り値を保存できる形式に変換する
 		/// <summary>

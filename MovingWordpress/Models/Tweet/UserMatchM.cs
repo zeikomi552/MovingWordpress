@@ -132,5 +132,20 @@ namespace MovingWordpress.Models.Tweet
 			return ret;
 		}
 		#endregion
+
+
+		#region 説明文でフィルタする
+		/// <summary>
+		/// 説明文でフィルタする
+		/// </summary>
+		/// <param name="list">リスト</param>
+		/// <returns>フィルタ結果</returns>
+		public List<TwitterUserM> FilterdKeys(List<TwitterUserM> list)
+		{
+			return (from x in list
+					where this.CheckDescription(x)
+					select x).ToList<TwitterUserM>();
+		}
+		#endregion
 	}
 }

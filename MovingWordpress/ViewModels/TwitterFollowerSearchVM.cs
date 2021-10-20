@@ -421,17 +421,17 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		#region 説明文でフィルタする
-		/// <summary>
-		/// 説明文でフィルタする
-		/// </summary>
-		public void KeysMatchFilter()
+
+        #region 説明文でフィルタする
+        /// <summary>
+        /// 説明文でフィルタする
+        /// </summary>
+        public void KeysMatchFilter()
 		{
 			try
 			{
-				this.FilterdList.Items = new ObservableCollection<TwitterUserM>((from x in this.TwitterAPI.FollowList.Items
-																				 where this.UserMatch.CheckDescription(x)
-																				 select x).ToList<TwitterUserM>());
+				this.FilterdList.Items 
+					= new ObservableCollection<TwitterUserM>(this.UserMatch.FilterdKeys(this.TwitterAPI.FollowList.Items.ToList<TwitterUserM>()));
 			}
 			catch (Exception e)
 			{
