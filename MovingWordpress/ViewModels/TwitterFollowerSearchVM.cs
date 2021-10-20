@@ -202,6 +202,57 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+		#region リストの更新
+		/// <summary>
+		/// 指定したユーザーのフォローリストを取り出しフォロバリストを更新する
+		/// </summary>
+		/// <param name="screen_name">検索するScreenName</param>
+		private void UpdateList(string screen_name)
+		{
+			// フォロワーの取得
+			var result = this.TwitterAPI.GetUser(-1, screen_name, true);
+
+			var tmp_user = new ModelList<TwitterUserM>();
+
+			foreach (var tmp in this.TwitterAPI.FollowList.Items)
+			{
+				// フォロー候補リストを一時変数に保管
+				tmp_user.Items.Add(tmp);
+			}
+
+			foreach (var tmp in result)
+			{
+				var tuser = new TwitterUserM(tmp);
+
+				// 期待する文字列が含まれていて、自分のフォローに含まれていない、かつ自分ではない場合に登録する
+				if (this.UserMatch.CheckDescription(tuser)
+					&& !this.UserMatch.CheckMyFollow(tuser, this.TwitterAPI.MyFollowList.Items.ToList<TwitterUserM>())
+					&& !this.TwitterAPI.MyScreenName.Equals(tuser.ScreenName))
+				{
+					// ユーザーリストの作成
+					tmp_user.Items.Add(tuser);
+
+					// ユーザーリストのUpsert
+					TwitterUserBaseEx.Upsert(tmp);
+				}
+			}
+
+			// スレッドセーフな呼び出し
+			Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+			   new Action(() =>
+			   {
+				   // 画面に表示
+				   this.TwitterAPI.FollowList = tmp_user;
+
+				   // フィルターフォローリストに追加
+				   this.FilterdList.Items = this.TwitterAPI.FollowList.Items;
+
+				   // ユーザー数を確認
+				   CheckUser();
+			   })).Wait();
+		}
+		#endregion
+
 		#region 検索
 		/// <summary>
 		/// 検索
@@ -249,47 +300,8 @@ namespace MovingWordpress.ViewModels
 			// 待ち処理
 			this.TwitterAPI.Wait();
 
-			// フォロワーの取得
-			var result = this.TwitterAPI.GetUser(-1, screen_name, true);
-
-			var tmp_user = new ModelList<TwitterUserM>();
-
-			foreach (var tmp in this.TwitterAPI.FollowList.Items)
-			{
-				// フォロー候補リストを一時変数に保管
-				tmp_user.Items.Add(tmp);
-			}
-
-			foreach (var tmp in result)
-			{
-				var tuser = new TwitterUserM(tmp);
-
-				// 期待する文字列が含まれていて、自分のフォローに含まれていない、かつ自分ではない場合に登録する
-				if (this.UserMatch.CheckDescription(tuser)
-					&& !this.UserMatch.CheckMyFollow(tuser, this.TwitterAPI.MyFollowList.Items.ToList<TwitterUserM>())
-					&& !this.TwitterAPI.MyScreenName.Equals(tuser.ScreenName))
-				{
-					// ユーザーリストの作成
-					tmp_user.Items.Add(tuser);
-
-					// ユーザーリストのUpsert
-					TwitterUserBaseEx.Upsert(tmp);
-				}
-			}
-
-			// スレッドセーフな呼び出し
-			Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-			   new Action(() =>
-			   {
-				   // 画面に表示
-				   this.TwitterAPI.FollowList = tmp_user;
-
-				   // フィルターフォローリストに追加
-				   this.FilterdList.Items = this.TwitterAPI.FollowList.Items;
-
-				   // ユーザー数を確認
-				   CheckUser();
-			   })).Wait();
+			// ユーザーの追加
+			UpdateList(screen_name);
 		}
 		#endregion
 
