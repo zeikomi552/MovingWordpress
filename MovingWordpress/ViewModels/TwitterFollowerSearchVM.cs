@@ -202,22 +202,83 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+
+		//#region フォロバリストから条件を見て1名取り除く
+		///// <summary>
+		///// フォロバリストから条件を見て1名取り除く
+		///// </summary>
+		///// <param name="try_max">試行回数上限</param>
+		//public bool RemoveFollowBackList(int try_max)
+		//{
+		//	// カウントの取得
+		//	int count = this.TwitterAPI.FollowList.Items.Count();
+
+		//	// ランダムなインデックスの取得
+		//	int index = _Rand.Next(0, count - 1);
+
+		//	// 削除するユーザーの取得
+		//	var rm_user = this.TwitterAPI.FollowList.Items.ElementAt(index);
+
+		//	int try_count = 0;
+		//	while (UserMatch.CheckFollowRatio(rm_user))
+		//	{
+		//		if (try_count > try_max)
+		//			return false;
+		//		index = _Rand.Next(0, count - 1);
+		//		rm_user = this.TwitterAPI.FollowList.Items.ElementAt(index);
+		//		try_count++;
+		//	}
+
+		//	if (rm_user.Id.HasValue)
+		//	{
+		//		// データベースから削除
+		//		TwitterUserBaseEx.Delete(new TwitterUserBase()
+		//		{
+		//			Id = rm_user.Id.Value
+		//		});
+		//	}
+
+		//	// リストから削除
+		//	this.TwitterAPI.FollowList.Items.Remove(rm_user);
+
+		//	return true;
+		//}
+		//#endregion
+
 		#region リストの更新
 		/// <summary>
 		/// 指定したユーザーのフォローリストを取り出しフォロバリストを更新する
 		/// </summary>
 		/// <param name="screen_name">検索するScreenName</param>
-		private void UpdateList(string screen_name)
+		/// <param name="user_limit">ユーザー数限界</param>
+		private void UpdateList(string screen_name, int user_limit)
 		{
 			// フォロワーの取得
 			var result = this.TwitterAPI.GetUser(-1, screen_name, true);
 
 			var tmp_user = new ModelList<TwitterUserM>();
 
+			int user_num = this.TwitterAPI.FollowList.Items.Count + result.Count;
+			int rm_count = user_num - user_limit;
+
 			foreach (var tmp in this.TwitterAPI.FollowList.Items)
 			{
-				// フォロー候補リストを一時変数に保管
-				tmp_user.Items.Add(tmp);
+				if (rm_count > 0 && !UserMatch.CheckFollowRatio(tmp))
+				{
+					// 削除数を減らす
+					rm_count--;
+
+					// データベースから削除
+					TwitterUserBaseEx.Delete(new TwitterUserBase()
+					{
+						Id = tmp.Id.Value
+					});
+				}
+				else
+				{
+					// フォロー候補リストを一時変数に保管
+					tmp_user.Items.Add(tmp);
+				}
 			}
 
 			foreach (var tmp in result)
@@ -289,19 +350,18 @@ namespace MovingWordpress.ViewModels
 			}
 
 			count = tmp_user_list.Items.Count;
+
 			// ランダムで抜き出す
 			int index = _Rand.Next(0, count);
 
 			// ユーザーをランダムで取り出し
 			var user = tmp_user_list.ElementAt(index);
 
-			string screen_name = user.ScreenName;
-
 			// 待ち処理
-			this.TwitterAPI.Wait();
+			while (this.RepeatSearch && !this.TwitterAPI.Wait()) ;
 
 			// ユーザーの追加
-			UpdateList(screen_name);
+			UpdateList(user.ScreenName, 5000);
 		}
 		#endregion
 
