@@ -169,7 +169,6 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-
 		#region 初期化処理
 		/// <summary>
 		/// 初期化処理
@@ -179,6 +178,9 @@ namespace MovingWordpress.ViewModels
 			try
 			{
 				base.Init();
+
+				// ユーザーのマッチ条件をロード
+				this.UserMatch.Load();
 
 				using (var db = new SQLiteDataContext())
 				{
@@ -201,49 +203,6 @@ namespace MovingWordpress.ViewModels
 			}
 		}
 		#endregion
-
-
-		//#region フォロバリストから条件を見て1名取り除く
-		///// <summary>
-		///// フォロバリストから条件を見て1名取り除く
-		///// </summary>
-		///// <param name="try_max">試行回数上限</param>
-		//public bool RemoveFollowBackList(int try_max)
-		//{
-		//	// カウントの取得
-		//	int count = this.TwitterAPI.FollowList.Items.Count();
-
-		//	// ランダムなインデックスの取得
-		//	int index = _Rand.Next(0, count - 1);
-
-		//	// 削除するユーザーの取得
-		//	var rm_user = this.TwitterAPI.FollowList.Items.ElementAt(index);
-
-		//	int try_count = 0;
-		//	while (UserMatch.CheckFollowRatio(rm_user))
-		//	{
-		//		if (try_count > try_max)
-		//			return false;
-		//		index = _Rand.Next(0, count - 1);
-		//		rm_user = this.TwitterAPI.FollowList.Items.ElementAt(index);
-		//		try_count++;
-		//	}
-
-		//	if (rm_user.Id.HasValue)
-		//	{
-		//		// データベースから削除
-		//		TwitterUserBaseEx.Delete(new TwitterUserBase()
-		//		{
-		//			Id = rm_user.Id.Value
-		//		});
-		//	}
-
-		//	// リストから削除
-		//	this.TwitterAPI.FollowList.Items.Remove(rm_user);
-
-		//	return true;
-		//}
-		//#endregion
 
 		#region リストの更新
 		/// <summary>
@@ -481,7 +440,6 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-
         #region 説明文でフィルタする
         /// <summary>
         /// 説明文でフィルタする
@@ -518,6 +476,26 @@ namespace MovingWordpress.ViewModels
 				_logger.Error(e.Message);
 				ShowMessage.ShowErrorOK(e.Message, "Error");
 			}
+		}
+		#endregion
+
+		#region 画面を閉じる時の処理
+		/// <summary>
+		/// 画面を閉じる時の処理
+		/// </summary>
+		public void Close()
+		{
+			try
+			{
+				// 保存処理
+				this.UserMatch.Save();
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+
 		}
 		#endregion
 	}

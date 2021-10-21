@@ -24,6 +24,9 @@
         <b:EventTrigger>
             <b:CallMethodAction MethodName="Init" TargetObject="{Binding}"/>
         </b:EventTrigger>
+        <b:EventTrigger EventName="Closed">
+            <b:CallMethodAction MethodName="Close" TargetObject="{Binding}"/>
+        </b:EventTrigger>
     </b:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
