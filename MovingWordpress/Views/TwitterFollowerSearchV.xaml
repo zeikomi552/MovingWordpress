@@ -218,7 +218,7 @@
                 </Grid>
             </GroupBox>
             <Grid Grid.Column="1">
-                <GroupBox Header="ブログリスト">
+                <GroupBox Header="ユーザーリスト">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
@@ -235,7 +235,7 @@
 
                         </StackPanel>
                         <TabControl Grid.Row="1">
-                            <TabItem Header="フォロー候補リスト">
+                            <TabItem Header="フォロバリスト">
                                 <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding FilterdList.Items}"
                                   SelectedItem="{Binding FollowerList.SelectedItem}">
                                     <b:Interaction.Triggers>

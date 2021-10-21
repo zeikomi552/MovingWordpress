@@ -408,6 +408,9 @@ namespace MovingWordpress.ViewModels
 					{
 						// 検索処理
 						Search();
+
+						// 10秒に一度実行する
+						System.Threading.Thread.Sleep(60 * 1000);
 					}
 				});
 			}
@@ -489,6 +492,31 @@ namespace MovingWordpress.ViewModels
 			{
 				// 保存処理
 				this.UserMatch.Save();
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
+		#region クリア
+		/// <summary>
+		/// クリア
+		/// </summary>
+		public void Clear()
+		{
+			try
+			{
+				if (ShowMessage.ShowQuestionYesNo("リストを削除してもよろしいですか？", "確認") == MessageBoxResult.Yes)
+				{
+					// データベースの削除
+					TwitterUserBaseEx.Delete();
+
+					// 要素のクリア
+					this.TwitterAPI.MyFollowList.Items = new ObservableCollection<TwitterUserM>();
+				}
 			}
 			catch (Exception e)
 			{
