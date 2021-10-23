@@ -109,12 +109,29 @@
                     <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="Clear" TargetObject="{Binding}"/>
+                                <b:CallMethodAction MethodName="ClearFollowBackList" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="リストクリア"/>
+                            <StackPanel>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロバリスト"/>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="クリア"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <Button Margin="5" Height="100" Width="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="ClearMyFollow" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <StackPanel>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォローリスト"/>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="クリア"/>
+                            </StackPanel>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -226,14 +243,6 @@
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="説明文内に含まれる文字"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <TextBox materialDesign:HintAssist.Hint="カンマ区切りで複数入力可" VerticalAlignment="Center" MinWidth="200" Text="{Binding UserMatch.DescriptionKeys}" Cursor="IBeam"/>
-
-                                <ToggleButton Width="80" Margin="5" Content="検索" IsChecked="{Binding RepeatSearch}">
-                                    <b:Interaction.Triggers>
-                                        <b:EventTrigger EventName="Checked">
-                                            <b:CallMethodAction MethodName="CreateFollowList" TargetObject="{Binding}"/>
-                                        </b:EventTrigger>
-                                    </b:Interaction.Triggers>
-                                </ToggleButton>
                             </StackPanel>
                         </StackPanel>
 

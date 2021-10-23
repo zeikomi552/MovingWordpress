@@ -402,20 +402,25 @@ namespace MovingWordpress.ViewModels
         {
 			try
 			{
-				Task.Run(() =>
-				{
+                Task.Run(() =>
+                {
 					while (this.RepeatSearch)
 					{
-						GetLimit();
+						try
+						{
+							//GetLimit();
 
-						// 検索処理
-						Search();
+							// 検索処理
+							Search();
 
-						// 10秒に一度実行する
+						}
+						catch { }
+
+						// 60秒に一度実行する
 						System.Threading.Thread.Sleep(60 * 1000);
 					}
-				});
-			}
+                });
+            }
 			catch (Exception e)
 			{
 				_logger.Error(e.Message);
@@ -507,11 +512,11 @@ namespace MovingWordpress.ViewModels
 		/// <summary>
 		/// クリア
 		/// </summary>
-		public void Clear()
+		public void ClearFollowBackList()
 		{
 			try
 			{
-				if (ShowMessage.ShowQuestionYesNo("リストを削除してもよろしいですか？", "確認") == MessageBoxResult.Yes)
+				if (ShowMessage.ShowQuestionYesNo("フォロバリストを削除してもよろしいですか？", "確認") == MessageBoxResult.Yes)
 				{
 					// データベースの削除
 					TwitterUserBaseEx.Delete();
@@ -526,6 +531,31 @@ namespace MovingWordpress.ViewModels
 				ShowMessage.ShowErrorOK(e.Message, "Error");
 			}
 
+		}
+		#endregion
+
+		#region マイフォローリストの削除
+		/// <summary>
+		/// マイフォローリストの削除
+		/// </summary>
+		public void ClearMyFollow()
+		{
+			try
+			{
+				if (ShowMessage.ShowQuestionYesNo("マイフォローリストを削除してもよろしいですか？", "確認") == MessageBoxResult.Yes)
+				{
+					// 自分のフォローユーザーの情報をクリア
+					MyFollowUserBaseEx.Delete();
+
+					// 要素のクリア
+					this.TwitterAPI.MyFollowList.Items = new ObservableCollection<TwitterUserM>();
+				}
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
 		}
 		#endregion
 
@@ -665,7 +695,7 @@ namespace MovingWordpress.ViewModels
 								break;
 
 							// 60秒に一度実行する
-							System.Threading.Thread.Sleep(60 * 1000);
+							System.Threading.Thread.Sleep(3 * 60 * 1000);
 						}
 					}
 				});

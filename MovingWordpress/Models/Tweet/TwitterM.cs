@@ -369,6 +369,7 @@ namespace MovingWordpress.Models.Tweet
         /// <returns>フォロワーリスト</returns>
         public CoreTweet.Cursored<CoreTweet.User> GetUser(long cursor, string screen_name, bool get_type)
         {
+
             // トークンの作成
             CreateToken();
 
