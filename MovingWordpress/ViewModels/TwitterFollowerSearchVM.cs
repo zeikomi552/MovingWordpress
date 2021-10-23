@@ -1,4 +1,6 @@
-﻿using MovingWordpress.Common;
+﻿using ClosedXML.Excel;
+using Microsoft.Win32;
+using MovingWordpress.Common;
 using MovingWordpress.Models;
 using MovingWordpress.Models.db;
 using MovingWordpress.Models.Tweet;
@@ -249,9 +251,6 @@ namespace MovingWordpress.ViewModels
 					&& !this.UserMatch.CheckMyFollow(tuser, this.TwitterAPI.MyFollowList.Items.ToList<TwitterUserM>())
 					&& !this.TwitterAPI.MyScreenName.Equals(tuser.ScreenName))
 				{
-					// ユーザーリストの作成
-					tmp_user.Items.Add(tuser);
-
 					// ユーザーリストのUpsert
 					TwitterUserBaseEx.Upsert(tmp);
 				}
@@ -262,7 +261,8 @@ namespace MovingWordpress.ViewModels
 			   new Action(() =>
 			   {
 				   // 画面に表示
-				   this.TwitterAPI.FollowList = tmp_user;
+				   this.TwitterAPI.FollowList.Items =
+						new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(TwitterUserBaseEx.Select()));
 
 				   // フィルターフォローリストに追加
 				   this.FilterdList.Items = this.TwitterAPI.FollowList.Items;
@@ -406,6 +406,8 @@ namespace MovingWordpress.ViewModels
 				{
 					while (this.RepeatSearch)
 					{
+						GetLimit();
+
 						// 検索処理
 						Search();
 
@@ -526,5 +528,179 @@ namespace MovingWordpress.ViewModels
 
 		}
 		#endregion
+
+		#region 全記事分の分析結果をエクセルに出力する
+		/// <summary>
+		/// 全記事分の分析結果をエクセルに出力する
+		/// </summary>
+		/// <param name="workbook">ワークブック</param>
+		private void SaveExcelSub(XLWorkbook workbook)
+		{
+			var worksheet = workbook.Worksheets.Add("全体");
+
+			worksheet.Cell("A1").Value = "ID";
+			worksheet.Cell("B1").Value = "スクリーン名";
+			worksheet.Cell("C1").Value = "フォロー数";
+			worksheet.Cell("D1").Value = "フォロワー数";
+			worksheet.Cell("E1").Value = "フォロー率";
+			worksheet.Cell("F1").Value = "説明文";
+			worksheet.Cell("G1").Value = "アカウントURL";
+
+			int row = 2;
+
+			foreach (var tmp in this.TwitterAPI.FollowList.Items)
+			{
+				worksheet.Cell($"A{row}").Value = tmp.Id;
+				worksheet.Cell($"B{row}").Value = tmp.ScreenName;
+				worksheet.Cell($"C{row}").Value = tmp.FriendsCount;
+				worksheet.Cell($"D{row}").Value = tmp.FollowersCount;
+				worksheet.Cell($"E{row}").Value = tmp.FriendshipRatio;
+				worksheet.Cell($"F{row}").Value = tmp.Description;
+				worksheet.Cell($"G{row}").Value = $"https://twitter.com/{tmp.ScreenName}";
+				row++;
+			}
+		}
+		#endregion
+
+		#region Excelを保存する
+		/// <summary>
+		/// Excelを保存する
+		/// </summary>
+		public void SaveExcel()
+		{
+			try
+			{
+				// ダイアログのインスタンスを生成
+				var dialog = new SaveFileDialog();
+
+				// ファイルの種類を設定
+				dialog.Filter = "エクセルファイル(*.xlsx)|*.xlsx";
+
+				// ダイアログを表示する
+				if (dialog.ShowDialog() == true)
+				{
+					using (var workbook = new XLWorkbook())
+					{
+						SaveExcelSub(workbook);
+						workbook.SaveAs(dialog.FileName);
+
+						ShowMessage.ShowNoticeOK("レポート出力が完了しました。", "通知");
+
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
+		#region 自動フォローフラグ[AutoFollowF]プロパティ
+		/// <summary>
+		/// 自動フォローフラグ[AutoFollowF]プロパティ用変数
+		/// </summary>
+		bool _AutoFollowF = false;
+		/// <summary>
+		/// 自動フォローフラグ[AutoFollowF]プロパティ
+		/// </summary>
+		public bool AutoFollowF
+		{
+			get
+			{
+				return _AutoFollowF;
+			}
+			set
+			{
+				if (!_AutoFollowF.Equals(value))
+				{
+					_AutoFollowF = value;
+					NotifyPropertyChanged("AutoFollowF");
+				}
+			}
+		}
+		#endregion
+
+		#region 自動フォロー
+		/// <summary>
+		/// 自動フォロー
+		/// </summary>
+		public void AutoFollow()
+		{
+			try
+			{
+				Task.Run(() =>
+				{
+					var tmp = new ObservableCollection<TwitterUserM>((from x in this.TwitterAPI.FollowList.Items
+																	  where this.UserMatch.CheckFollowRatio(x)
+																	  select x).ToList<TwitterUserM>());
+					foreach (var user in tmp)
+					{
+						// 自動フォローフラグがONの場合は抜ける
+						if (!this.AutoFollowF)
+							break;
+
+						if (user.Id.HasValue)
+						{
+							this.TwitterAPI.CreateFollow(user.Id.Value);
+
+							// 自動フォローフラグがONの場合は抜ける
+							if (!this.AutoFollowF)
+								break;
+
+							// リストから削除する
+							TwitterUserBaseEx.Delete(new TwitterUserBase() { Id = user.Id.Value });
+
+							// フォロバリストをデータベースから取得
+							this.FilterdList.Items = this.TwitterAPI.FollowList.Items
+								= new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(TwitterUserBaseEx.Select()));
+
+							// ユーザー数を確認
+							CheckUser();
+
+
+							// 自動フォローフラグがONの場合は抜ける
+							if (!this.AutoFollowF)
+								break;
+
+							// 60秒に一度実行する
+							System.Threading.Thread.Sleep(60 * 1000);
+						}
+					}
+				});
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
+		public void GetLimit()
+		{
+
+			var tmp = this.TwitterAPI.GetRateLimit();
+
+			StringBuilder text = new StringBuilder();
+
+			text.AppendLine("|リソース群|タイトル|制限(15分でリセット)|");
+			text.AppendLine("|---|---|---|");
+			foreach (var key in tmp.Keys)
+			{
+				foreach (var key2 in tmp)
+				{
+					foreach (var key3 in key2.Value)
+					{
+						text.AppendLine($"|{key2.Key}|{key3.Key}|{key3.Value.Limit}|");
+
+					}
+
+				}
+			}
+			string limit_md = text.ToString();
+		}
+
 	}
 }

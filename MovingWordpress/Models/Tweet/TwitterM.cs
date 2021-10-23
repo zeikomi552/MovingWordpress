@@ -291,13 +291,13 @@ namespace MovingWordpress.Models.Tweet
         /// </summary>
         /// <param name="user">ユーザー情報</param>
         /// <returns>ステータス</returns>
-        public UserResponse CreateFollow(CoreTweet.User user)
+        public UserResponse CreateFollow(long id)
         {
             // トークンの作成
             CreateToken();
 
             // フォローの実行
-            var result = this.Tokens.Friendships.Create(user.Id.Value, true);
+            var result = this.Tokens.Friendships.Create(id, true);
 
             // リミットの取得(フォロー追加の場合はnullが返ってくるので設定しない)
             //this.RateLimit = result.RateLimit;
@@ -335,13 +335,27 @@ namespace MovingWordpress.Models.Tweet
                     list.Add(tmp);
                 }
 
-                if(next_cursor != 0)
+                if (next_cursor != 0)
                 {
                     // 1min待つ
                     Wait(60000);
                 }
             }
             return list;
+        }
+        #endregion
+
+        #region RateLimit取得関数
+        /// <summary>
+        /// RateLimit取得関数
+        /// </summary>
+        /// <returns>RateLimit</returns>
+        public CoreTweet.Core.DictionaryResponse<string, Dictionary<string, CoreTweet.RateLimit>> GetRateLimit()
+        {
+            // トークンの作成
+            CreateToken();
+
+            return this.Tokens.Application.RateLimitStatus();
         }
         #endregion
 

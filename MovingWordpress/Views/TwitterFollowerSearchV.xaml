@@ -56,15 +56,49 @@
                         </StackPanel>
 
                     </Button>
-                    <Button Margin="5" Height="100" Width="100" Cursor="Hand">
+                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Margin="5" Height="100" Width="100" Cursor="Hand" IsChecked="{Binding RepeatSearch}">
                         <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Click">
+                            <b:EventTrigger EventName="Checked">
                                 <b:CallMethodAction MethodName="CreateFollowList" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="候補作成"/>
+                            <Viewbox Width="60">
+                                <StackPanel>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロバリスト"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="作成"/>
+                                </StackPanel>
+                            </Viewbox>
+                        </StackPanel>
+
+                    </ToggleButton>
+                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="100" Width="100" Cursor="Hand" IsChecked="{Binding AutoFollowF}">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Checked">
+                                <b:CallMethodAction MethodName="AutoFollow" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <Viewbox Width="60">
+                                <StackPanel>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="自動フォロー"/>
+                                </StackPanel>
+                            </Viewbox>
+                        </StackPanel>
+
+                    </ToggleButton>
+
+                    <Button Height="100" Width="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="SaveExcel" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Excel出力"/>
                         </StackPanel>
 
                     </Button>
@@ -72,17 +106,6 @@
             </GroupBox>
             <GroupBox Grid.Column="1" Margin="5,5,0,5" Header="サブアクションアイテム">
                 <StackPanel Orientation="Horizontal">
-                    <Button Margin="5" Height="100" Width="100" Cursor="Hand">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="MoveProfiel" TargetObject="{Binding}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                        <StackPanel Orientation="Vertical">
-                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="移動"/>
-                        </StackPanel>
-                    </Button>
                     <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
@@ -237,7 +260,7 @@
                         <TabControl Grid.Row="1">
                             <TabItem Header="フォロバリスト">
                                 <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding FilterdList.Items}"
-                                  SelectedItem="{Binding FollowerList.SelectedItem}">
+                                  SelectedItem="{Binding FilterdList.SelectedItem}">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="MouseDoubleClick">
                                             <b:CallMethodAction MethodName="RowDoubleClick" TargetObject="{Binding}"/>
@@ -254,7 +277,7 @@
                             </TabItem>
                             <TabItem Header="マイフォロー">
                                 <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding TwitterAPI.MyFollowList.Items}"
-                                  SelectedItem="{Binding MyFollows.SelectedItem}">
+                                  SelectedItem="{Binding TwitterAPI.MyFollowList.SelectedItem}">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="MouseDoubleClick">
                                             <b:CallMethodAction MethodName="RowDoubleClick" TargetObject="{Binding}"/>
