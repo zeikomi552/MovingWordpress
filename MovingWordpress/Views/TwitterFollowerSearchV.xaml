@@ -35,7 +35,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.AccentBase}" BorderThickness="5">
-            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitterフォロワー検索" FontSize="30"/>
+            <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロバさん検索" FontSize="30"/>
         </Border>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -73,35 +73,6 @@
                         </StackPanel>
 
                     </ToggleButton>
-                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="100" Width="100" Cursor="Hand" IsChecked="{Binding AutoFollowF}">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Checked">
-                                <b:CallMethodAction MethodName="AutoFollow" TargetObject="{Binding}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                        <StackPanel Orientation="Vertical">
-                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <Viewbox Width="60">
-                                <StackPanel>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="自動フォロー"/>
-                                </StackPanel>
-                            </Viewbox>
-                        </StackPanel>
-
-                    </ToggleButton>
-
-                    <Button Height="100" Width="100" Cursor="Hand">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="SaveExcel" TargetObject="{Binding}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                        <StackPanel Orientation="Vertical">
-                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Excel出力"/>
-                        </StackPanel>
-
-                    </Button>
                 </StackPanel>
             </GroupBox>
             <GroupBox Grid.Column="1" Margin="5,5,0,5" Header="サブアクションアイテム">
@@ -114,10 +85,12 @@
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <StackPanel>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロバリスト"/>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="クリア"/>
-                            </StackPanel>
+                            <Viewbox>
+                                <StackPanel>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロバリスト"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="クリア"/>
+                                </StackPanel>
+                            </Viewbox>
                         </StackPanel>
                     </Button>
                     <Button Margin="5" Height="100" Width="100" Cursor="Hand">
@@ -128,11 +101,25 @@
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <StackPanel>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォローリスト"/>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="クリア"/>
-                            </StackPanel>
+                            <Viewbox>
+                                <StackPanel>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォローリスト"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="クリア"/>
+                                </StackPanel>
+                            </Viewbox>
                         </StackPanel>
+                    </Button>
+                    <Button Height="100" Width="100" Cursor="Hand">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Click">
+                                <b:CallMethodAction MethodName="SaveExcel" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Excel出力"/>
+                        </StackPanel>
+
                     </Button>
                 </StackPanel>
             </GroupBox>

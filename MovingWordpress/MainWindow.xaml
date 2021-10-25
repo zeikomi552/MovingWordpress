@@ -132,9 +132,7 @@
                     </b:Interaction.Triggers>
                     <StackPanel Orientation="Vertical">
                         <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                        <Viewbox>
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロワー検索"/>
-                        </Viewbox>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロバさん"/>
                     </StackPanel>
 
                 </Button>
