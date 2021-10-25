@@ -63,6 +63,33 @@ namespace MovingWordpress.Models.Tweet
 		}
 		#endregion
 
+		#region 自分のスクリーン名[MyScreenName]プロパティ
+		/// <summary>
+		/// 自分のスクリーン名[MyScreenName]プロパティ用変数
+		/// </summary>
+		string _MyScreenName = string.Empty;
+		/// <summary>
+		/// 自分のスクリーン名[MyScreenName]プロパティ
+		/// </summary>
+		public string MyScreenName
+		{
+			get
+			{
+				return _MyScreenName;
+			}
+			set
+			{
+				if (_MyScreenName == null || !_MyScreenName.Equals(value))
+				{
+					_MyScreenName = value;
+					NotifyPropertyChanged("MyScreenName");
+				}
+			}
+		}
+		#endregion
+
+
+
 		#region ファイルの保存処理
 		/// <summary>
 		/// ファイルの保存処理
@@ -94,8 +121,15 @@ namespace MovingWordpress.Models.Tweet
 			if (File.Exists(tconf_path))
 			{
 				var tmp = XMLUtil.Deserialize<TwitterConfigM>(tconf_path);
+
+				// 各種キーの取り出し
 				this.KeysM = tmp.KeysM;
+
+				// テンプレートの取り出し
 				this.TempleteM = tmp.TempleteM;
+
+				// ScreenNameの取り出し
+				this.MyScreenName = tmp.MyScreenName;
 			}
 		}
 		#endregion

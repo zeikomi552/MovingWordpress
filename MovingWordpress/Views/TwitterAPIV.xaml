@@ -79,18 +79,6 @@
                         </StackPanel>
 
                     </Button>
-                    <Button Height="100" Width="100" Cursor="Hand">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="Test" TargetObject="{Binding}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                        <StackPanel Orientation="Vertical">
-                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="テスト"/>
-                        </StackPanel>
-
-                    </Button>
                 </StackPanel>
             </GroupBox>
             <GroupBox Grid.Column="1" Margin="5,5,0,5" Header="サブアクションアイテム">
@@ -116,9 +104,9 @@
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーキー"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <Grid>
-                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerKey}"/>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.KeysM.ConsumerKey}"/>
                                     <PasswordBox Width="300" hlp:PasswordBoxHelper.IsAttached="True"
-                                                 hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.ConsumerKey}" 
+                                                 hlp:PasswordBoxHelper.Password="{Binding TwitterAPI.Config.KeysM.ConsumerKey}" 
                                                  Margin="5" VerticalAlignment="Center" Cursor="IBeam"
                                                  Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=consumer_key}"/>
                                 </Grid>
@@ -129,9 +117,9 @@
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="コンシューマーシークレット"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <Grid>
-                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_secret_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.ConsumerSecretKey}"/>
+                                    <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=consumer_secret_key}" Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.KeysM.ConsumerSecretKey}"/>
                                     <PasswordBox Width="300" hlp:PasswordBoxHelper.IsAttached="True"
-                                                 hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.ConsumerSecretKey}" 
+                                                 hlp:PasswordBoxHelper.Password="{Binding TwitterAPI.Config.KeysM.ConsumerSecretKey}" 
                                                  Margin="5" VerticalAlignment="Center" Cursor="IBeam"
                                                  Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=consumer_secret_key}"/>
                                 </Grid>
@@ -143,9 +131,9 @@
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <Grid>
                                     <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=access_token}" 
-                                                 Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessToken}"/>
+                                                 Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.KeysM.AccessToken}"/>
                                     <PasswordBox Background="White" Width="300" hlp:PasswordBoxHelper.IsAttached="True"
-                                                 hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.AccessToken}" 
+                                                 hlp:PasswordBoxHelper.Password="{Binding TwitterAPI.Config.KeysM.AccessToken}" 
                                                  Margin="5" VerticalAlignment="Center" Cursor="IBeam"
                                                  Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=access_token}"/>
                                 </Grid>
@@ -157,9 +145,9 @@
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <Grid>
                                     <TextBox Visibility="{Binding IsChecked, Converter={StaticResource boolToVisibilityConverter}, ElementName=access_secret}"
-                                                 Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.KeysM.AccessSecret}"/>
+                                                 Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.KeysM.AccessSecret}"/>
                                     <PasswordBox Width="300"
-                                                 hlp:PasswordBoxHelper.IsAttached="True" hlp:PasswordBoxHelper.Password="{Binding TwitterConfig.KeysM.AccessSecret}" 
+                                                 hlp:PasswordBoxHelper.IsAttached="True" hlp:PasswordBoxHelper.Password="{Binding TwitterAPI.Config.KeysM.AccessSecret}" 
                                                  Margin="5" VerticalAlignment="Center" Cursor="IBeam"
                                                  Visibility="{Binding IsChecked, Converter={StaticResource InverseBoolToVisibilityConverter}, ElementName=access_secret}"/>
                                 </Grid>
@@ -173,17 +161,17 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Width="100" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="ハッシュタグ"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
-                                <TextBox Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterConfig.TempleteM.HashTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Cursor="IBeam"/>
+                                <TextBox Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.TempleteM.HashTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Cursor="IBeam"/>
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Margin="5" Grid.Row="2" Header="メッセージ">
                         <TabControl>
                             <TabItem Header="プレビュー">
-                                <TextBox Text="{Binding TwitterConfig.TempleteM.Message, Mode=OneWay}" AcceptsReturn="True" Cursor="IBeam"/>
+                                <TextBox Text="{Binding TwitterAPI.Config.TempleteM.Message, Mode=OneWay}" AcceptsReturn="True" Cursor="IBeam"/>
                             </TabItem>
                             <TabItem Header="テンプレート">
-                                <TextBox Text="{Binding TwitterConfig.TempleteM.MessageTemplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <TextBox Text="{Binding TwitterAPI.Config.TempleteM.MessageTemplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                              AcceptsReturn="True" Cursor="IBeam"/>
                             </TabItem>
                         </TabControl>

@@ -54,12 +54,11 @@ namespace MovingWordpress.Models.GitHub
                 string homepage_url = !string.IsNullOrWhiteSpace(repo.Homepage) ? $" [[Home Page]({repo.Homepage})]" : string.Empty;
 
                 // 行情報の作成
-                text.AppendLine($"|<center>{repo.StargazersCount}<br>({rank++})</center>|" +
+                text.AppendLine($"|<center>{repo.StargazersCount}<br>({rank++}位)</center>|" +
                     $"[{repo.FullName}]({repo.HtmlUrl}){homepage_url}<br>{description}|" +
                     $"{language}|" +
                     $"[[google](https://www.google.com/search?q={repo.Name})] " +
-                    $"[[Qiita](https://qiita.com/search?q={repo.Name})] " +
-                    $"[[Google Trends](https://trends.google.co.jp/trends/explore?q={repo.Name})]|");
+                    $"[[Qiita](https://qiita.com/search?q={repo.Name})]|");
             }
 
             return text.ToString();
