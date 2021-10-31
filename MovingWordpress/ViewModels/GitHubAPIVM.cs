@@ -210,6 +210,28 @@ namespace MovingWordpress.ViewModels
 
             // 1つ目の値を取り出す
             this.LanguageList.SelectedItem = this.LanguageList.Items.First();
+
+            // 言語一覧の取り出し
+            //string test = GetAllLanguageMarkdown();
+        }
+        #endregion
+
+        #region 全言語マークダウン取得用
+        /// <summary>
+        /// 全言語マークダウン取得用
+        /// </summary>
+        /// <returns>マークダウン</returns>
+        private string GetAllLanguageMarkdown()
+        {
+            StringBuilder test = new StringBuilder();
+            test.AppendLine($"|言語|検索|");
+            test.AppendLine($"|---|---|");
+            foreach (Language val in Enum.GetValues(typeof(Language)))
+            {
+                string lang_name = Enum.GetName(typeof(Language), val);
+                test.AppendLine($"|{lang_name}|[[Google](https://www.google.com/search?q={lang_name})] [[Qiita](https://qiita.com/search?q={lang_name})] [[Wiki(日)](https://ja.wikipedia.org/wiki/{lang_name})] [[Wiki(米)](https://en.wikipedia.org/wiki/{lang_name})]|");
+            }
+            return test.ToString();
         }
         #endregion
 

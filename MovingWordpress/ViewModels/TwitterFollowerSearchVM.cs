@@ -195,8 +195,12 @@ namespace MovingWordpress.ViewModels
 				// 自分のフォローリストをデータベースから取得
 				this.TwitterAPI.MyFollowList.Items = new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(MyFollowUserBaseEx.Select()));
 
-				// ユーザー数を確認
-				CheckUser();
+				//// ユーザー数を確認
+				//CheckUser();
+
+				// フィルタを実行する
+				RatioMatchFilter();
+
 			}
 			catch (Exception e)
 			{
@@ -267,8 +271,12 @@ namespace MovingWordpress.ViewModels
 				   // フィルターフォローリストに追加
 				   this.FilterdList.Items = this.TwitterAPI.FollowList.Items;
 
-				   // ユーザー数を確認
-				   CheckUser();
+				   //// ユーザー数を確認
+				   //CheckUser();
+
+				   // フィルタを実行する
+				   RatioMatchFilter();
+
 			   })).Wait();
 		}
 		#endregion
@@ -321,6 +329,9 @@ namespace MovingWordpress.ViewModels
 
 			// ユーザーの追加
 			UpdateList(user.ScreenName, 5000);
+
+			// フィルタを実行する
+			RatioMatchFilter();
 		}
 		#endregion
 
@@ -429,26 +440,26 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
-		#region ユーザーの内容をチェックする
-		/// <summary>
-		/// ユーザーの内容をチェックする
-		/// </summary>
-		public void CheckUser()
-		{
-			this.KeysMatchUserCount = (from x in this.TwitterAPI.FollowList.Items
-									  where this.UserMatch.CheckDescription(x)
-									  select x).Count();
+		//#region ユーザーの内容をチェックする
+		///// <summary>
+		///// ユーザーの内容をチェックする
+		///// </summary>
+		//public void CheckUser()
+		//{
+		//	this.KeysMatchUserCount = (from x in this.TwitterAPI.FollowList.Items
+		//							  where this.UserMatch.CheckDescription(x)
+		//							  select x).Count();
 
-			this.RatioMatchUserCount = (from x in this.TwitterAPI.FollowList.Items
-									   where this.UserMatch.CheckFollowRatio(x)
-									   select x).Count();
+		//	this.RatioMatchUserCount = (from x in this.TwitterAPI.FollowList.Items
+		//							   where this.UserMatch.CheckFollowRatio(x)
+		//							   select x).Count();
 
-			this.NonFollowCount = (from x in this.TwitterAPI.FollowList.Items
-										where !this.UserMatch.CheckMyFollow(x, this.TwitterAPI.MyFollowList.Items.ToList<TwitterUserM>())
-										select x).Count();
+		//	this.NonFollowCount = (from x in this.TwitterAPI.FollowList.Items
+		//								where !this.UserMatch.CheckMyFollow(x, this.TwitterAPI.MyFollowList.Items.ToList<TwitterUserM>())
+		//								select x).Count();
 
-		}
-		#endregion
+		//}
+		//#endregion
 
         #region 説明文でフィルタする
         /// <summary>
@@ -578,7 +589,7 @@ namespace MovingWordpress.ViewModels
 
 			int row = 2;
 
-			foreach (var tmp in this.TwitterAPI.FollowList.Items)
+			foreach (var tmp in this.FilterdList.Items)
 			{
 				worksheet.Cell($"A{row}").Value = tmp.Id;
 				worksheet.Cell($"B{row}").Value = tmp.ScreenName;
@@ -686,8 +697,8 @@ namespace MovingWordpress.ViewModels
 							this.FilterdList.Items = this.TwitterAPI.FollowList.Items
 								= new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(TwitterUserBaseEx.Select()));
 
-							// ユーザー数を確認
-							CheckUser();
+							//// ユーザー数を確認
+							//CheckUser();
 
 
 							// 自動フォローフラグがONの場合は抜ける
