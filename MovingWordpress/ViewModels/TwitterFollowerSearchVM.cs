@@ -171,6 +171,31 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+		#region 自動フォロー管理オブジェクト[FollowManage]プロパティ
+		/// <summary>
+		/// 自動フォロー管理オブジェクト[FollowManage]プロパティ用変数
+		/// </summary>
+		FollowManageM _FollowManage = new FollowManageM();
+		/// <summary>
+		/// 自動フォロー管理オブジェクト[FollowManage]プロパティ
+		/// </summary>
+		public FollowManageM FollowManage
+		{
+			get
+			{
+				return _FollowManage;
+			}
+			set
+			{
+				if (_FollowManage == null || !_FollowManage.Equals(value))
+				{
+					_FollowManage = value;
+					NotifyPropertyChanged("FollowManage");
+				}
+			}
+		}
+		#endregion
+
 		#region 初期化処理
 		/// <summary>
 		/// 初期化処理
@@ -184,29 +209,36 @@ namespace MovingWordpress.ViewModels
 				// ユーザーのマッチ条件をロード
 				this.UserMatch.Load();
 
-				using (var db = new SQLiteDataContext())
-				{
-					db.Database.EnsureCreated();
-				}
-
-				// フォロバリストをデータベースから取得
-				this.FilterdList.Items = this.TwitterAPI.FollowList.Items = new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(TwitterUserBaseEx.Select()));
-
-				// 自分のフォローリストをデータベースから取得
-				this.TwitterAPI.MyFollowList.Items = new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(MyFollowUserBaseEx.Select()));
-
-				//// ユーザー数を確認
-				//CheckUser();
-
-				// フィルタを実行する
-				RatioMatchFilter();
-
+				// リストの更新処理
+				RenewList();
 			}
 			catch (Exception e)
 			{
 				_logger.Error(e.Message);
 				ShowMessage.ShowErrorOK(e.Message, "Error");
 			}
+		}
+		#endregion
+
+		#region フォロー・フォロワー・フォロバリストの更新処理
+		/// <summary>
+		/// フォロー・フォロワー・フォロバリストの更新処理
+		/// </summary>
+		public void RenewList()
+		{
+			using (var db = new SQLiteDataContext())
+			{
+				db.Database.EnsureCreated();
+			}
+
+			// フォロバリストをデータベースから取得
+			this.FilterdList.Items = this.TwitterAPI.FollowList.Items = new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(TwitterUserBaseEx.Select()));
+
+			// 自分のフォローリストをデータベースから取得
+			this.TwitterAPI.MyFollowList.Items = new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(MyFollowUserBaseEx.Select()));
+
+			// フィルタを実行する
+			RatioMatchFilter();
 		}
 		#endregion
 
@@ -218,7 +250,7 @@ namespace MovingWordpress.ViewModels
 		/// <param name="user_limit">ユーザー数限界</param>
 		private void UpdateList(string screen_name, int user_limit)
 		{
-			// フォロワーの取得
+			// フォロバリストの取得
 			var result = this.TwitterAPI.GetUser(-1, screen_name, true);
 
 			var tmp_user = new ModelList<TwitterUserM>();
@@ -248,7 +280,7 @@ namespace MovingWordpress.ViewModels
 
 			foreach (var tmp in result)
 			{
-				var tuser = new TwitterUserM(tmp);
+				var tuser = new TwitterUserM(tmp, true, false);
 
 				// 期待する文字列が含まれていて、自分のフォローに含まれていない、かつ自分ではない場合に登録する
 				if (this.UserMatch.CheckDescription(tuser)
@@ -405,6 +437,7 @@ namespace MovingWordpress.ViewModels
 		#endregion
 
 		Random _Rand = new Random();
+
 		#region フォローリストの作成
 		/// <summary>
 		/// フォローリストの作成
@@ -439,27 +472,6 @@ namespace MovingWordpress.ViewModels
 			}
 		}
 		#endregion
-
-		//#region ユーザーの内容をチェックする
-		///// <summary>
-		///// ユーザーの内容をチェックする
-		///// </summary>
-		//public void CheckUser()
-		//{
-		//	this.KeysMatchUserCount = (from x in this.TwitterAPI.FollowList.Items
-		//							  where this.UserMatch.CheckDescription(x)
-		//							  select x).Count();
-
-		//	this.RatioMatchUserCount = (from x in this.TwitterAPI.FollowList.Items
-		//							   where this.UserMatch.CheckFollowRatio(x)
-		//							   select x).Count();
-
-		//	this.NonFollowCount = (from x in this.TwitterAPI.FollowList.Items
-		//								where !this.UserMatch.CheckMyFollow(x, this.TwitterAPI.MyFollowList.Items.ToList<TwitterUserM>())
-		//								select x).Count();
-
-		//}
-		//#endregion
 
         #region 説明文でフィルタする
         /// <summary>
@@ -663,6 +675,42 @@ namespace MovingWordpress.ViewModels
 		}
 		#endregion
 
+		#region 選択行のフォロー
+		/// <summary>
+		/// 選択行のフォロー
+		/// </summary>
+		public void SelectedRowFollow()
+		{
+			try
+			{
+				// 選択行のフォロー
+				var user = FilterdList.SelectedItem;
+
+				// フォロー作成処理
+				CreateFollow(user);
+			}
+			catch (Exception e)
+			{
+				_logger.Error(e.Message);
+				ShowMessage.ShowErrorOK(e.Message, "Error");
+			}
+		}
+		#endregion
+
+		#region 選択行のフォロー
+		/// <summary>
+		/// 選択行のフォロー
+		/// </summary>
+		private void CreateFollow(TwitterUserM user)
+		{
+			// リストから削除する
+			TwitterUserBaseEx.Delete(new TwitterUserBase() { Id = user.Id.Value });
+
+			// 自分のフォローリストに加える
+			MyFollowUserBaseEx.Upsert(user);
+		}
+		#endregion
+
 		#region 自動フォロー
 		/// <summary>
 		/// 自動フォロー
@@ -673,40 +721,49 @@ namespace MovingWordpress.ViewModels
 			{
 				Task.Run(() =>
 				{
+					// タイマー割り込みにしないとうまくいかない！！！
+
+
 					var tmp = new ObservableCollection<TwitterUserM>((from x in this.TwitterAPI.FollowList.Items
 																	  where this.UserMatch.CheckFollowRatio(x)
 																	  select x).ToList<TwitterUserM>());
 					foreach (var user in tmp)
 					{
+
+
 						// 自動フォローフラグがONの場合は抜ける
 						if (!this.AutoFollowF)
 							break;
 
 						if (user.Id.HasValue)
 						{
-							this.TwitterAPI.CreateFollow(user.Id.Value);
+							// フォローを実行する
+							CreateFollow(user);
 
 							// 自動フォローフラグがONの場合は抜ける
 							if (!this.AutoFollowF)
 								break;
 
-							// リストから削除する
-							TwitterUserBaseEx.Delete(new TwitterUserBase() { Id = user.Id.Value });
+							int msec = _Rand.Next(this.FollowManage.FromWait * 1000, this.FollowManage.ToWait * 1000);
 
-							// フォロバリストをデータベースから取得
-							this.FilterdList.Items = this.TwitterAPI.FollowList.Items
-								= new ObservableCollection<TwitterUserM>(TwitterUserM.ToTwitterUserM(TwitterUserBaseEx.Select()));
+							while (this.FollowManage.CheckWait(msec))
+							{
+								if (msec > 1000)
+								{
+									// 1min～10minの間でランダムにスリープ
+									System.Threading.Thread.Sleep(1000);
+									msec = msec - 1000;
+								}
+								else
+								{
+									// 1min～10minの間でランダムにスリープ
+									System.Threading.Thread.Sleep(msec);
+								}
 
-							//// ユーザー数を確認
-							//CheckUser();
-
-
-							// 自動フォローフラグがONの場合は抜ける
-							if (!this.AutoFollowF)
-								break;
-
-							// 60秒に一度実行する
-							System.Threading.Thread.Sleep(3 * 60 * 1000);
+								// 自動フォローフラグがONの場合は抜ける
+								if (!this.AutoFollowF)
+									break;
+							}
 						}
 					}
 				});

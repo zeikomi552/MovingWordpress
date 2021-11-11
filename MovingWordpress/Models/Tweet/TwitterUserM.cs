@@ -14,13 +14,16 @@ namespace MovingWordpress.Models.Tweet
 		{
 
 		}
-		public TwitterUserM(CoreTweet.User user)
+
+		public TwitterUserM(CoreTweet.User user, bool is_friend, bool is_follower)
 		{
 			this.Id = user.Id;
 			this.ScreenName = user.ScreenName;
 			this.FollowersCount = user.FollowersCount;
 			this.FriendsCount = user.FriendsCount;
 			this.Description = user.Description;
+			this.IsFollower = is_follower;
+			this.IsFriend = is_friend;
 		}
 		#region ID[Id]プロパティ
 		/// <summary>
@@ -121,6 +124,57 @@ namespace MovingWordpress.Models.Tweet
 			}
 		}
 		#endregion
+
+		#region フォローしているかどうかを示すフラグ[IsFriend]プロパティ
+		/// <summary>
+		/// フォローしているかどうかを示すフラグ[IsFriend]プロパティ用変数
+		/// </summary>
+		bool _IsFriend = false;
+		/// <summary>
+		/// フォローしているかどうかを示すフラグ[IsFriend]プロパティ
+		/// </summary>
+		public bool IsFriend
+		{
+			get
+			{
+				return _IsFriend;
+			}
+			set
+			{
+				if (!_IsFriend.Equals(value))
+				{
+					_IsFriend = value;
+					NotifyPropertyChanged("IsFriend");
+				}
+			}
+		}
+		#endregion
+
+		#region フォロワーかどうかをしめすフラグ[IsFollower]プロパティ
+		/// <summary>
+		/// フォロワーかどうかをしめすフラグ[IsFollower]プロパティ用変数
+		/// </summary>
+		bool _IsFollower = false;
+		/// <summary>
+		/// フォロワーかどうかをしめすフラグ[IsFollower]プロパティ
+		/// </summary>
+		public bool IsFollower
+		{
+			get
+			{
+				return _IsFollower;
+			}
+			set
+			{
+				if (!_IsFollower.Equals(value))
+				{
+					_IsFollower = value;
+					NotifyPropertyChanged("IsFollower");
+				}
+			}
+		}
+		#endregion
+
 
 		#region 説明[Description]プロパティ
 		/// <summary>

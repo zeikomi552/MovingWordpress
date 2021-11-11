@@ -426,52 +426,18 @@ namespace MovingWordpress.Models.Tweet
 
             foreach (var user in tw_follow_user)
             {
-                tmp_list.Items.Add(new TwitterUserM(user));
+                tmp_list.Items.Add(new TwitterUserM(user, true, false));
             }
 
             // フォローリストの取得
             this.MyFollowList = tmp_list;
 
-            // 条件に合致するもののみ残す
+            // フォローユーザーをデータベースに保存する
             foreach (var user in tmp_list.Items)
             {
                 MyFollowUserBaseEx.Upsert(user);
             }
         }
         #endregion
-
-        #region 自分のフォロワーを更新
-        /// <summary>
-        /// 自分のフォロワーを更新
-        /// </summary>
-        public void RefreshMyFollower()
-        {
-            // 自分のフォロワー情報を削除
-            MyFollowerUserBaseEx.Delete();
-
-            // データベースからフォローを取得
-            var follow_user = MyFollowerUserBaseEx.Select();
-
-            // Twitterからフォローの取得
-            var tw_follow_user = this.GetUserAll(this.MyScreenName, false);
-
-            var tmp_list = new ModelList<TwitterUserM>();
-
-            foreach (var user in tw_follow_user)
-            {
-                tmp_list.Items.Add(new TwitterUserM(user));
-            }
-
-            this.MyFollowerList = tmp_list;
-
-
-            // 条件に合致するもののみ残す
-            foreach (var user in tw_follow_user)
-            {
-                MyFollowerUserBaseEx.Upsert(user);
-            }
-        }
-        #endregion
-
     }
 }

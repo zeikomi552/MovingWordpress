@@ -73,6 +73,22 @@
                         </StackPanel>
 
                     </ToggleButton>
+                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Margin="5" Height="100" Width="100" Cursor="Hand" IsChecked="{Binding AutoFollowF}">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="Checked">
+                                <b:CallMethodAction MethodName="CreateFollowList" TargetObject="{Binding}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                        <StackPanel Orientation="Vertical">
+                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
+                            <Viewbox Width="60">
+                                <StackPanel>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="自動フォロー"/>
+                                </StackPanel>
+                            </Viewbox>
+                        </StackPanel>
+
+                    </ToggleButton>
                 </StackPanel>
             </GroupBox>
             <GroupBox Grid.Column="1" Margin="5,5,0,5" Header="サブアクションアイテム">
@@ -230,6 +246,29 @@
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="説明文内に含まれる文字"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <TextBox materialDesign:HintAssist.Hint="カンマ区切りで複数入力可" VerticalAlignment="Center" MinWidth="200" Text="{Binding UserMatch.DescriptionKeys}" Cursor="IBeam"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロー数上限(0時にクリア)"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <TextBox Width="100" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding FollowManage.Max}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="回"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="現在:"/>
+                                <TextBox Width="100" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding FollowManage.Current}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="回"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="残り"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <TextBlock Margin="5" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FollowManage.Remain}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="回"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="自動フォロー待ち時間範囲"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <TextBox TextAlignment="Center" Width="100" VerticalAlignment="Center" Text="{Binding FollowManage.FromWait}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="分"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="-"/>
+                                <TextBox TextAlignment="Center" Width="100" VerticalAlignment="Center" Text="{Binding FollowManage.ToWait}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="分"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FollowManage.LastFollowTime}"/>
                             </StackPanel>
                         </StackPanel>
 
