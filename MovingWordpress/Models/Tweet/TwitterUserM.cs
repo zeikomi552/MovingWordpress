@@ -10,21 +10,16 @@ namespace MovingWordpress.Models.Tweet
 {
     public class TwitterUserM : ModelBase
     {
+		#region コンストラクタ
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
 		public TwitterUserM()
 		{
 
 		}
+		#endregion
 
-		public TwitterUserM(CoreTweet.User user, bool is_friend, bool is_follower)
-		{
-			this.Id = user.Id;
-			this.ScreenName = user.ScreenName;
-			this.FollowersCount = user.FollowersCount;
-			this.FriendsCount = user.FriendsCount;
-			this.Description = user.Description;
-			this.IsFollower = is_follower;
-			this.IsFriend = is_friend;
-		}
 		#region ID[Id]プロパティ
 		/// <summary>
 		/// ID[Id]プロパティ用変数
@@ -74,6 +69,7 @@ namespace MovingWordpress.Models.Tweet
 			}
 		}
 		#endregion
+		
 		#region フォロワー数[FollowersCount]プロパティ
 		/// <summary>
 		/// フォロワー数[FollowersCount]プロパティ用変数
@@ -98,7 +94,6 @@ namespace MovingWordpress.Models.Tweet
 			}
 		}
 		#endregion
-
 
 		#region フォロー数[FriendsCount]プロパティ
 		/// <summary>
@@ -174,7 +169,6 @@ namespace MovingWordpress.Models.Tweet
 			}
 		}
 		#endregion
-
 
 		#region 説明[Description]プロパティ
 		/// <summary>
@@ -255,56 +249,6 @@ namespace MovingWordpress.Models.Tweet
 		/// <param name="user_list">ユーザーリスト</param>
 		/// <returns>ユーザーリスト</returns>
 		public static List<TwitterUserM> ToTwitterUserM(CoreTweet.Cursored<CoreTweet.User> user_list)
-		{
-			var ret = new List<TwitterUserM>();
-			foreach (var user in user_list)
-			{
-				ret.Add(new TwitterUserM()
-				{
-					Id = user.Id,
-					Description = user.Description,
-					FollowersCount = user.FollowersCount,
-					FriendsCount = user.FriendsCount,
-					ScreenName = user.ScreenName
-				}
-					);
-			}
-			return ret;
-		}
-		#endregion
-
-		#region TwitterAPIからの戻り値を保存できる形式に変換する
-		/// <summary>
-		/// TwitterAPIからの戻り値をTwitterUserM形式に変換する
-		/// </summary>
-		/// <param name="user_list">データベースから取得したユーザーリスト</param>
-		/// <returns>ユーザーリスト</returns>
-		public static List<TwitterUserM> ToTwitterUserM(List<MyFollowUserBase> user_list)
-		{
-			var ret = new List<TwitterUserM>();
-			foreach (var user in user_list)
-			{
-				ret.Add(new TwitterUserM()
-				{
-					Id = user.Id,
-					Description = user.Description,
-					FollowersCount = user.FollowersCount,
-					FriendsCount = user.FriendsCount,
-					ScreenName = user.ScreenName
-				}
-					);
-			}
-			return ret;
-		}
-		#endregion
-
-		#region TwitterUserM形式に変換する
-		/// <summary>
-		/// TwitterUserM形式に変換する
-		/// </summary>
-		/// <param name="user_list">ユーザーリスト</param>
-		/// <returns></returns>
-		public static List<TwitterUserM> ToTwitterUserM(List<MyFollowerUserBase> user_list)
 		{
 			var ret = new List<TwitterUserM>();
 			foreach (var user in user_list)

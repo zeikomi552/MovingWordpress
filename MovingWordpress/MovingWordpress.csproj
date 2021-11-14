@@ -17,6 +17,13 @@ SSHに対応したブログサイトを想定しています。
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\db\MyFollowerUserBase.cs" />
+    <Compile Remove="Models\db\MyFollowerUserBaseEx.cs" />
+    <Compile Remove="Models\db\MyFollowUserBase.cs" />
+    <Compile Remove="Models\db\MyFollowUserBaseEx.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Common\Icons\app-icon.ico" />
     <None Remove="Common\Icons\app.ico" />
     <None Remove="Common\Icons\icon-after-wordpress.png" />

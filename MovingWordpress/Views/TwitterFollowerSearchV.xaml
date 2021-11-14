@@ -47,19 +47,19 @@
                     <Button Margin="5" Height="100" Width="100" Cursor="Hand">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="GetMyFollows" TargetObject="{Binding}"/>
+                                <b:CallMethodAction MethodName="AdjustFriends" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
                             <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロー更新"/>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="FF更新"/>
                         </StackPanel>
 
                     </Button>
-                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Margin="5" Height="100" Width="100" Cursor="Hand" IsChecked="{Binding RepeatSearch}">
+                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Margin="5" Height="100" Width="100" Cursor="Hand" IsChecked="{Binding FollowBackSearchF}">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Checked">
-                                <b:CallMethodAction MethodName="CreateFollowList" TargetObject="{Binding}"/>
+                                <b:CallMethodAction MethodName="FollowBackSearch" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
@@ -215,7 +215,7 @@
                                 <TextBlock Width="120" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="自分のユーザー名"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <Grid>
-                                    <TextBox Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.MyScreenName}"/>
+                                    <TextBox Margin="5" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TwitterAPI.Config.MyScreenName}" Cursor="IBeam"/>
                                 </Grid>
                             </StackPanel>
 
@@ -294,8 +294,8 @@
                         </StackPanel>
                         <TabControl Grid.Row="1">
                             <TabItem Header="フォロバリスト">
-                                <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding FilterdList.Items}"
-                                  SelectedItem="{Binding FilterdList.SelectedItem}">
+                                <DataGrid FrozenColumnCount="1" Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding UserList.Items}"
+                                  SelectedItem="{Binding UserList.SelectedItem}">
                                     <b:Interaction.Triggers>
                                         <b:EventTrigger EventName="MouseDoubleClick">
                                             <b:CallMethodAction MethodName="RowDoubleClick" TargetObject="{Binding}"/>
@@ -306,35 +306,18 @@
                                         <DataGridTextColumn Header="フォロー数" Binding="{Binding FriendsCount}"/>
                                         <DataGridTextColumn Header="フォロワー数" Binding="{Binding FollowersCount}"/>
                                         <DataGridTextColumn Header="説明" Binding="{Binding Description}"/>
+                                        <DataGridCheckBoxColumn Header="フォロー" Binding="{Binding IsFriend}"/>
+                                        <DataGridCheckBoxColumn Header="フォロワー" Binding="{Binding IsFollower}"/>
                                         <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </TabItem>
-                            <TabItem Header="マイフォロー">
-                                <DataGrid Margin="5" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" ItemsSource="{Binding TwitterAPI.MyFollowList.Items}"
-                                  SelectedItem="{Binding TwitterAPI.MyFollowList.SelectedItem}">
-                                    <b:Interaction.Triggers>
-                                        <b:EventTrigger EventName="MouseDoubleClick">
-                                            <b:CallMethodAction MethodName="RowDoubleClick" TargetObject="{Binding}"/>
-                                        </b:EventTrigger>
-                                    </b:Interaction.Triggers>
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Screen Name" Binding="{Binding ScreenName}"/>
-                                        <DataGridTextColumn Header="フォロー数" Binding="{Binding FriendsCount}"/>
-                                        <DataGridTextColumn Header="フォロワー数" Binding="{Binding FollowersCount}"/>
-                                        <DataGridTextColumn Header="説明" Binding="{Binding Description}"/>
-                                        <DataGridTextColumn Header="Id" Binding="{Binding Id}"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                                
-                            </TabItem>
-
                         </TabControl>
                         <StackPanel Grid.Row="2" Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text="行数"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" Text=":"/>
-                                <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding FilterdList.Items.Count}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding UserList.Items.Count}"/>
                             </StackPanel>
                             <!--<StackPanel Orientation="Horizontal">
                                 <Button Margin="5" VerticalAlignment="Center" Content="フォロー率内人数" Cursor="Hand">

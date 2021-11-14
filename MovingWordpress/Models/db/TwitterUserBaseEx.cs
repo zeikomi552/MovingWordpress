@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MovingWordpress.Models.Tweet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,13 +37,13 @@ namespace MovingWordpress.Models.db
 			}
 		}
 		#endregion
-
+		
 		#region Upsert処理
 		/// <summary>
 		/// Upsert処理
 		/// </summary>
 		/// <param name="user">ユーザーデータ</param>
-		public static void Upsert(CoreTweet.User user)
+		public static void Upsert(CoreTweet.User user, bool is_friend, bool is_follower)
 		{
 			// nullチェック
 			if (user.Id == null)
@@ -62,7 +63,9 @@ namespace MovingWordpress.Models.db
 						ScreenName = user.ScreenName,
 						Description = user.Description,
 						FollowersCount = user.FollowersCount,
-						FriendsCount = user.FriendsCount
+						FriendsCount = user.FriendsCount,
+						IsFriend = is_friend,
+						IsFollower = is_follower
 					},
 					new TwitterUserBase()
 					{
@@ -72,7 +75,9 @@ namespace MovingWordpress.Models.db
 						ScreenName = user.ScreenName,
 						Description = user.Description,
 						FollowersCount = user.FollowersCount,
-						FriendsCount = user.FriendsCount
+						FriendsCount = user.FriendsCount,
+						IsFriend = is_friend,
+						IsFollower = is_follower
 					}
 					);
 			}
@@ -87,7 +92,9 @@ namespace MovingWordpress.Models.db
 						ScreenName = user.ScreenName,
 						Description = user.Description,
 						FollowersCount = user.FollowersCount,
-						FriendsCount = user.FriendsCount
+						FriendsCount = user.FriendsCount,
+						IsFriend = is_friend,
+						IsFollower = is_follower
 					}
 					);
 			}

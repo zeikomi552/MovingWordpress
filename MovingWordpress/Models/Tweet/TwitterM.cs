@@ -23,30 +23,15 @@ namespace MovingWordpress.Models.Tweet
         /// </summary>
         public bool IsSuccessToken { get; set; } = false;
 
-        #region 自分のフォロワーリスト[MyFollowerList]プロパティ
+        #region コンストラクタ
         /// <summary>
-        /// 自分のフォロワーリスト[MyFollowerList]プロパティ用変数
+        /// コンストラクタ
         /// </summary>
-        ModelList<TwitterUserM> _MyFollowerList = new ModelList<TwitterUserM>();
-        /// <summary>
-        /// 自分のフォロワーリスト[MyFollowerList]プロパティ
-        /// </summary>
-        public ModelList<TwitterUserM> MyFollowerList
+        public TwitterM()
         {
-            get
-            {
-                return _MyFollowerList;
-            }
-            set
-            {
-                if (_MyFollowerList == null || !_MyFollowerList.Equals(value))
-                {
-                    _MyFollowerList = value;
-                    NotifyPropertyChanged("MyFollowerList");
-                }
-            }
         }
         #endregion
+
         #region スクリーン名[MyScreenName]プロパティ
         /// <summary>
         /// スクリーン名[MyScreenName]プロパティ用変数
@@ -71,57 +56,6 @@ namespace MovingWordpress.Models.Tweet
             }
         }
         #endregion
-
-        #region 自分のフォローリスト[MyFollowList]プロパティ
-        /// <summary>
-        /// 自分のフォローリスト[MyFollowList]プロパティ用変数
-        /// </summary>
-        ModelList<TwitterUserM> _MyFollowList = new ModelList<TwitterUserM>();
-        /// <summary>
-        /// 自分のフォローリスト[MyFollowList]プロパティ
-        /// </summary>
-        public ModelList<TwitterUserM> MyFollowList
-        {
-            get
-            {
-                return _MyFollowList;
-            }
-            set
-            {
-                if (_MyFollowList == null || !_MyFollowList.Equals(value))
-                {
-                    _MyFollowList = value;
-                    NotifyPropertyChanged("MyFollowList");
-                }
-            }
-        }
-        #endregion
-
-        #region フォロー候補[FollowList]プロパティ
-        /// <summary>
-        /// フォロー候補[FollowList]プロパティ用変数
-        /// </summary>
-        ModelList<TwitterUserM> _FollowList = new ModelList<TwitterUserM>();
-        /// <summary>
-        /// フォロー候補[FollowList]プロパティ
-        /// </summary>
-        public ModelList<TwitterUserM> FollowList
-        {
-            get
-            {
-                return _FollowList;
-            }
-            set
-            {
-                if (_FollowList == null || !_FollowList.Equals(value))
-                {
-                    _FollowList = value;
-                    NotifyPropertyChanged("FollowList");
-                }
-            }
-        }
-        #endregion
-
 
         #region ツイッターAPI用のコンフィグ[Config]プロパティ
         /// <summary>
@@ -170,15 +104,6 @@ namespace MovingWordpress.Models.Tweet
                     NotifyPropertyChanged("RateLimit");
                 }
             }
-        }
-        #endregion
-
-        #region コンストラクタ
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        public TwitterM()
-        {
         }
         #endregion
 
@@ -266,10 +191,8 @@ namespace MovingWordpress.Models.Tweet
         /// <param name="limit">リミット情報</param>
         /// <param name="wait_ms">待ち時間(デフォルト60秒)</param>
         /// <returns>true:待ち時間のリセット false:待ち時間中</returns>
-        public bool Wait(int wait_ms = 60000)
+        public bool Wait(RateLimit limit, int wait_ms = 60000)
         {
-            var limit = this.RateLimit;
-
             // 残り回数が0の場合は待つ
             if (limit.Remaining <= 0)
             {
@@ -298,9 +221,6 @@ namespace MovingWordpress.Models.Tweet
 
             // フォローの実行
             var result = this.Tokens.Friendships.Create(id, true);
-
-            // リミットの取得(フォロー追加の場合はnullが返ってくるので設定しない)
-            //this.RateLimit = result.RateLimit;
 
             return result;
         }
@@ -338,7 +258,7 @@ namespace MovingWordpress.Models.Tweet
                 if (next_cursor != 0)
                 {
                     // 1min待つ
-                    Wait(60000);
+                    Wait(result.RateLimit, 60000);
                 }
             }
             return list;
@@ -407,37 +327,5 @@ namespace MovingWordpress.Models.Tweet
         }
         #endregion
 
-        #region 自分のフォローを更新
-        /// <summary>
-        /// 自分のフォローを更新
-        /// </summary>
-        public void RefreshMyFollow()
-        {
-            // 自分のフォロワー情報を削除
-            MyFollowUserBaseEx.Delete();
-
-            // データベースからフォローを取得
-            var follow_user = MyFollowUserBaseEx.Select();
-
-            // Twitterからフォローの取得
-            var tw_follow_user = this.GetUserAll(this.MyScreenName, true);
-
-            var tmp_list = new ModelList<TwitterUserM>();
-
-            foreach (var user in tw_follow_user)
-            {
-                tmp_list.Items.Add(new TwitterUserM(user, true, false));
-            }
-
-            // フォローリストの取得
-            this.MyFollowList = tmp_list;
-
-            // フォローユーザーをデータベースに保存する
-            foreach (var user in tmp_list.Items)
-            {
-                MyFollowUserBaseEx.Upsert(user);
-            }
-        }
-        #endregion
     }
 }

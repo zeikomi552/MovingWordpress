@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace MovingWordpress.Models.db
 {
 	/// <summary>
-	/// ツイッターユーザーログテーブル
+	/// ツイッターユーザーテーブル
 	/// TwitterUserテーブルをベースに作成しています
 	/// 作成日：2021/10/18 作成者gohya
 	/// </summary>
@@ -18,13 +18,13 @@ namespace MovingWordpress.Models.db
 	public class TwitterUserBase : INotifyPropertyChanged
 	{
 		#region パラメータ
-		#region ID[Id]プロパティ
+		#region 対象のユーザーID[Id]プロパティ
 		/// <summary>
-		/// ID[Id]プロパティ用変数
+		/// 対象のユーザーID[Id]プロパティ用変数
 		/// </summary>
 		long _Id = 0;
 		/// <summary>
-		/// ID[Id]プロパティ
+		/// 対象のユーザーID[Id]プロパティ
 		/// </summary>
 		[Key]
 		[Column("Id")]
@@ -201,6 +201,58 @@ namespace MovingWordpress.Models.db
 		}
 		#endregion
 
+		#region フォローしているかどうか[IsFriend]プロパティ
+		/// <summary>
+		/// フォローしているかどうか[IsFriend]プロパティ用変数
+		/// </summary>
+		bool _IsFriend = false;
+		/// <summary>
+		/// フォローしているかどうか[IsFriend]プロパティ
+		/// </summary>
+		[Column("IsFriend")]
+		public bool IsFriend
+		{
+			get
+			{
+				return _IsFriend;
+			}
+			set
+			{
+				if (!_IsFriend.Equals(value))
+				{
+					_IsFriend = value;
+					NotifyPropertyChanged("IsFriend");
+				}
+			}
+		}
+		#endregion
+
+		#region フォローされているかどうか[IsFollower]プロパティ
+		/// <summary>
+		/// フォローされているかどうか[IsFollower]プロパティ用変数
+		/// </summary>
+		bool _IsFollower = false;
+		/// <summary>
+		/// フォローされているかどうか[IsFollower]プロパティ
+		/// </summary>
+		[Column("IsFollower")]
+		public bool IsFollower
+		{
+			get
+			{
+				return _IsFollower;
+			}
+			set
+			{
+				if (!_IsFollower.Equals(value))
+				{
+					_IsFollower = value;
+					NotifyPropertyChanged("IsFollower");
+				}
+			}
+		}
+		#endregion
+
 
 		#endregion
 
@@ -247,6 +299,10 @@ namespace MovingWordpress.Models.db
 			this.FriendsCount = item.FriendsCount;
 
 			this.Description = item.Description;
+
+			this.IsFriend = item.IsFriend;
+
+			this.IsFollower = item.IsFollower;
 
 
 		}
