@@ -100,5 +100,24 @@ namespace MovingWordpress.Models.db
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// 指定範囲のデータを取得する
+		/// </summary>
+		/// <param name="from_ratio">ff比</param>
+		/// <param name="to_ratio">ff比</param>
+		/// <returns>リスト</returns>
+		public static List<TwitterUserBase> SelectRangeData(double from_ratio, double to_ratio)
+        {
+			using (var db = new SQLiteDataContext())
+			{
+				return db.DbSet_TwitterUser.Where(x =>
+					((x.FriendsCount / (double)x.FollowersCount) * 100.0 >= from_ratio)
+					&& ((x.FriendsCount / (double)x.FollowersCount) * 100.0 <= to_ratio
+					&& x.IsFollower.Equals(false) && x.IsFriend.Equals(false))
+					).ToList<TwitterUserBase>();
+			}
+
+		}
 	}
 }

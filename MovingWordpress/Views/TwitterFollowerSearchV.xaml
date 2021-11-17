@@ -76,7 +76,7 @@
                     <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Margin="5" Height="100" Width="100" Cursor="Hand" IsChecked="{Binding AutoFollowF}">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="Checked">
-                                <b:CallMethodAction MethodName="CreateFollowList" TargetObject="{Binding}"/>
+                                <b:CallMethodAction MethodName="AutoFollow" TargetObject="{Binding}"/>
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                         <StackPanel Orientation="Vertical">
@@ -104,22 +104,6 @@
                             <Viewbox>
                                 <StackPanel>
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロバリスト"/>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="クリア"/>
-                                </StackPanel>
-                            </Viewbox>
-                        </StackPanel>
-                    </Button>
-                    <Button Margin="5" Height="100" Width="100" Cursor="Hand">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="Click">
-                                <b:CallMethodAction MethodName="ClearMyFollow" TargetObject="{Binding}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                        <StackPanel Orientation="Vertical">
-                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <Viewbox>
-                                <StackPanel>
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォローリスト"/>
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="クリア"/>
                                 </StackPanel>
                             </Viewbox>
@@ -269,6 +253,16 @@
                                 <TextBox TextAlignment="Center" Width="100" VerticalAlignment="Center" Text="{Binding FollowManage.ToWait}"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="分"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FollowManage.LastFollowTime}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="前回のフォロー時刻"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding BeforeFollowTime, StringFormat=yyyy/MM/dd HH:mm:ss}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="次回のフォロー時刻"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding NextFollowTime, StringFormat=yyyy/MM/dd HH:mm:ss}"/>
                             </StackPanel>
                         </StackPanel>
 

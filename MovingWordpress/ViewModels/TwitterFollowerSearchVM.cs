@@ -303,11 +303,15 @@ namespace MovingWordpress.ViewModels
                 {
                     while (this.FollowBackSearchF)
                     {
-                        // ユーザーをランダムに取得する
-                        var rand_user = GetRandomUser();
+                        try
+                        {
+                            // ユーザーをランダムに取得する
+                            var rand_user = GetRandomUser();
 
-                        // ユーザーのフォローを取得する
-                        GetTwitterUserFriends(rand_user.ScreenName);
+                            // ユーザーのフォローを取得する
+                            GetTwitterUserFriends(rand_user.ScreenName);
+                        }
+                        catch { }
 
                         // 1minの待ち
                         System.Threading.Thread.Sleep(60 * 1000);
@@ -582,6 +586,209 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region 次回のフォロー時刻[NextFollowTime]プロパティ
+        /// <summary>
+        /// 次回のフォロー時刻[NextFollowTime]プロパティ用変数
+        /// </summary>
+        DateTime? _NextFollowTime = null;
+        /// <summary>
+        /// 次回のフォロー時刻[NextFollowTime]プロパティ
+        /// </summary>
+        public DateTime? NextFollowTime
+        {
+            get
+            {
+                return _NextFollowTime;
+            }
+            set
+            {
+                if (_NextFollowTime == null || !_NextFollowTime.Equals(value))
+                {
+                    _NextFollowTime = value;
+                    NotifyPropertyChanged("NextFollowTime");
+                }
+            }
+        }
+        #endregion
+
+        #region 前回のフォロー時刻[BeforeFollowTime]プロパティ
+        /// <summary>
+        /// 前回のフォロー時刻[BeforeFollowTime]プロパティ用変数
+        /// </summary>
+        DateTime? _BeforeFollowTime = null;
+        /// <summary>
+        /// 前回のフォロー時刻[BeforeFollowTime]プロパティ
+        /// </summary>
+        public DateTime? BeforeFollowTime
+        {
+            get
+            {
+                return _BeforeFollowTime;
+            }
+            set
+            {
+                if (_BeforeFollowTime == null || !_BeforeFollowTime.Equals(value))
+                {
+                    _BeforeFollowTime = value;
+                    NotifyPropertyChanged("BeforeFollowTime");
+                }
+            }
+        }
+        #endregion
+
+
+
+
+        /// <summary>
+        /// 自動フォロー処理
+        /// </summary>
+        public void AutoFollow()
+        {
+            Task.Run(() =>
+            {
+                while (AutoFollowF)
+                {
+                    // 自動フォロー処理
+                    AutoFollowSub();
+
+
+                    // 待ち時間をランダムで算出
+                    int wait_tm = _Rand.Next(FollowManage.FromWait * 60 * 1000, FollowManage.ToWait * 60 * 1000);
+
+                    // スレッドセーフな呼び出し
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                       new Action(() =>
+                       {
+                           // 現在の時刻をセット
+                           this.BeforeFollowTime = DateTime.Now;
+
+                           // 次回のフォロー時刻
+                           this.NextFollowTime = this.BeforeFollowTime.Value.AddMilliseconds(wait_tm);
+                       })).Wait();
+
+                    // 自動フォローのフラグチェック
+                    while (AutoFollowF)
+                    {
+                        int wait_base = 1000;
+
+                        if (wait_tm > wait_base)
+                        {
+                            // 待つ
+                            System.Threading.Thread.Sleep(wait_base);
+
+                            // 待ち時間を1秒減らす
+                            wait_tm -= wait_base;
+                        }
+                        else
+                        {
+                            // 待つ
+                            System.Threading.Thread.Sleep(wait_tm);
+                            break;
+
+                        }
+                    }
+                }
+                // スレッドセーフな呼び出し
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       this.NextFollowTime = this.BeforeFollowTime = null;
+                   })).Wait();                
+            });
+        }
+
+
+        private TwitterUserBase GetFollowTarget()
+        {
+            // SQLiteファイルの存在を保証する
+            using (var db = new SQLiteDataContext())
+            {
+                db.Database.EnsureCreated();
+            }
+
+            // クエリの発行
+            var sql_user_list = TwitterUserBaseEx.SelectRangeData(this.UserMatch.MinRatio, this.UserMatch.MaxRatio);
+
+            var users = sql_user_list.OrderBy(x => x.InserDateTime);
+
+            TwitterUserBase user = null;
+            foreach (var tmp_user in users)
+            {
+                var tmp = this.TwitterAPI.GetUserFromID(tmp_user.Id).FirstOrDefault();
+
+                if (tmp.IsFollowRequestSent.HasValue && tmp.IsFollowRequestSent.Value.Equals(true))
+                {
+                    continue;
+                }
+
+                if (tmp.IsProtected.Equals(true))
+                {
+                    continue;
+                }
+                user = tmp_user;
+                break;
+            }
+
+            return user;
+        }
+        #region 自動フォロー処理
+        /// <summary>
+        /// 自動フォロー処理
+        /// </summary>
+        private void AutoFollowSub()
+        {
+            try
+            {
+                var user = GetFollowTarget();
+
+                // 見つからなかったらリターン
+                if (user == null) return;
+
+                // フォロー
+                this.TwitterAPI.CreateFollow(user.Id);
+
+                using (var db = new SQLiteDataContext())
+                {
+                    // トランザクション
+                    db.Database.BeginTransaction();
+
+                    var item = db.DbSet_TwitterUser.SingleOrDefault(x => x.Id.Equals(user.Id));
+
+                    if (item != null)
+                    {
+                        try
+                        {
+                            item.IsFriend = true;
+
+                            // ログのインサート
+                            db.Add<FollowLogBase>(new FollowLogBase()
+                            {
+                                RegTime = DateTime.Now,
+                                Action = 0,
+                                Id = user.Id
+                            });
+
+                            // データの登録
+                            db.SaveChanges();
+
+                            // コミット
+                            db.Database.CommitTransaction();
+                        }
+                        catch
+                        {
+                            // 失敗したのでロールバック
+                            db.Database.RollbackTransaction();
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
 
         //#region フォローリストの作成
         ///// <summary>
@@ -676,31 +883,31 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        //#region クリア
-        ///// <summary>
-        ///// クリア
-        ///// </summary>
-        //public void ClearFollowBackList()
-        //{
-        //	try
-        //	{
-        //		if (ShowMessage.ShowQuestionYesNo("フォロバリストを削除してもよろしいですか？", "確認") == MessageBoxResult.Yes)
-        //		{
-        //			// データベースの削除
-        //			TwitterUserBaseEx.Delete();
+        #region クリア
+        /// <summary>
+        /// クリア
+        /// </summary>
+        public void ClearFollowBackList()
+        {
+            try
+            {
+                if (ShowMessage.ShowQuestionYesNo("フォロバリストを削除してもよろしいですか？", "確認") == MessageBoxResult.Yes)
+                {
+                    // データベースの削除
+                    TwitterUserBaseEx.Delete();
 
-        //			// 要素のクリア
-        //			this.TwitterAPI.MyFollowList.Items = new ObservableCollection<TwitterUserM>();
-        //		}
-        //	}
-        //	catch (Exception e)
-        //	{
-        //		_logger.Error(e.Message);
-        //		ShowMessage.ShowErrorOK(e.Message, "Error");
-        //	}
+                    // 要素のクリア
+                    this.UserList.Items = new ObservableCollection<TwitterUserBase>();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
 
-        //}
-        //#endregion
+        }
+        #endregion
 
         //#region マイフォローリストの削除
         ///// <summary>
@@ -727,98 +934,102 @@ namespace MovingWordpress.ViewModels
         //}
         //#endregion
 
-        //#region 全記事分の分析結果をエクセルに出力する
-        ///// <summary>
-        ///// 全記事分の分析結果をエクセルに出力する
-        ///// </summary>
-        ///// <param name="workbook">ワークブック</param>
-        //private void SaveExcelSub(XLWorkbook workbook)
-        //{
-        //	var worksheet = workbook.Worksheets.Add("全体");
+        #region 全記事分の分析結果をエクセルに出力する
+        /// <summary>
+        /// 全記事分の分析結果をエクセルに出力する
+        /// </summary>
+        /// <param name="workbook">ワークブック</param>
+        private void SaveExcelSub(XLWorkbook workbook)
+        {
+            var worksheet = workbook.Worksheets.Add("全体");
 
-        //	worksheet.Cell("A1").Value = "ID";
-        //	worksheet.Cell("B1").Value = "スクリーン名";
-        //	worksheet.Cell("C1").Value = "フォロー数";
-        //	worksheet.Cell("D1").Value = "フォロワー数";
-        //	worksheet.Cell("E1").Value = "フォロー率";
-        //	worksheet.Cell("F1").Value = "説明文";
-        //	worksheet.Cell("G1").Value = "アカウントURL";
+            worksheet.Cell("A1").Value = "ID";
+            worksheet.Cell("B1").Value = "スクリーン名";
+            worksheet.Cell("C1").Value = "フォローフラグ";
+            worksheet.Cell("D1").Value = "フォロワーフラグ";
+            worksheet.Cell("E1").Value = "フォロー数";
+            worksheet.Cell("F1").Value = "フォロワー数";
+            worksheet.Cell("G1").Value = "フォロー率";
+            worksheet.Cell("H1").Value = "説明文";
+            worksheet.Cell("I1").Value = "アカウントURL";
 
-        //	int row = 2;
+            int row = 2;
 
-        //	foreach (var tmp in this.FilterdList.Items)
-        //	{
-        //		worksheet.Cell($"A{row}").Value = tmp.Id;
-        //		worksheet.Cell($"B{row}").Value = tmp.ScreenName;
-        //		worksheet.Cell($"C{row}").Value = tmp.FriendsCount;
-        //		worksheet.Cell($"D{row}").Value = tmp.FollowersCount;
-        //		worksheet.Cell($"E{row}").Value = tmp.FriendshipRatio;
-        //		worksheet.Cell($"F{row}").Value = tmp.Description;
-        //		worksheet.Cell($"G{row}").Value = $"https://twitter.com/{tmp.ScreenName}";
-        //		row++;
-        //	}
-        //}
-        //#endregion
+            foreach (var tmp in this.UserList.Items)
+            {
+                worksheet.Cell($"A{row}").Value = tmp.Id;
+                worksheet.Cell($"B{row}").Value = tmp.ScreenName;
+                worksheet.Cell($"C{row}").Value = tmp.IsFriend;
+                worksheet.Cell($"D{row}").Value = tmp.IsFollower;
+                worksheet.Cell($"E{row}").Value = tmp.FriendsCount;
+                worksheet.Cell($"F{row}").Value = tmp.FollowersCount;
+                worksheet.Cell($"G{row}").Value = (((double)tmp.FriendsCount / (double)tmp.FollowersCount)*100.0).ToString("0.00");
+                worksheet.Cell($"H{row}").Value = tmp.Description;
+                worksheet.Cell($"I{row}").Value = $"https://twitter.com/{tmp.ScreenName}";
+                row++;
+            }
+        }
+        #endregion
 
-        //#region Excelを保存する
-        ///// <summary>
-        ///// Excelを保存する
-        ///// </summary>
-        //public void SaveExcel()
-        //{
-        //	try
-        //	{
-        //		// ダイアログのインスタンスを生成
-        //		var dialog = new SaveFileDialog();
+        #region Excelを保存する
+        /// <summary>
+        /// Excelを保存する
+        /// </summary>
+        public void SaveExcel()
+        {
+            try
+            {
+                // ダイアログのインスタンスを生成
+                var dialog = new SaveFileDialog();
 
-        //		// ファイルの種類を設定
-        //		dialog.Filter = "エクセルファイル(*.xlsx)|*.xlsx";
+                // ファイルの種類を設定
+                dialog.Filter = "エクセルファイル(*.xlsx)|*.xlsx";
 
-        //		// ダイアログを表示する
-        //		if (dialog.ShowDialog() == true)
-        //		{
-        //			using (var workbook = new XLWorkbook())
-        //			{
-        //				SaveExcelSub(workbook);
-        //				workbook.SaveAs(dialog.FileName);
+                // ダイアログを表示する
+                if (dialog.ShowDialog() == true)
+                {
+                    using (var workbook = new XLWorkbook())
+                    {
+                        SaveExcelSub(workbook);
+                        workbook.SaveAs(dialog.FileName);
 
-        //				ShowMessage.ShowNoticeOK("レポート出力が完了しました。", "通知");
+                        ShowMessage.ShowNoticeOK("レポート出力が完了しました。", "通知");
 
-        //			}
-        //		}
-        //	}
-        //	catch (Exception e)
-        //	{
-        //		_logger.Error(e.Message);
-        //		ShowMessage.ShowErrorOK(e.Message, "Error");
-        //	}
-        //}
-        //#endregion
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
 
-        //#region 自動フォローフラグ[AutoFollowF]プロパティ
-        ///// <summary>
-        ///// 自動フォローフラグ[AutoFollowF]プロパティ用変数
-        ///// </summary>
-        //bool _AutoFollowF = false;
-        ///// <summary>
-        ///// 自動フォローフラグ[AutoFollowF]プロパティ
-        ///// </summary>
-        //public bool AutoFollowF
-        //{
-        //	get
-        //	{
-        //		return _AutoFollowF;
-        //	}
-        //	set
-        //	{
-        //		if (!_AutoFollowF.Equals(value))
-        //		{
-        //			_AutoFollowF = value;
-        //			NotifyPropertyChanged("AutoFollowF");
-        //		}
-        //	}
-        //}
-        //#endregion
+        #region 自動フォローフラグ[AutoFollowF]プロパティ
+        /// <summary>
+        /// 自動フォローフラグ[AutoFollowF]プロパティ用変数
+        /// </summary>
+        bool _AutoFollowF = false;
+        /// <summary>
+        /// 自動フォローフラグ[AutoFollowF]プロパティ
+        /// </summary>
+        public bool AutoFollowF
+        {
+            get
+            {
+                return _AutoFollowF;
+            }
+            set
+            {
+                if (!_AutoFollowF.Equals(value))
+                {
+                    _AutoFollowF = value;
+                    NotifyPropertyChanged("AutoFollowF");
+                }
+            }
+        }
+        #endregion
 
         //#region 選択行のフォロー
         ///// <summary>

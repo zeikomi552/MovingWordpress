@@ -103,7 +103,7 @@ namespace MovingWordpress.Models.Tweet
 		/// <summary>
 		/// 待ち時間(分)の範囲(From)[FromWait]プロパティ用変数
 		/// </summary>
-		int _FromWait = 1;
+		int _FromWait = 30;
 		/// <summary>
 		/// 待ち時間(分)の範囲(From)[FromWait]プロパティ
 		/// </summary>
@@ -128,7 +128,7 @@ namespace MovingWordpress.Models.Tweet
 		/// <summary>
 		/// 待ち時間(分)の範囲(to)[ToWait]プロパティ用変数
 		/// </summary>
-		int _ToWait = 10;
+		int _ToWait = 60;
 		/// <summary>
 		/// 待ち時間(分)の範囲(to)[ToWait]プロパティ
 		/// </summary>

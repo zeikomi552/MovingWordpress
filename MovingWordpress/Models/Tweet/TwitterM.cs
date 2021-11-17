@@ -304,6 +304,13 @@ namespace MovingWordpress.Models.Tweet
         }
         #endregion
 
+        public IEnumerable<CoreTweet.User> GetUserFromID(long id)
+        {
+            // トークンの作成
+            CreateToken();
+            return this.Tokens.Users.Lookup(user_id=> id);
+        }
+
         #region フォローリストの取得
         /// <summary>
         /// フォローリストの取得
