@@ -295,6 +295,7 @@ namespace MovingWordpress.Models.Tweet
 
             // 結果の取得
             var result = get_type ? this.Tokens.Friends.List(screen_name, cursor, 100) : this.Tokens.Followers.List(screen_name, cursor, 100);
+            
 
             // リミットの取得
             this.RateLimit = result.RateLimit;

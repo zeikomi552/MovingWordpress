@@ -253,6 +253,58 @@ namespace MovingWordpress.Models.db
 		}
 		#endregion
 
+		#region 最終ツイート[LastTweet]プロパティ
+		/// <summary>
+		/// 最終ツイート[LastTweet]プロパティ用変数
+		/// </summary>
+		String _LastTweet = string.Empty;
+		/// <summary>
+		/// 最終ツイート[LastTweet]プロパティ
+		/// </summary>
+		[Column("LastTweet")]
+		public String LastTweet
+		{
+			get
+			{
+				return _LastTweet;
+			}
+			set
+			{
+				if (_LastTweet == null || !_LastTweet.Equals(value))
+				{
+					_LastTweet = value;
+					NotifyPropertyChanged("LastTweet");
+				}
+			}
+		}
+		#endregion
+
+		#region 最終ツイート日[LastTweetDateTime]プロパティ
+		/// <summary>
+		/// 最終ツイート日[LastTweetDateTime]プロパティ用変数
+		/// </summary>
+		DateTime? _LastTweetDateTime = null;
+		/// <summary>
+		/// 最終ツイート日[LastTweetDateTime]プロパティ
+		/// </summary>
+		[Column("LastTweetDateTime")]
+		public DateTime? LastTweetDateTime
+		{
+			get
+			{
+				return _LastTweetDateTime;
+			}
+			set
+			{
+				if (_LastTweetDateTime == null || !_LastTweetDateTime.Equals(value))
+				{
+					_LastTweetDateTime = value;
+					NotifyPropertyChanged("LastTweetDateTime");
+				}
+			}
+		}
+		#endregion
+
 
 		#endregion
 
@@ -303,6 +355,10 @@ namespace MovingWordpress.Models.db
 			this.IsFriend = item.IsFriend;
 
 			this.IsFollower = item.IsFollower;
+
+			this.LastTweet = item.LastTweet;
+
+			this.LastTweetDateTime = item.LastTweetDateTime;
 
 
 		}

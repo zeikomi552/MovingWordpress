@@ -65,7 +65,9 @@ namespace MovingWordpress.Models.db
 						FollowersCount = user.FollowersCount,
 						FriendsCount = user.FriendsCount,
 						IsFriend = is_friend,
-						IsFollower = is_follower
+						IsFollower = is_follower,
+						LastTweet = user.Status == null ? string.Empty : user.Status.Text,
+						LastTweetDateTime = user.Status == null ? null : user.Status.CreatedAt.DateTime,
 					},
 					new TwitterUserBase()
 					{
@@ -77,7 +79,9 @@ namespace MovingWordpress.Models.db
 						FollowersCount = user.FollowersCount,
 						FriendsCount = user.FriendsCount,
 						IsFriend = is_friend,
-						IsFollower = is_follower
+						IsFollower = is_follower,
+						LastTweet = user.Status == null ? string.Empty : user.Status.Text,
+						LastTweetDateTime = user.Status == null ? null : user.Status.CreatedAt.DateTime,
 					}
 					);
 			}
@@ -94,7 +98,9 @@ namespace MovingWordpress.Models.db
 						FollowersCount = user.FollowersCount,
 						FriendsCount = user.FriendsCount,
 						IsFriend = is_friend,
-						IsFollower = is_follower
+						IsFollower = is_follower,
+						LastTweet = user.Status == null ? string.Empty : user.Status.Text,
+						LastTweetDateTime = user.Status == null ? null : user.Status.CreatedAt.DateTime,
 					}
 					);
 			}
@@ -104,17 +110,18 @@ namespace MovingWordpress.Models.db
 		/// <summary>
 		/// 指定範囲のデータを取得する
 		/// </summary>
-		/// <param name="from_ratio">ff比</param>
-		/// <param name="to_ratio">ff比</param>
+		/// <param name="from_ratio">ff比下限</param>
+		/// <param name="to_ratio">ff比上限</param>
 		/// <returns>リスト</returns>
-		public static List<TwitterUserBase> SelectRangeData(double from_ratio, double to_ratio)
+		public static List<TwitterUserBase> SelectRangeData(double from_ratio, double to_ratio, IntRangeM follower_range)
         {
 			using (var db = new SQLiteDataContext())
 			{
 				return db.DbSet_TwitterUser.Where(x =>
 					((x.FriendsCount / (double)x.FollowersCount) * 100.0 >= from_ratio)
 					&& ((x.FriendsCount / (double)x.FollowersCount) * 100.0 <= to_ratio
-					&& x.IsFollower.Equals(false) && x.IsFriend.Equals(false))
+					&& x.IsFollower.Equals(false) && x.IsFriend.Equals(false)
+					&& x.FollowersCount>=follower_range.MinValue && x.FollowersCount <= follower_range.MaxValue)
 					).ToList<TwitterUserBase>();
 			}
 

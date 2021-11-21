@@ -149,6 +149,63 @@ namespace MovingWordpress.Models.Tweet
 		}
 		#endregion
 
+		#region フォロー数の範囲[FollowRange]プロパティ
+		/// <summary>
+		/// フォロー数の範囲[FollowRange]プロパティ用変数
+		/// </summary>
+		IntRangeM _FollowRange = new IntRangeM()
+			{
+				MinValue = 0,
+				MaxValue = 30000
+			};
+
+		/// <summary>
+		/// フォロー数の範囲[FollowRange]プロパティ
+		/// </summary>
+		public IntRangeM FollowRange
+		{
+			get
+			{
+				return _FollowRange;
+			}
+			set
+			{
+				if (_FollowRange == null || !_FollowRange.Equals(value))
+				{
+					_FollowRange = value;
+					NotifyPropertyChanged("FollowRange");
+				}
+			}
+		}
+		#endregion
+
+		#region 経過日数[ElapsedDate]プロパティ
+		/// <summary>
+		/// 経過日数[ElapsedDate]プロパティ用変数
+		/// </summary>
+		int _ElapsedDate = 32;
+		/// <summary>
+		/// 経過日数[ElapsedDate]プロパティ
+		/// </summary>
+		public int ElapsedDate
+		{
+			get
+			{
+				return _ElapsedDate;
+			}
+			set
+			{
+				if (!_ElapsedDate.Equals(value))
+				{
+					_ElapsedDate = value;
+					NotifyPropertyChanged("ElapsedDate");
+				}
+			}
+		}
+		#endregion
+
+
+
 		/// <summary>
 		/// 待ち処理
 		/// </summary>

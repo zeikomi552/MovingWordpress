@@ -470,8 +470,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-
-
         #region 自動フォロー処理
         /// <summary>
         /// 自動フォロー処理
@@ -546,7 +544,9 @@ namespace MovingWordpress.ViewModels
             }
 
             // クエリの発行
-            var sql_user_list = TwitterUserBaseEx.SelectRangeData(this.UserMatch.MinRatio, this.UserMatch.MaxRatio);
+            var sql_user_list = TwitterUserBaseEx.SelectRangeData(
+                this.UserMatch.MinRatio, this.UserMatch.MaxRatio,
+                this.FollowManage.FollowRange);
 
             var users = sql_user_list.OrderBy(x => x.InserDateTime);
 
@@ -555,15 +555,25 @@ namespace MovingWordpress.ViewModels
             {
                 var tmp = this.TwitterAPI.GetUserFromID(tmp_user.Id).FirstOrDefault();
 
+                // アカウントロックされているユーザーの除外
                 if (tmp.IsFollowRequestSent.HasValue && tmp.IsFollowRequestSent.Value.Equals(true))
                 {
                     continue;
                 }
 
+                // プライベートユーザーの除外
                 if (tmp.IsProtected.Equals(true))
                 {
                     continue;
                 }
+
+                // 最終ツイート時刻からの経過日数を確認
+                if (tmp.Status == null 
+                    || (DateTime.Today - tmp.Status.CreatedAt.DateTime.Date).Days > this.FollowManage.ElapsedDate)
+                {
+                    continue;
+                }
+
                 user = tmp_user;
                 break;
             }
@@ -676,6 +686,11 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        public void GetLastTweet()
+        {
+            
+        }
+
         #region 全記事分の分析結果をエクセルに出力する
         /// <summary>
         /// 全記事分の分析結果をエクセルに出力する
@@ -692,8 +707,10 @@ namespace MovingWordpress.ViewModels
             worksheet.Cell("E1").Value = "フォロー数";
             worksheet.Cell("F1").Value = "フォロワー数";
             worksheet.Cell("G1").Value = "フォロー率";
-            worksheet.Cell("H1").Value = "説明文";
-            worksheet.Cell("I1").Value = "アカウントURL";
+            worksheet.Cell("H1").Value = "最終ツイート";
+            worksheet.Cell("I1").Value = "最終ツイート日";
+            worksheet.Cell("J1").Value = "説明文";
+            worksheet.Cell("K1").Value = "アカウントURL";
 
             int row = 2;
 
@@ -706,8 +723,10 @@ namespace MovingWordpress.ViewModels
                 worksheet.Cell($"E{row}").Value = tmp.FriendsCount;
                 worksheet.Cell($"F{row}").Value = tmp.FollowersCount;
                 worksheet.Cell($"G{row}").Value = (((double)tmp.FriendsCount / (double)tmp.FollowersCount)*100.0).ToString("0.00");
-                worksheet.Cell($"H{row}").Value = tmp.Description;
-                worksheet.Cell($"I{row}").Value = $"https://twitter.com/{tmp.ScreenName}";
+                worksheet.Cell($"H{row}").Value = tmp.LastTweetDateTime.HasValue ? tmp.LastTweetDateTime.Value.ToString("yyyy/MM/dd") : string.Empty;
+                worksheet.Cell($"I{row}").Value = string.IsNullOrEmpty(tmp.LastTweet) ? string.Empty : tmp.LastTweet;
+                worksheet.Cell($"J{row}").Value = tmp.Description;
+                worksheet.Cell($"K{row}").Value = $"https://twitter.com/{tmp.ScreenName}";
                 row++;
             }
         }

@@ -255,6 +255,22 @@
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FollowManage.LastFollowTime}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロー対象のフォロワー数"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <TextBox TextAlignment="Center" Width="100" VerticalAlignment="Center" Text="{Binding FollowManage.FollowRange.MinValue}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="-"/>
+                                <TextBox TextAlignment="Center" Width="100" VerticalAlignment="Center" Text="{Binding FollowManage.FollowRange.MaxValue}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FollowManage.LastFollowTime}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="最終ツイートからの経過日数上限"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
+                                <TextBox TextAlignment="Center" Width="100" VerticalAlignment="Center" Text="{Binding FollowManage.ElapsedDate}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="日"/>
+                            </StackPanel>
+
+
+                            <StackPanel Orientation="Horizontal">
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="前回のフォロー時刻"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text=":"/>
                                 <TextBlock Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding BeforeFollowTime, StringFormat=yyyy/MM/dd HH:mm:ss}"/>
