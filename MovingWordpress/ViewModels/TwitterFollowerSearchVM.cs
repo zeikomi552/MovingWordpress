@@ -501,7 +501,7 @@ namespace MovingWordpress.ViewModels
                     // 自動フォローのフラグチェック
                     while (AutoFollowF)
                     {
-                        int wait_base = 1000;
+                        int wait_base = 60000;
 
                         if (wait_tm > wait_base)
                         {
@@ -554,16 +554,24 @@ namespace MovingWordpress.ViewModels
             foreach (var tmp_user in users)
             {
                 var tmp = this.TwitterAPI.GetUserFromID(tmp_user.Id).FirstOrDefault();
-
                 // アカウントロックされているユーザーの除外
                 if (tmp.IsFollowRequestSent.HasValue && tmp.IsFollowRequestSent.Value.Equals(true))
                 {
+                    TwitterUserBaseEx.Delete(new TwitterUserBase()
+                    { 
+                        Id=tmp.Id.Value
+                    });
+                
                     continue;
                 }
 
                 // プライベートユーザーの除外
                 if (tmp.IsProtected.Equals(true))
                 {
+                    TwitterUserBaseEx.Delete(new TwitterUserBase()
+                    {
+                        Id = tmp.Id.Value
+                    });
                     continue;
                 }
 
@@ -571,6 +579,11 @@ namespace MovingWordpress.ViewModels
                 if (tmp.Status == null 
                     || (DateTime.Today - tmp.Status.CreatedAt.DateTime.Date).Days > this.FollowManage.ElapsedDate)
                 {
+                    TwitterUserBaseEx.Delete(new TwitterUserBase()
+                    {
+                        Id = tmp.Id.Value
+                    });
+
                     continue;
                 }
 
