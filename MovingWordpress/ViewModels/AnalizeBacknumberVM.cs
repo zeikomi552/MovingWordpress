@@ -555,6 +555,54 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region 記事内容を結合して出力
+        /// <summary>
+        /// 記事内容を結合して出力
+        /// </summary>
+        public void OutputExcel()
+        {
+            try
+            {
+                // ダイアログのインスタンスを生成
+                var dialog = new SaveFileDialog();
+
+                // ファイルの種類を設定
+                dialog.Filter = "エクセルファイル(*.xlsx)|*.xlsx";
+
+                // ダイアログを表示する
+                if (dialog.ShowDialog() == true)
+                {
+                    using (var workbook = new XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add("Blog");
+                        worksheet.Cell($"A1").Value = "メッセージ(全角140文字 半角280文字まで)";
+                        worksheet.Cell($"B1").Value = "URL(23文字+改行1文字扱い)";
+
+                        var tmp = from x in this.BlogContentsManager.BlogContents.Items
+                                  orderby x.Post_date
+                                  select x;
+                        int row = 2;
+                        foreach (var article in tmp)
+                        {
+                            worksheet.Cell($"A{row}").Value = article.Post_title;
+                            worksheet.Cell($"B{row}").Value = article.Guid;
+                            row++;
+                        }
+                        workbook.SaveAs(dialog.FileName);
+                        ShowMessage.ShowNoticeOK("出力しました。Twapiでそのまま使用できます。", "通知");
+                    }
+
+
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+            }
+        }
+        #endregion
+
         #region 新記事分析
         /// <summary>
         /// 新記事分析
