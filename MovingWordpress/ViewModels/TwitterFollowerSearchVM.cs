@@ -537,61 +537,92 @@ namespace MovingWordpress.ViewModels
         /// <returns>フォロー対象ユーザー</returns>
         private TwitterUserBase GetFollowTarget()
         {
-            // SQLiteファイルの存在を保証する
-            using (var db = new SQLiteDataContext())
+            long? id = 0;
+
+            try
             {
-                db.Database.EnsureCreated();
+                // SQLiteファイルの存在を保証する
+                using (var db = new SQLiteDataContext())
+                {
+                    db.Database.EnsureCreated();
+                }
+
+                // クエリの発行
+                var sql_user_list = TwitterUserBaseEx.SelectRangeData(
+                    this.UserMatch.MinRatio, this.UserMatch.MaxRatio,
+                    this.FollowManage.FollowRange);
+
+                var users = sql_user_list.OrderBy(x => x.InserDateTime);
+
+                TwitterUserBase user = null;
+                foreach (var tmp_user in users)
+                {
+                    id = tmp_user.Id;
+
+                    CoreTweet.User tmp = null;
+
+                    try
+                    {
+                        tmp = this.TwitterAPI.GetUserFromID(tmp_user.Id).FirstOrDefault();
+                    }
+                    catch
+                    {
+                        TwitterUserBaseEx.Delete(new TwitterUserBase()
+                        {
+                            Id = tmp_user.Id
+                        });
+                        _logger.Info($"delete user id = {id} {tmp_user.ScreenName}");
+                        continue;
+                    }
+
+
+                    // アカウントロックされているユーザーの除外
+                    if (tmp.IsFollowRequestSent.HasValue && tmp.IsFollowRequestSent.Value.Equals(true))
+                    {
+                        TwitterUserBaseEx.Delete(new TwitterUserBase()
+                        {
+                            Id = tmp.Id.Value
+                        });
+
+                        continue;
+                    }
+
+                    // プライベートユーザーの除外
+                    if (tmp.IsProtected.Equals(true))
+                    {
+                        TwitterUserBaseEx.Delete(new TwitterUserBase()
+                        {
+                            Id = tmp.Id.Value
+                        });
+                        continue;
+                    }
+
+                    // 最終ツイート時刻からの経過日数を確認
+                    if (tmp.Status == null
+                        || (DateTime.Today - tmp.Status.CreatedAt.DateTime.Date).Days > this.FollowManage.ElapsedDate)
+                    {
+                        TwitterUserBaseEx.Delete(new TwitterUserBase()
+                        {
+                            Id = tmp.Id.Value
+                        });
+
+                        continue;
+                    }
+
+                    user = tmp_user;
+                    break;
+                }
+
+                return user;
             }
-
-            // クエリの発行
-            var sql_user_list = TwitterUserBaseEx.SelectRangeData(
-                this.UserMatch.MinRatio, this.UserMatch.MaxRatio,
-                this.FollowManage.FollowRange);
-
-            var users = sql_user_list.OrderBy(x => x.InserDateTime);
-
-            TwitterUserBase user = null;
-            foreach (var tmp_user in users)
+            catch (Exception e)
             {
-                var tmp = this.TwitterAPI.GetUserFromID(tmp_user.Id).FirstOrDefault();
-                // アカウントロックされているユーザーの除外
-                if (tmp.IsFollowRequestSent.HasValue && tmp.IsFollowRequestSent.Value.Equals(true))
-                {
-                    TwitterUserBaseEx.Delete(new TwitterUserBase()
-                    { 
-                        Id=tmp.Id.Value
-                    });
-                
-                    continue;
-                }
+                _logger.Error(e.Message);
+                _logger.Info($"Error ID = {id}");
 
-                // プライベートユーザーの除外
-                if (tmp.IsProtected.Equals(true))
-                {
-                    TwitterUserBaseEx.Delete(new TwitterUserBase()
-                    {
-                        Id = tmp.Id.Value
-                    });
-                    continue;
-                }
-
-                // 最終ツイート時刻からの経過日数を確認
-                if (tmp.Status == null 
-                    || (DateTime.Today - tmp.Status.CreatedAt.DateTime.Date).Days > this.FollowManage.ElapsedDate)
-                {
-                    TwitterUserBaseEx.Delete(new TwitterUserBase()
-                    {
-                        Id = tmp.Id.Value
-                    });
-
-                    continue;
-                }
-
-                user = tmp_user;
-                break;
+                ShowMessage.ShowErrorOK(e.Message, "Error");
+                return null;
             }
-
-            return user;
         }
         #endregion
 
@@ -601,6 +632,7 @@ namespace MovingWordpress.ViewModels
         /// </summary>
         private void AutoFollowSub()
         {
+            long id = 0;
             try
             {
                 var user = GetFollowTarget();
@@ -608,6 +640,7 @@ namespace MovingWordpress.ViewModels
                 // 見つからなかったらリターン
                 if (user == null) return;
 
+                id = user.Id;
                 // フォロー
                 this.TwitterAPI.CreateFollow(user.Id);
 
@@ -616,6 +649,7 @@ namespace MovingWordpress.ViewModels
                     // トランザクション
                     db.Database.BeginTransaction();
 
+                    id = user.Id;
                     var item = db.DbSet_TwitterUser.SingleOrDefault(x => x.Id.Equals(user.Id));
 
                     if (item != null)
@@ -649,6 +683,8 @@ namespace MovingWordpress.ViewModels
             catch (Exception e)
             {
                 _logger.Error(e.Message);
+                _logger.Info($"Error ID = {id}");
+
                 ShowMessage.ShowErrorOK(e.Message, "Error");
             }
         }

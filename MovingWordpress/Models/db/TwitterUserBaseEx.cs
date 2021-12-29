@@ -68,6 +68,12 @@ namespace MovingWordpress.Models.db
 						IsFollower = is_follower,
 						LastTweet = user.Status == null ? string.Empty : user.Status.Text,
 						LastTweetDateTime = user.Status == null ? null : user.Status.CreatedAt.DateTime,
+						CreateAt = user.CreatedAt.DateTime,
+						FavouritesCount = user.FavouritesCount,
+						StatusesCount = (user.Status == null) ?
+											0 : user.Status.FavoriteCount,
+						IsSuspended = user.IsSuspended,
+						IsProtected = user.IsProtected,
 					},
 					new TwitterUserBase()
 					{
@@ -82,6 +88,12 @@ namespace MovingWordpress.Models.db
 						IsFollower = is_follower,
 						LastTweet = user.Status == null ? string.Empty : user.Status.Text,
 						LastTweetDateTime = user.Status == null ? null : user.Status.CreatedAt.DateTime,
+						CreateAt = user.CreatedAt.DateTime,
+						FavouritesCount = user.FavouritesCount,
+						StatusesCount = (user.Status == null) ?
+											0 : user.Status.FavoriteCount,
+						IsSuspended = user.IsSuspended,
+						IsProtected = user.IsProtected,
 					}
 					);
 			}
@@ -101,6 +113,12 @@ namespace MovingWordpress.Models.db
 						IsFollower = is_follower,
 						LastTweet = user.Status == null ? string.Empty : user.Status.Text,
 						LastTweetDateTime = user.Status == null ? null : user.Status.CreatedAt.DateTime,
+						CreateAt = user.CreatedAt.DateTime,
+						FavouritesCount = user.FavouritesCount,
+						StatusesCount = (user.Status == null) ?
+											0 : user.Status.FavoriteCount,
+						IsSuspended = user.IsSuspended,
+						IsProtected = user.IsProtected,
 					}
 					);
 			}

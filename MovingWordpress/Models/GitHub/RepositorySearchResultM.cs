@@ -51,7 +51,9 @@ namespace MovingWordpress.Models.GitHub
                 string description = repo.Description.EmptyToText("-").CutText(50).Replace("|", "\\/");
                 string language = repo.Language.EmptyToText("-").CutText(20);
 
-                string homepage_url = !string.IsNullOrWhiteSpace(repo.Homepage) ? $" [[Home Page]({repo.Homepage})]" : string.Empty;
+                string homepage_url = !string.IsNullOrWhiteSpace(repo.Homepage) 
+                    && (repo.Homepage.ToLower().Contains("http://") || repo.Homepage.ToLower().Contains("https://"))
+                    ? $" [[Home Page]({repo.Homepage})]" : string.Empty;
 
                 // 行情報の作成
                 text.AppendLine($"|<center>{repo.StargazersCount}<br>({rank++}位)</center>|" +

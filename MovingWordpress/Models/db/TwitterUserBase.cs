@@ -270,7 +270,7 @@ namespace MovingWordpress.Models.db
 			}
 			set
 			{
-				if (_LastTweet == null || !_LastTweet.Equals(value))
+				if (!_LastTweet.Equals(value))
 				{
 					_LastTweet = value;
 					NotifyPropertyChanged("LastTweet");
@@ -296,10 +296,140 @@ namespace MovingWordpress.Models.db
 			}
 			set
 			{
-				if (_LastTweetDateTime == null || !_LastTweetDateTime.Equals(value))
+				if (!_LastTweetDateTime.Equals(value))
 				{
 					_LastTweetDateTime = value;
 					NotifyPropertyChanged("LastTweetDateTime");
+				}
+			}
+		}
+		#endregion
+
+		#region アカウント作成日[CreateAt]プロパティ
+		/// <summary>
+		/// アカウント作成日[CreateAt]プロパティ用変数
+		/// </summary>
+		DateTime _CreateAt = DateTime.MinValue;
+		/// <summary>
+		/// アカウント作成日[CreateAt]プロパティ
+		/// </summary>
+		[Column("CreateAt")]
+		public DateTime CreateAt
+		{
+			get
+			{
+				return _CreateAt;
+			}
+			set
+			{
+				if (!_CreateAt.Equals(value))
+				{
+					_CreateAt = value;
+					NotifyPropertyChanged("CreateAt");
+				}
+			}
+		}
+		#endregion
+
+		#region いいね数[FavouritesCount]プロパティ
+		/// <summary>
+		/// いいね数[FavouritesCount]プロパティ用変数
+		/// </summary>
+		long _FavouritesCount = 0;
+		/// <summary>
+		/// いいね数[FavouritesCount]プロパティ
+		/// </summary>
+		[Column("FavouritesCount")]
+		public long FavouritesCount
+		{
+			get
+			{
+				return _FavouritesCount;
+			}
+			set
+			{
+				if (!_FavouritesCount.Equals(value))
+				{
+					_FavouritesCount = value;
+					NotifyPropertyChanged("FavouritesCount");
+				}
+			}
+		}
+		#endregion
+
+		#region ツイート数[StatusesCount]プロパティ
+		/// <summary>
+		/// ツイート数[StatusesCount]プロパティ用変数
+		/// </summary>
+		Int32? _StatusesCount = 0;
+		/// <summary>
+		/// ツイート数[StatusesCount]プロパティ
+		/// </summary>
+		[Column("StatusesCount")]
+		public Int32? StatusesCount
+		{
+			get
+			{
+				return _StatusesCount;
+			}
+			set
+			{
+				if (!_StatusesCount.Equals(value))
+				{
+					_StatusesCount = value;
+					NotifyPropertyChanged("StatusesCount");
+				}
+			}
+		}
+		#endregion
+
+		#region Twitterからサスペンド中[IsSuspended]プロパティ
+		/// <summary>
+		/// Twitterからサスペンド中[IsSuspended]プロパティ用変数
+		/// </summary>
+		bool? _IsSuspended = false;
+		/// <summary>
+		/// Twitterからサスペンド中[IsSuspended]プロパティ
+		/// </summary>
+		[Column("IsSuspended")]
+		public bool? IsSuspended
+		{
+			get
+			{
+				return _IsSuspended;
+			}
+			set
+			{
+				if (!_IsSuspended.Equals(value))
+				{
+					_IsSuspended = value;
+					NotifyPropertyChanged("IsSuspended");
+				}
+			}
+		}
+		#endregion
+
+		#region プライベートアカウント[IsProtected]プロパティ
+		/// <summary>
+		/// プライベートアカウント[IsProtected]プロパティ用変数
+		/// </summary>
+		bool _IsProtected = false;
+		/// <summary>
+		/// プライベートアカウント[IsProtected]プロパティ
+		/// </summary>
+		[Column("IsProtected")]
+		public bool IsProtected
+		{
+			get
+			{
+				return _IsProtected;
+			}
+			set
+			{
+				if (!_IsProtected.Equals(value))
+				{
+					_IsProtected = value;
+					NotifyPropertyChanged("IsProtected");
 				}
 			}
 		}
@@ -359,6 +489,16 @@ namespace MovingWordpress.Models.db
 			this.LastTweet = item.LastTweet;
 
 			this.LastTweetDateTime = item.LastTweetDateTime;
+
+			this.CreateAt = item.CreateAt;
+
+			this.FavouritesCount = item.FavouritesCount;
+
+			this.StatusesCount = item.StatusesCount;
+
+			this.IsSuspended = item.IsSuspended;
+
+			this.IsProtected = item.IsProtected;
 
 
 		}
