@@ -80,62 +80,6 @@
                     </Button.Content>
 
                 </Button>
-                <Button Margin="5" Height="100" Width="100" Cursor="Hand">
-                    <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="Click">
-                            <b:CallMethodAction MethodName="TwitterAPIV" TargetObject="{Binding}"/>
-                        </b:EventTrigger>
-                    </b:Interaction.Triggers>
-                    <Button.Content>
-                        <StackPanel Orientation="Vertical">
-                            <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="TwitterBot"/>
-                        </StackPanel>
-                    </Button.Content>
-
-                </Button>
-            </WrapPanel>
-        </GroupBox>
-        <GroupBox Grid.Row="3" Header="ブログネタ探し効率化">
-            <WrapPanel Margin="5" Grid.Row="1" Orientation="Horizontal">
-                <Button Margin="5" Height="100" Width="100" Cursor="Hand">
-                    <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="Click">
-                            <b:CallMethodAction MethodName="GitHubAPIV" TargetObject="{Binding}"/>
-                        </b:EventTrigger>
-                    </b:Interaction.Triggers>
-                    <StackPanel Orientation="Vertical">
-                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-github-octocat.png" />
-                        <Viewbox>
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="GitHub検索"/>
-                        </Viewbox>
-                    </StackPanel>
-
-                </Button>
-                <Button Margin="5" Height="100" Width="100" Cursor="Hand">
-                    <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="Click">
-                            <b:CallMethodAction MethodName="TwitterSearchV" TargetObject="{Binding}"/>
-                        </b:EventTrigger>
-                    </b:Interaction.Triggers>
-                    <StackPanel Orientation="Vertical">
-                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Twitter検索"/>
-                    </StackPanel>
-
-                </Button>
-                <Button Margin="5" Height="100" Width="100" Cursor="Hand">
-                    <b:Interaction.Triggers>
-                        <b:EventTrigger EventName="Click">
-                            <b:CallMethodAction MethodName="TwitterFollowerSearchV" TargetObject="{Binding}"/>
-                        </b:EventTrigger>
-                    </b:Interaction.Triggers>
-                    <StackPanel Orientation="Vertical">
-                        <Image Width="60" Height="60" VerticalAlignment="Center" Source="/Common/Icons/icon-twitter.png" />
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="フォロバさん"/>
-                    </StackPanel>
-
-                </Button>
             </WrapPanel>
         </GroupBox>
     </Grid>
