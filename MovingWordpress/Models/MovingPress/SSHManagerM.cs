@@ -166,59 +166,181 @@ namespace MovingWordpress.Models
 		/// </summary>
 		/// <param name="remote_file_path">リモートサーバー側のファイルの保管パス</param>
 		/// <param name="local_file_path">ローカルファイルパスの保管場所</param>
-		public void SCPDownload(string remote_file_path, string local_file_path, EventHandler<Renci.SshNet.Common.ScpDownloadEventArgs> scp_handler)
+		public void Download(string remote_file_path, string local_file_path,
+			EventHandler<Renci.SshNet.Common.ScpDownloadEventArgs> scp_handler, Action<ulong> sftp_action, bool scp_f)
 		{
 			using (var sshclient = new SshClient(this.ConnNfo))
 			{
 				sshclient.Connect();
-				using (var scpClient = new ScpClient(this.ConnNfo))
+
+				// SCPを使用する
+				if (scp_f)
 				{
-					scpClient.Connect();
-
-					// イベントのセット
-					scpClient.Downloading += scp_handler;
-
-					// イベントのダウンロード処理
-					scpClient.Download(remote_file_path,
-						new System.IO.DirectoryInfo(local_file_path));
-
-					// イベントの解除
-					scpClient.Downloading -= scp_handler;
-
-					scpClient.Disconnect();
+					// SCPクライアントの作成
+					using (var scpClient = new ScpClient(this.ConnNfo))
+					{
+						// ダウンロード処理
+						DownLoadSCP(scpClient, remote_file_path, local_file_path, scp_handler);
+					}
 				}
+				// SFTPを使用する
+				else
+				{
+					// SFTPクライアントの作成
+					using (var sftpCilent = new SftpClient(this.ConnNfo))
+					{
+						DownLoadSFTP(sftpCilent, remote_file_path, local_file_path, sftp_action);
+					}
+				}
+
 				sshclient.Disconnect();
 			}
 		}
+
+
+		/// <summary>
+		/// SCPを使用したダウンロード処理
+		/// </summary>
+		/// <param name="scpClient">SCPクライアント</param>
+		/// <param name="remote_file_path">リモートファイルパス</param>
+		/// <param name="local_file_path">ローカルディレクトリパス</param>
+		/// <param name="scp_handler">イベント受信用ハンドラ</param>
+		public void DownLoadSCP(ScpClient scpClient, string remote_file_path, string local_file_path,
+			EventHandler<Renci.SshNet.Common.ScpDownloadEventArgs> scp_handler)
+		{
+			scpClient.Connect();
+
+			// イベントのセット
+			scpClient.Downloading += scp_handler;
+
+			// イベントのダウンロード処理
+			scpClient.Download(remote_file_path,
+				new System.IO.DirectoryInfo(local_file_path));
+
+			// イベントの解除
+			scpClient.Downloading -= scp_handler;
+
+			scpClient.Disconnect();
+		}
+
+		/// <summary>
+		/// SFTPを使用したダウンロード処理
+		/// </summary>
+		/// <param name="sftpClient">SFTPクライアント</param>
+		/// <param name="remote_file_path">リモートファイルパス</param>
+		/// <param name="local_file_path">ローカルファイルパス（保存ファイル名）</param>
+		public void DownLoadSFTP(SftpClient sftpClient, string remote_file_path, string local_file_path, Action<ulong> del_func)
+		{
+			using (var downloadStream = File.OpenWrite(local_file_path))
+			{
+				// 接続
+				sftpClient.Connect();
+
+				var dir_path = System.IO.Path.GetDirectoryName(remote_file_path).Replace(@"\", @"/");
+
+				var list = sftpClient.ListDirectory(dir_path);
+
+				// ダウンロード処理
+				sftpClient.DownloadFile(remote_file_path, downloadStream, del_func);
+
+				// 切断
+				sftpClient.Disconnect();
+			}
+		}
+
+
+		public System.Collections.Generic.IEnumerable<Renci.SshNet.Sftp.SftpFile> GetFileList(string dir_path)
+		{
+			System.Collections.Generic.IEnumerable<Renci.SshNet.Sftp.SftpFile> ret;
+
+			using (var sshclient = new SshClient(this.ConnNfo))
+			{
+				sshclient.Connect();
+
+				// SFTPクライアントの作成
+				using (var sftpClient = new SftpClient(this.ConnNfo))
+				{
+					// 接続
+					sftpClient.Connect();
+					ret = sftpClient.ListDirectory(dir_path);
+					// 切断
+					sftpClient.Disconnect();
+				}
+
+				sshclient.Disconnect();
+			}
+
+			return ret;
+		}
+
 
 		/// <summary>
 		/// SCPによるファイルアップロード処理を行う
 		/// </summary>
 		/// <param name="remote_file_path">リモートサーバー側のファイルの保管パス</param>
 		/// <param name="local_file_path">ローカルファイルパスの保管場所</param>
-		public void SCPUpload(string remote_file_path, string local_file_path, EventHandler<Renci.SshNet.Common.ScpUploadEventArgs> scp_handler)
+		/// <param name="scp_f">true:SCPでのアップロード false:SFTPでのダウンロード</param>
+		public void SCPUpload(string remote_file_path, string local_file_path,
+			EventHandler<Renci.SshNet.Common.ScpUploadEventArgs> scp_handler, bool scp_f)
 		{
 			using (var sshclient = new SshClient(this.ConnNfo))
 			{
 				sshclient.Connect();
-				using (var scpClient = new ScpClient(this.ConnNfo))
+				if (scp_f)
 				{
-					scpClient.Connect();
-
-					// イベントのセット
-					scpClient.Uploading += scp_handler;
-					scpClient.RemotePathTransformation = RemotePathTransformation.ShellQuote;
-					// アップロード処理
-					scpClient.Upload(new System.IO.FileInfo(local_file_path), remote_file_path);
-
-					// イベントの解除
-					scpClient.Uploading -= scp_handler;
-
-					scpClient.Disconnect();
+					using (var scpClient = new ScpClient(this.ConnNfo))
+					{
+						uploadFileScp(scpClient, scp_handler, local_file_path, remote_file_path);
+					}
+				}
+				else
+				{
+					using (var sftp = new SftpClient(ConnNfo))
+					{
+						uploadFileSFTP(sftp, local_file_path, remote_file_path);
+					}
 				}
 				sshclient.Disconnect();
 			}
 		}
+
+		private void uploadFileScp(ScpClient scpClient, 
+			EventHandler<Renci.SshNet.Common.ScpUploadEventArgs> scp_handler,
+			string local_file_path, string remote_file_path)
+		{
+			scpClient.Connect();
+
+			// イベントのセット
+			scpClient.Uploading += scp_handler;
+			scpClient.RemotePathTransformation = RemotePathTransformation.ShellQuote;
+			// アップロード処理
+			scpClient.Upload(new System.IO.FileInfo(local_file_path), remote_file_path);
+
+			// イベントの解除
+			scpClient.Uploading -= scp_handler;
+
+			scpClient.Disconnect();
+		}
+
+
+		// ファイルのアップロード
+		private void uploadFileSFTP(
+			SftpClient sftp,       // sftpクライアント
+			string local_file_path,    // アップロードパス
+			string remote_file_path     // アップロードファイル名
+			)
+		{
+			//// カレントディレクトリ変更
+			//sftp.ChangeDirectory(uploadPath);
+			//// アップロード先パス
+			//var remotePath = uploadPath + "/" + Path.GetFileName(uploadFile);
+
+			using (var uploadStream = File.OpenRead(local_file_path))
+			{
+				sftp.UploadFile(uploadStream, remote_file_path, true);
+			}
+		}
+
 
 		/// <summary>
 		/// Configファイルの保存処理

@@ -210,51 +210,57 @@ namespace MovingWordpress.ViewModels
                 this.SSHConnection.CreateConnection();
 
                 string local_dir = this.SSHConnection.FolderSetting.LocalDirectory;
+                string remote_dir = "/tmp";
 
                 Task.Run(() =>
                 {
+                    var list = this.SSHConnection.GetFileList(remote_dir);
+
+
                     this._DownloadTemporaryMessage.AppendLine($"====== ダウンロード Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    this._DownloadTemporaryMessage.AppendLine($"/tmp/{_UploadGz} ------> {local_dir} 計:4ファイル");
 
-                    // メッセージの更新
-                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
+                    this._DownloadTemporaryMessage.AppendLine($"====== 取得ファイルサイズの確認 ======");
 
-                    // SCPによるダウンロード
-                    this.SSHConnection.SCPDownload($"/tmp/{_UploadGz}",
-                        local_dir, ScpClient_Downloading_upload);
+                    foreach (var file in list)
+                    {
+                        if (file.FullName.Equals(remote_dir + "/"+_UploadGz) || file.FullName.Equals(remote_dir + "/" + _PluginsGz)
+                        || file.FullName.Equals(remote_dir + "/" + _ThemesGz) || file.FullName.Equals(remote_dir + "/" + _DumpSqlGz))
+                        {
+                            this._DownloadTemporaryMessage.AppendLine($"====== {file.Name} : Size->{file.Length.ToString()} ======");
+                            this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString());       // メッセージの更新
+
+                        }
+
+                    }
+                    //this._DownloadTemporaryMessage.AppendLine($"/tmp/{_UploadGz} ------> {local_dir} 計:4ファイル");
+
+                    this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString());       // メッセージの更新
+                    Download(local_dir, remote_dir, _UploadGz);                     // ダウンロード処理
 
                     this._DownloadTemporaryMessage.AppendLine(this.DownloadProgress_upload);
-                    // メッセージの更新
-                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
 
-                    // SCPによるダウンロード
-                    this.SSHConnection.SCPDownload($"/tmp/{_PluginsGz}",
-                        local_dir, ScpClient_Downloading_plugin);
+                    this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString());       // メッセージの更新
+                    Download(local_dir, remote_dir, _PluginsGz);                    // ダウンロード処理
 
                     this._DownloadTemporaryMessage.AppendLine(this.DownloadProgress_plugin);
-                    // メッセージの更新
-                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
 
-                    // SCPによるダウンロード
-                    this.SSHConnection.SCPDownload($"/tmp/{_ThemesGz}",
-                        local_dir, ScpClient_Downloading_themes);
+                    this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString());       // メッセージの更新
+                    Download(local_dir, remote_dir, _ThemesGz);                     // ダウンロード処理
+
 
                     this._DownloadTemporaryMessage.AppendLine(this.DownloadProgress_themes);
-                    // メッセージの更新
-                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
 
-                    // SCPによるダウンロード
-                    this.SSHConnection.SCPDownload($"/tmp/{_DumpSqlGz}",
-                        local_dir, ScpClient_Downloading_sql);
+                    this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString());       // メッセージの更新
+                    Download(local_dir, remote_dir, _DumpSqlGz);                    // ダウンロード処理
 
                     this._DownloadTemporaryMessage.AppendLine(this.DownloadProgress_sql);
 
                     // メッセージの更新
-                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
+                    this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString());
 
                     this._DownloadTemporaryMessage.AppendLine($"====== ダウンロード End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
                     // メッセージの更新
-                    UpdateMessage(this._DownloadTemporaryMessage.ToString());
+                    this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString());
 
                     this.IsExecute = false;
                 }
@@ -269,6 +275,28 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
+        #region ダウンロード処理
+        /// <summary>
+        /// ダウンロード処理
+        /// </summary>
+        /// <param name="local_dir">ローカルディレクトリ</param>
+        /// <param name="remote_dir">リモートディレクトリ</param>
+        /// <param name="file_name">ファイル名</param>
+        /// <param name="scp_f">true:SCP false:SFTP</param>
+        private void Download(string local_dir, string remote_dir, string file_name, bool scp_f = false)
+        {
+            string remote_file_path = $"{remote_dir}/{file_name}";              // リモートファイルパスの作成
+            string local_file_path = Path.Combine(local_dir, $"{file_name}");   // ローカルファイルパスの作成
+
+            Action<ulong> del_func_inst = delegate (ulong a) {
+                this.LogMessage.UpdateMessage(a.ToString());       // メッセージの更新
+            };
+
+            // ダウンロード処理の実行
+            this.SSHConnection.Download(remote_file_path, local_file_path, ScpClient_Downloading_upload, del_func_inst, scp_f);
+        }
+        #endregion
+
         #region plugins.tar.gzフォルダのダウンロード進捗
         /// <summary>
         /// plugins.tar.gzフォルダのダウンロード進捗
@@ -279,7 +307,7 @@ namespace MovingWordpress.ViewModels
         {
             this.DownloadProgress_plugin = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded/ (double)e.Size * 100)}%)";
             // メッセージの更新
-            UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_plugin);
+            this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_plugin);
         }
         #endregion
 
@@ -293,7 +321,7 @@ namespace MovingWordpress.ViewModels
         {
             this.DownloadProgress_upload = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)";
             // メッセージの更新
-            UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_upload);
+            this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_upload);
         }
         #endregion
 
@@ -307,7 +335,7 @@ namespace MovingWordpress.ViewModels
         {
             this.DownloadProgress_themes = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)";
             // メッセージの更新
-            UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_themes);
+            this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_themes);
         }
         #endregion
 
@@ -321,7 +349,7 @@ namespace MovingWordpress.ViewModels
         {
             this.DownloadProgress_sql = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)";
             // メッセージの更新
-            UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_sql);
+            this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_sql);
         }
         #endregion
     }

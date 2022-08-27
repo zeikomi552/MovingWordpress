@@ -65,26 +65,26 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region 結果メッセージ[Message]プロパティ
+        #region 画面上に表示するログ出力用メッセージ[LogMessage]プロパティ
         /// <summary>
-        /// 結果メッセージ[Message]プロパティ用変数
+        /// 画面上に表示するログ出力用メッセージ[LogMessage]プロパティ用変数
         /// </summary>
-        string _Message = string.Empty;
+        LogMessageM _LogMessage = new LogMessageM();
         /// <summary>
-        /// 結果メッセージ[Message]プロパティ
+        /// 画面上に表示するログ出力用メッセージ[LogMessage]プロパティ
         /// </summary>
-        public string Message
+        public LogMessageM LogMessage
         {
             get
             {
-                return _Message;
+                return _LogMessage;
             }
             set
             {
-                if (_Message == null || !_Message.Equals(value))
+                if (_LogMessage == null || !_LogMessage.Equals(value))
                 {
-                    _Message = value;
-                    NotifyPropertyChanged("Message");
+                    _LogMessage = value;
+                    NotifyPropertyChanged("LogMessage");
                 }
             }
         }
@@ -137,22 +137,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region メッセージ更新処理
-        /// <summary>
-        /// メッセージ更新処理
-        /// </summary>
-        /// <param name="message"></param>
-        protected void UpdateMessage(string message)
-        {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,
-               new Action(() =>
-               {
-                   this.Message = message.ToString();
-               }));
-
-        }
-        #endregion
-
         #region コマンド実行処理
         /// <summary>
         /// コマンド実行処理
@@ -171,7 +155,7 @@ namespace MovingWordpress.ViewModels
                 message.AppendLine("Command ==> " + cmd);
 
                 // メッセージの更新
-                UpdateMessage(message.ToString());
+                this.LogMessage.UpdateMessage(message.ToString());
 
                 // コマンド内容のセット
                 message.AppendLine("result ==> " + cmd);
@@ -184,7 +168,7 @@ namespace MovingWordpress.ViewModels
                 message.AppendLine($"====== Command End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
 
                 // メッセージの更新
-                UpdateMessage(message.ToString());
+                this.LogMessage.UpdateMessage(message.ToString());
             }
             catch (Exception e)
             {
@@ -213,7 +197,7 @@ namespace MovingWordpress.ViewModels
                 message.AppendLine();
 
                 // メッセージの更新
-                UpdateMessage(message.ToString());
+                this.LogMessage.UpdateMessage(message.ToString());
 
                 foreach (var command in command_list)
                 {
@@ -231,7 +215,7 @@ namespace MovingWordpress.ViewModels
                 this.IsExecute = false;
 
                 // メッセージの更新
-                UpdateMessage(message.ToString());
+                this.LogMessage.UpdateMessage(message.ToString());
 
             });
         }
@@ -322,7 +306,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 //クリップボードに文字列をコピーする
-                Clipboard.SetText(this.Message);
+                Clipboard.SetText(this.LogMessage.Message);
             }
             catch (Exception e)
             {
@@ -341,7 +325,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 //クリップボードに文字列をコピーする
-                this.Message = string.Empty;
+                this.LogMessage.Message = string.Empty;
             }
             catch (Exception e)
             {

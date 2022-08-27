@@ -274,7 +274,7 @@
                 </Grid.RowDefinitions>
                 <GroupBox Header="結果">
                     <TextBox hlp:TextBoxAttachedHelper.AutoScrollToEnd="True"
-                             VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding Message}" Margin="5" Cursor="IBeam"/>
+                             VerticalScrollBarVisibility="Auto" IsReadOnly="True" Text="{Binding LogMessage.Message}" Margin="5" Cursor="IBeam"/>
                 </GroupBox>
                 <StackPanel Orientation="Horizontal" Grid.Row="1">
                     <Button Margin="5" Content="コピー" Cursor="Hand">
