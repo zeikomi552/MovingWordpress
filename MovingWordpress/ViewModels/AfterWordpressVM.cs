@@ -3,6 +3,7 @@ using MVVMCore.BaseClass;
 using MVVMCore.Common.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -175,7 +176,7 @@ namespace MovingWordpress.ViewModels
         /// <summary>
         /// SCPによるアップロードの実行
         /// </summary>
-        public void ExecuteScp()
+        public void ExecuteUpload()
         {
             try
             {
@@ -186,51 +187,42 @@ namespace MovingWordpress.ViewModels
                 this.SSHConnection.CreateConnection();
 
                 string local_dir = this.SSHConnection.FolderSetting.LocalDirectory;
+                string remote_dir = "/tmp";
+
+                List<string> file_list = new List<string>() {
+                    _UploadGz,
+                    _PluginsGz,
+                    _ThemesGz,
+                    _DumpSqlGz
+                };
+                
 
                 Task.Run(() =>
                 {
-                    this._UploadTemporaryMessage.AppendLine($"====== アップロード Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    this._UploadTemporaryMessage.AppendLine($"{local_dir} ------> /tmp/{_UploadGz} 計:4ファイル");
+                    this.LogMessage.UpdateMessage($"====== アップロード Start {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
+                    this.LogMessage.AppendMessage($"====== アップロードファイルサイズの確認 ======");
+
+                    Dictionary<string, ulong> size_list = new Dictionary<string, ulong>();
+                    // ファイルサイズの確認
+                    foreach (var file in file_list)
+                    {
+                        FileInfo fileinf = new FileInfo(Path.Combine(local_dir, file));
+                        long size = fileinf.Length;
+                        size_list.Add(file, (ulong)size);
+
+                        this.LogMessage.AppendMessage($" {file} : Size->{size}");
+                    }
 
                     // メッセージの更新
-                    this.LogMessage.UpdateMessage(this._UploadTemporaryMessage.ToString());
+                    this.LogMessage.AppendMessage($"====== ファイルアップロード ======");
 
-                    // SCPによるアップロード
-                    this.SSHConnection.SCPUpload($"/tmp/{_UploadGz}",
-                        local_dir + _UploadGz, ScpClient_Uploading_upload, false);
+                    foreach (var file in file_list)
+                    {
+                        // SFTPによるアップロード
+                        Upload(local_dir, remote_dir, file, size_list[file], false);
+                    }
 
-                    //this._UploadTemporaryMessage.AppendLine(this.DownloadProgress_upload);
-                    //// メッセージの更新
-                    //UpdateMessage(this._UploadTemporaryMessage.ToString());
-
-                    //// SCPによるアップロード
-                    //this.SSHConnection.SCPUpload($"/tmp/{_PluginsGz}",
-                    //    local_dir + _PluginsGz, ScpClient_Uploading_plugin);
-
-                    //this._UploadTemporaryMessage.AppendLine(this.DownloadProgress_plugin);
-                    //// メッセージの更新
-                    //UpdateMessage(this._UploadTemporaryMessage.ToString());
-
-                    //// SCPによるアップロード
-                    //this.SSHConnection.SCPUpload($"/tmp/{_ThemesGz}",
-                    //    local_dir + _ThemesGz, ScpClient_Uploading_themes);
-
-                    //this._UploadTemporaryMessage.AppendLine(this.DownloadProgress_themes);
-                    //// メッセージの更新
-                    //UpdateMessage(this._UploadTemporaryMessage.ToString());
-
-                    //// SCPによるアップロード
-                    //this.SSHConnection.SCPUpload($"/tmp/{_DumpSqlGz}",
-                    //    local_dir + _DumpSqlGz, ScpClient_Uploading_sql);
-
-                    this._UploadTemporaryMessage.AppendLine(this.DownloadProgress_sql);
-
-                    // メッセージの更新
-                    this.LogMessage.UpdateMessage(this._UploadTemporaryMessage.ToString());
-
-                    this._UploadTemporaryMessage.AppendLine($"====== アップロード End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
-                    // メッセージの更新
-                    this.LogMessage.UpdateMessage(this._UploadTemporaryMessage.ToString());
+                    this.LogMessage.AppendMessage($"====== アップロード End {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")} ======");
 
                     this.IsExecute = false;
                 }
@@ -242,6 +234,32 @@ namespace MovingWordpress.ViewModels
                 ShowMessage.ShowErrorOK(e.Message, "Error");
                 this.IsExecute = false;
             }
+        }
+        #endregion
+
+        #region アップロード処理
+        /// <summary>
+        /// アップロード処理
+        /// </summary>
+        /// <param name="local_dir">ローカルディレクトリ</param>
+        /// <param name="remote_dir">リモートディレクトリ</param>
+        /// <param name="file_name">ファイル名</param>
+        /// <param name="max_size">最大サイズ</param>
+        /// <param name="scp_f">true:SCP false:SFTP</param>
+        private void Upload(string local_dir, string remote_dir, string file_name, ulong max_size, bool scp_f = false)
+        {
+            string remote_file_path = $"{remote_dir}/{file_name}";              // リモートファイルパスの作成
+            string local_file_path = Path.Combine(local_dir, $"{file_name}");   // ローカルファイルパスの作成
+
+            Action<ulong> del_func_inst = delegate (ulong size) {
+                this.LogMessage.AppendMessage($"FileName = {file_name}  Size => {size.ToString()} / {max_size.ToString()} ({(ulong)(size / (double)max_size * 100)}%) ======", false);
+            };
+
+            // ダウンロード処理の実行
+            this.SSHConnection.Upload(remote_file_path, local_file_path, ScpClient_Uploading_upload, del_func_inst, scp_f);
+
+            // メッセージの確定
+            this.LogMessage.CommitMessage();
         }
         #endregion
 

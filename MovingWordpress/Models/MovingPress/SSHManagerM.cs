@@ -205,7 +205,7 @@ namespace MovingWordpress.Models
 		/// <param name="remote_file_path">リモートファイルパス</param>
 		/// <param name="local_file_path">ローカルディレクトリパス</param>
 		/// <param name="scp_handler">イベント受信用ハンドラ</param>
-		public void DownLoadSCP(ScpClient scpClient, string remote_file_path, string local_file_path,
+		private void DownLoadSCP(ScpClient scpClient, string remote_file_path, string local_file_path,
 			EventHandler<Renci.SshNet.Common.ScpDownloadEventArgs> scp_handler)
 		{
 			scpClient.Connect();
@@ -229,7 +229,7 @@ namespace MovingWordpress.Models
 		/// <param name="sftpClient">SFTPクライアント</param>
 		/// <param name="remote_file_path">リモートファイルパス</param>
 		/// <param name="local_file_path">ローカルファイルパス（保存ファイル名）</param>
-		public void DownLoadSFTP(SftpClient sftpClient, string remote_file_path, string local_file_path, Action<ulong> del_func)
+		private void DownLoadSFTP(SftpClient sftpClient, string remote_file_path, string local_file_path, Action<ulong> del_func)
 		{
 			using (var downloadStream = File.OpenWrite(local_file_path))
 			{
@@ -280,8 +280,8 @@ namespace MovingWordpress.Models
 		/// <param name="remote_file_path">リモートサーバー側のファイルの保管パス</param>
 		/// <param name="local_file_path">ローカルファイルパスの保管場所</param>
 		/// <param name="scp_f">true:SCPでのアップロード false:SFTPでのダウンロード</param>
-		public void SCPUpload(string remote_file_path, string local_file_path,
-			EventHandler<Renci.SshNet.Common.ScpUploadEventArgs> scp_handler, bool scp_f)
+		public void Upload(string remote_file_path, string local_file_path,
+			EventHandler<Renci.SshNet.Common.ScpUploadEventArgs> scp_handler, Action<ulong> sftp_action, bool scp_f)
 		{
 			using (var sshclient = new SshClient(this.ConnNfo))
 			{
@@ -297,7 +297,7 @@ namespace MovingWordpress.Models
 				{
 					using (var sftp = new SftpClient(ConnNfo))
 					{
-						uploadFileSFTP(sftp, local_file_path, remote_file_path);
+						uploadFileSFTP(sftp, local_file_path, remote_file_path, sftp_action);
 					}
 				}
 				sshclient.Disconnect();
@@ -327,7 +327,8 @@ namespace MovingWordpress.Models
 		private void uploadFileSFTP(
 			SftpClient sftp,       // sftpクライアント
 			string local_file_path,    // アップロードパス
-			string remote_file_path     // アップロードファイル名
+			string remote_file_path,     // アップロードファイル名
+			Action<ulong> del_func		// デリゲート
 			)
 		{
 			//// カレントディレクトリ変更
@@ -337,7 +338,9 @@ namespace MovingWordpress.Models
 
 			using (var uploadStream = File.OpenRead(local_file_path))
 			{
-				sftp.UploadFile(uploadStream, remote_file_path, true);
+				sftp.Connect();
+				sftp.UploadFile(uploadStream, remote_file_path, true, del_func);
+				sftp.Disconnect();
 			}
 		}
 
