@@ -204,7 +204,7 @@ namespace MovingWordpress.ViewModels
                     // タグを変換
                     var tmp = MovingWordpressUtilities.ConvertCommandTags(command, this.SSHConnection);
 
-                    // コマンドの発酵処理
+                    // コマンドの発行処理
                     ExecuteCommand(tmp, message);
                 }
 
