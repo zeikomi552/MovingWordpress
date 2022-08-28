@@ -12,113 +12,6 @@ namespace MovingWordpress.ViewModels
 {
     public class AfterWordpressVM : BaseWordpressVM
     {
-        #region アップロード用のメッセージ(一時保存用)
-        /// <summary>
-        /// アップロード用のメッセージ(一時保存用)
-        /// </summary>
-        StringBuilder _UploadTemporaryMessage = new StringBuilder();
-        #endregion
-
-        #region アップロードの進行状況[DownloadProgress_plugin]プロパティ
-        /// <summary>
-        /// アップロードの進行状況[DownloadProgress_plugin]プロパティ用変数
-        /// </summary>
-        string _UploadProgress_plugin = string.Empty;
-        /// <summary>
-        /// アップロードの進行状況[DownloadProgress_plugin]プロパティ
-        /// </summary>
-        public string DownloadProgress_plugin
-        {
-            get
-            {
-                return _UploadProgress_plugin;
-            }
-            set
-            {
-                if (_UploadProgress_plugin == null || !_UploadProgress_plugin.Equals(value))
-                {
-                    _UploadProgress_plugin = value;
-                    NotifyPropertyChanged("DownloadProgress_plugin");
-                }
-            }
-        }
-        #endregion
-
-        #region アップロードの進行状況[DownloadProgress_themes]プロパティ
-        /// <summary>
-        /// アップロードの進行状況[DownloadProgress_themes]プロパティ用変数
-        /// </summary>
-        string _UploadProgress_themes = string.Empty;
-        /// <summary>
-        /// アップロードの進行状況[DownloadProgress_themes]プロパティ
-        /// </summary>
-        public string DownloadProgress_themes
-        {
-            get
-            {
-                return _UploadProgress_themes;
-            }
-            set
-            {
-                if (_UploadProgress_themes == null || !_UploadProgress_themes.Equals(value))
-                {
-                    _UploadProgress_themes = value;
-                    NotifyPropertyChanged("DownloadProgress_themes");
-                }
-            }
-        }
-        #endregion
-
-        #region アップロードの進行状況[DownloadProgress_upload]プロパティ
-        /// <summary>
-        /// アップロードの進行状況[DownloadProgress_upload]プロパティ用変数
-        /// </summary>
-        string _UploadProgress_upload = string.Empty;
-        /// <summary>
-        /// アップロードの進行状況[DownloadProgress_upload]プロパティ
-        /// </summary>
-        public string DownloadProgress_upload
-        {
-            get
-            {
-                return _UploadProgress_upload;
-            }
-            set
-            {
-                if (_UploadProgress_upload == null || !_UploadProgress_upload.Equals(value))
-                {
-                    _UploadProgress_upload = value;
-                    NotifyPropertyChanged("DownloadProgress_upload");
-                }
-            }
-        }
-        #endregion
-
-        #region アップロードの進行状況[DownloadProgress_sql]プロパティ
-        /// <summary>
-        /// アップロードの進行状況[DownloadProgress_sql]プロパティ用変数
-        /// </summary>
-        string _UploadProgress_sql = string.Empty;
-        /// <summary>
-        /// アップロードの進行状況[DownloadProgress_sql]プロパティ
-        /// </summary>
-        public string DownloadProgress_sql
-        {
-            get
-            {
-                return _UploadProgress_sql;
-            }
-            set
-            {
-                if (_UploadProgress_sql == null || !_UploadProgress_sql.Equals(value))
-                {
-                    _UploadProgress_sql = value;
-                    NotifyPropertyChanged("DownloadProgress_sql");
-                }
-            }
-        }
-        #endregion
-
         #region 初期化処理
         /// <summary>
         /// 初期化処理
@@ -181,7 +74,7 @@ namespace MovingWordpress.ViewModels
             try
             {
                 this.IsExecute = true;
-                this._UploadTemporaryMessage.Clear();
+                //this._UploadTemporaryMessage.Clear();
 
                 // 初期化処理
                 this.SSHConnection.CreateConnection();
@@ -286,21 +179,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region plugins.tar.gzフォルダのアップロード進捗
-        /// <summary>
-        /// plugins.tar.gzフォルダのアップロード進捗
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ScpClient_Uploading_plugin(object sender, Renci.SshNet.Common.ScpUploadEventArgs e)
-        {
-            this.DownloadProgress_plugin = $" FileName = {e.Filename} Size => {e.Uploaded.ToString()} / {e.Size.ToString()} ({(int)(e.Uploaded / (double)e.Size * 100)}%)";
-            // メッセージの更新
-            this.LogMessage.UpdateMessage(this._UploadTemporaryMessage.ToString() + this.DownloadProgress_plugin);
-        }
-        #endregion
-
-
         #region uploads.tar.gzのアップロード進捗
         /// <summary>
         /// uploads.tar.gzのアップロード進捗
@@ -309,37 +187,8 @@ namespace MovingWordpress.ViewModels
         /// <param name="e"></param>
         private void ScpClient_Uploading_upload(object sender, Renci.SshNet.Common.ScpUploadEventArgs e)
         {
-            this.DownloadProgress_upload = $" FileName = {e.Filename} Size => {e.Uploaded.ToString()} / {e.Size.ToString()} ({(int)(e.Uploaded / (double)e.Size * 100)}%)";
-            // メッセージの更新
-            this.LogMessage.UpdateMessage(this._UploadTemporaryMessage.ToString() + this.DownloadProgress_upload);
-        }
-        #endregion
+            this.LogMessage.AppendMessage($" FileName = {e.Filename} Size => {e.Uploaded.ToString()} / {e.Size.ToString()} ({(int)(e.Uploaded / (double)e.Size * 100)}%)", false);
 
-        #region themes.tar.gzフォルダのアップロード進捗
-        /// <summary>
-        /// themes.tar.gzフォルダのアップロード進捗
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ScpClient_Uploading_themes(object sender, Renci.SshNet.Common.ScpUploadEventArgs e)
-        {
-            this.DownloadProgress_themes = $" FileName = {e.Filename} Size => {e.Uploaded.ToString()} / {e.Size.ToString()} ({(int)(e.Uploaded / (double)e.Size * 100)}%)";
-            // メッセージの更新
-            this.LogMessage.UpdateMessage(this._UploadTemporaryMessage.ToString() + this.DownloadProgress_themes);
-        }
-        #endregion
-
-        #region dump.sql.gzのアップロード進捗
-        /// <summary>
-        /// dump.sql.gzのアップロード進捗
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ScpClient_Uploading_sql(object sender, Renci.SshNet.Common.ScpUploadEventArgs e)
-        {
-            this.DownloadProgress_sql = $" FileName = {e.Filename} Size => {e.Uploaded.ToString()} / {e.Size.ToString()} ({(int)(e.Uploaded / (double)e.Size * 100)}%)";
-            // メッセージの更新
-            this.LogMessage.UpdateMessage(this._UploadTemporaryMessage.ToString() + this.DownloadProgress_sql);
         }
         #endregion
     }

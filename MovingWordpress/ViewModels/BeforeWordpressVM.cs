@@ -16,107 +16,6 @@ namespace MovingWordpress.ViewModels
 {
     public class BeforeWordpressVM : BaseWordpressVM
     {
-
-        #region ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
-        /// <summary>
-        /// ダウンロードの進行状況[DownloadProgress_plugin]プロパティ用変数
-        /// </summary>
-        string _DownloadProgress_plugin = string.Empty;
-        /// <summary>
-        /// ダウンロードの進行状況[DownloadProgress_plugin]プロパティ
-        /// </summary>
-        public string DownloadProgress_plugin
-        {
-            get
-            {
-                return _DownloadProgress_plugin;
-            }
-            set
-            {
-                if (_DownloadProgress_plugin == null || !_DownloadProgress_plugin.Equals(value))
-                {
-                    _DownloadProgress_plugin = value;
-                    NotifyPropertyChanged("DownloadProgress_plugin");
-                }
-            }
-        }
-        #endregion
-
-        #region ダウンロードの進行状況[DownloadProgress_themes]プロパティ
-        /// <summary>
-        /// ダウンロードの進行状況[DownloadProgress_themes]プロパティ用変数
-        /// </summary>
-        string _DownloadProgress_themes = string.Empty;
-        /// <summary>
-        /// ダウンロードの進行状況[DownloadProgress_themes]プロパティ
-        /// </summary>
-        public string DownloadProgress_themes
-        {
-            get
-            {
-                return _DownloadProgress_themes;
-            }
-            set
-            {
-                if (_DownloadProgress_themes == null || !_DownloadProgress_themes.Equals(value))
-                {
-                    _DownloadProgress_themes = value;
-                    NotifyPropertyChanged("DownloadProgress_themes");
-                }
-            }
-        }
-        #endregion
-
-        #region ダウンロードの進行状況[DownloadProgress_upload]プロパティ
-        /// <summary>
-        /// ダウンロードの進行状況[DownloadProgress_upload]プロパティ用変数
-        /// </summary>
-        string _DownloadProgress_upload = string.Empty;
-        /// <summary>
-        /// ダウンロードの進行状況[DownloadProgress_upload]プロパティ
-        /// </summary>
-        public string DownloadProgress_upload
-        {
-            get
-            {
-                return _DownloadProgress_upload;
-            }
-            set
-            {
-                if (_DownloadProgress_upload == null || !_DownloadProgress_upload.Equals(value))
-                {
-                    _DownloadProgress_upload = value;
-                    NotifyPropertyChanged("DownloadProgress_upload");
-                }
-            }
-        }
-        #endregion
-
-        #region ダウンロードの進行状況[DownloadProgress_sql]プロパティ
-        /// <summary>
-        /// ダウンロードの進行状況[DownloadProgress_sql]プロパティ用変数
-        /// </summary>
-        string _DownloadProgress_sql = string.Empty;
-        /// <summary>
-        /// ダウンロードの進行状況[DownloadProgress_sql]プロパティ
-        /// </summary>
-        public string DownloadProgress_sql
-        {
-            get
-            {
-                return _DownloadProgress_sql;
-            }
-            set
-            {
-                if (_DownloadProgress_sql == null || !_DownloadProgress_sql.Equals(value))
-                {
-                    _DownloadProgress_sql = value;
-                    NotifyPropertyChanged("DownloadProgress_sql");
-                }
-            }
-        }
-        #endregion
-
         #region 初期化処理
         /// <summary>
         /// 初期化処理
@@ -280,20 +179,6 @@ namespace MovingWordpress.ViewModels
         }
         #endregion
 
-        #region plugins.tar.gzフォルダのダウンロード進捗
-        /// <summary>
-        /// plugins.tar.gzフォルダのダウンロード進捗
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ScpClient_Downloading_plugin(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
-        {
-            this.DownloadProgress_plugin = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded/ (double)e.Size * 100)}%)";
-            // メッセージの更新
-            this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_plugin);
-        }
-        #endregion
-
         #region uploads.tar.gzのダウンロード進捗
         /// <summary>
         /// uploads.tar.gzのダウンロード進捗
@@ -302,37 +187,7 @@ namespace MovingWordpress.ViewModels
         /// <param name="e"></param>
         private void ScpClient_Downloading_upload(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
         {
-            this.DownloadProgress_upload = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)";
-            // メッセージの更新
-            this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_upload);
-        }
-        #endregion
-
-        #region themes.tar.gzフォルダのダウンロード進捗
-        /// <summary>
-        /// themes.tar.gzフォルダのダウンロード進捗
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ScpClient_Downloading_themes(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
-        {
-            this.DownloadProgress_themes = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)";
-            // メッセージの更新
-            this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_themes);
-        }
-        #endregion
-
-        #region dump.sql.gzのダウンロード進捗
-        /// <summary>
-        /// dump.sql.gzのダウンロード進捗
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ScpClient_Downloading_sql(object sender, Renci.SshNet.Common.ScpDownloadEventArgs e)
-        {
-            this.DownloadProgress_sql = $" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)";
-            // メッセージの更新
-            this.LogMessage.UpdateMessage(this._DownloadTemporaryMessage.ToString() + this.DownloadProgress_sql);
+            this.LogMessage.AppendMessage($" FileName = {e.Filename} Size => {e.Downloaded.ToString()} / {e.Size.ToString()} ({(int)(e.Downloaded / (double)e.Size * 100)}%)", false);
         }
         #endregion
     }
