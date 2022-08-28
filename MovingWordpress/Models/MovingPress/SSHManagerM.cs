@@ -93,15 +93,20 @@ namespace MovingWordpress.Models
 		}
 		#endregion
 
-		// 接続情報
+		#region 接続情報
+		/// <summary>
+		/// 接続情報
+		/// </summary>
 		[XmlIgnoreAttribute] 
 		public ConnectionInfo ConnNfo { private set; get; }
+		#endregion
 
+		#region 初期化処理
 		/// <summary>
 		/// 初期化処理
 		/// </summary>
 		/// <param name="isBefore">true:引っ越し前の情報を扱う false:引っ越し後の情報を扱う</param>
-        public void Initialize(bool isBefore)
+		public void Initialize(bool isBefore)
         {
             // 引っ越し後の情報を使用する？
             if (!isBefore)
@@ -111,12 +116,14 @@ namespace MovingWordpress.Models
                 this.MySQLSetting.SetAfterConfig();
             }
         }
+		#endregion
 
-        /// <summary>
-        /// 接続情報の初期化処理
-        /// </summary>
-        /// <param name="isBefore">true:引っ越し前の処理 false:引っ越し後の処理</param>
-        public void CreateConnection(bool isBefore = true)
+		#region 接続情報の初期化処理
+		/// <summary>
+		/// 接続情報の初期化処理
+		/// </summary>
+		/// <param name="isBefore">true:引っ越し前の処理 false:引っ越し後の処理</param>
+		public void CreateConnection(bool isBefore = true)
 		{
 
 			// パスワード認証
@@ -136,7 +143,9 @@ namespace MovingWordpress.Models
 			);
 
 		}
+		#endregion
 
+		#region SSHコマンド
 		/// <summary>
 		/// SSHコマンド
 		/// </summary>
@@ -160,7 +169,9 @@ namespace MovingWordpress.Models
 
 			return result.ToString();
 		}
+		#endregion
 
+		#region SCPによるファイルダウンロード処理を行う
 		/// <summary>
 		/// SCPによるファイルダウンロード処理を行う
 		/// </summary>
@@ -196,8 +207,9 @@ namespace MovingWordpress.Models
 				sshclient.Disconnect();
 			}
 		}
+		#endregion
 
-
+		#region SCPを使用したダウンロード処理
 		/// <summary>
 		/// SCPを使用したダウンロード処理
 		/// </summary>
@@ -222,7 +234,9 @@ namespace MovingWordpress.Models
 
 			scpClient.Disconnect();
 		}
+		#endregion
 
+		#region SFTPを使用したダウンロード処理
 		/// <summary>
 		/// SFTPを使用したダウンロード処理
 		/// </summary>
@@ -247,8 +261,14 @@ namespace MovingWordpress.Models
 				sftpClient.Disconnect();
 			}
 		}
+		#endregion
 
-
+		#region リモートサーバー側のファイル一覧リストの取得処理
+		/// <summary>
+		/// リモートサーバー側のファイル一覧リストの取得処理
+		/// </summary>
+		/// <param name="dir_path">ディレクトリパス</param>
+		/// <returns>ファイル情報リスト</returns>
 		public System.Collections.Generic.IEnumerable<Renci.SshNet.Sftp.SftpFile> GetFileList(string dir_path)
 		{
 			System.Collections.Generic.IEnumerable<Renci.SshNet.Sftp.SftpFile> ret;
@@ -272,8 +292,9 @@ namespace MovingWordpress.Models
 
 			return ret;
 		}
+		#endregion
 
-
+		#region SCPによるファイルアップロード処理を行う
 		/// <summary>
 		/// SCPによるファイルアップロード処理を行う
 		/// </summary>
@@ -303,7 +324,16 @@ namespace MovingWordpress.Models
 				sshclient.Disconnect();
 			}
 		}
+		#endregion
 
+		#region アップロード処理(SCP)
+		/// <summary>
+		/// アップロード処理(SCP)
+		/// </summary>
+		/// <param name="scpClient">SCPクライアント</param>
+		/// <param name="scp_handler">イベントハンドラ</param>
+		/// <param name="local_file_path">ローカルファイルパス</param>
+		/// <param name="remote_file_path">リモートファイルパス</param>
 		private void uploadFileScp(ScpClient scpClient, 
 			EventHandler<Renci.SshNet.Common.ScpUploadEventArgs> scp_handler,
 			string local_file_path, string remote_file_path)
@@ -321,9 +351,16 @@ namespace MovingWordpress.Models
 
 			scpClient.Disconnect();
 		}
+		#endregion
 
-
-		// ファイルのアップロード
+		#region ファイルのアップロード処理(SFTP)
+		/// <summary>
+		/// ファイルのアップロード処理(SFTP)
+		/// </summary>
+		/// <param name="sftp">SFTPクライアント</param>
+		/// <param name="local_file_path">ローカルファイルパス</param>
+		/// <param name="remote_file_path">リモートファイルパス</param>
+		/// <param name="del_func">デリゲート</param>
 		private void uploadFileSFTP(
 			SftpClient sftp,       // sftpクライアント
 			string local_file_path,    // アップロードパス
@@ -331,20 +368,23 @@ namespace MovingWordpress.Models
 			Action<ulong> del_func		// デリゲート
 			)
 		{
-			//// カレントディレクトリ変更
-			//sftp.ChangeDirectory(uploadPath);
-			//// アップロード先パス
-			//var remotePath = uploadPath + "/" + Path.GetFileName(uploadFile);
 
+			// ファイルのオープン
 			using (var uploadStream = File.OpenRead(local_file_path))
 			{
+				// 接続
 				sftp.Connect();
+
+				// アップロード処理
 				sftp.UploadFile(uploadStream, remote_file_path, true, del_func);
+
+				// 切断
 				sftp.Disconnect();
 			}
 		}
+		#endregion
 
-
+		#region Configファイルの保存処理
 		/// <summary>
 		/// Configファイルの保存処理
 		/// </summary>
@@ -358,9 +398,10 @@ namespace MovingWordpress.Models
 
 			// MySQL設定の保存処理
 			this.MySQLSetting.Save();
-
 		}
+		#endregion
 
+		#region Configファイルのロード処理
 		/// <summary>
 		/// Configファイルのロード処理
 		/// </summary>
@@ -387,5 +428,6 @@ namespace MovingWordpress.Models
 				this.MySQLSetting = this.MySQLSetting.Load();
 			}
 		}
+		#endregion
 	}
 }
